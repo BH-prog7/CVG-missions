@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#c2410c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Convoyages">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Convoyages & Missions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+/* Layout: outil mobile d'abord — en-tête collant avec onglets comptés, filtres, liste de fiches, bouton d'ajout flottant, formulaire en volet. */
+:root{
+  --bg:#eef2f5; --surface:#ffffff; --sunk:#e3e9ee; --ink:#13202b; --muted:#5a6b79; --line:#d3dce4;
+  --accent:#c2410c; --accent-ink:#ffffff; --accent-soft:#fde7dc;
+  --ok:#2f7d3b; --ok-soft:#e1f2e3; --bad:#b42323; --bad-soft:#fbe3e3; --warn:#9a5a00; --warn-soft:#fdf0d9;
+  --ba:#1d5fa8; --bb1:#0f7a72; --bb2:#6a3fb5; --bmap:#9a5a00;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d141a; --surface:#152029; --sunk:#1b2833; --ink:#e4ebf1; --muted:#90a1af; --line:#26343f;
+  --accent:#ff7a3d; --accent-ink:#1a0d05; --accent-soft:#3a2216;
+  --ok:#62c675; --ok-soft:#173222; --bad:#ff7070; --bad-soft:#3a1b1b; --warn:#f2a94a; --warn-soft:#382a14;
+  --ba:#6aa8f0; --bb1:#45c4b8; --bb2:#a988ef; --bmap:#f2a94a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d141a; --surface:#152029; --sunk:#1b2833; --ink:#e4ebf1; --muted:#90a1af; --line:#26343f;
+  --accent:#ff7a3d; --accent-ink:#1a0d05; --accent-soft:#3a2216;
+  --ok:#62c675; --ok-soft:#173222; --bad:#ff7070; --bad-soft:#3a1b1b; --warn:#f2a94a; --warn-soft:#382a14;
+  --ba:#6aa8f0; --bb1:#45c4b8; --bb2:#a988ef; --bmap:#f2a94a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header .wrap{padding-block:14px 0;display:grid;gap:12px}
+h1{margin:0;font-family:var(--f-display);font-weight:700;font-size:1.7rem;letter-spacing:.01em;line-height:1.05;text-wrap:balance}
+h1 small{display:block;font-family:var(--f-mono);font-size:.7rem;font-weight:400;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tab{flex:1;min-width:0;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);font:600 .95rem var(--f-body);padding:8px 6px 10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .n{font-family:var(--f-mono);font-size:.72rem;background:var(--sunk);border-radius:20px;padding:1px 7px;color:var(--ink)}
+.tab:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main .wrap{padding-block:14px 110px;display:grid;gap:12px}
+.note{font-size:.85rem;color:var(--warn);background:var(--warn-soft);border-radius:8px;padding:8px 12px}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:20px;padding:5px 12px;font:500 .85rem var(--f-body);cursor:pointer}
+.fchip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.list{display:grid;gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;gap:6px;cursor:pointer;text-align:left;color:inherit;font:inherit;width:100%}
+.card:hover{border-color:var(--muted)}
+.card.past{opacity:.72}
+.top{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.top .status{margin-left:auto}
+.dest{font-family:var(--f-display);font-weight:600;font-size:1.35rem;line-height:1.15;min-width:0;overflow-wrap:anywhere}
+.when{font-family:var(--f-mono);font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.when b{color:var(--ink);font-weight:500}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:.75rem;font-weight:600;letter-spacing:.03em;border-radius:5px;padding:2px 7px;background:var(--sunk);color:var(--ink);white-space:nowrap}
+.chip.acc{background:var(--accent-soft);color:var(--accent)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)}
+.chip.ex{background:transparent;border:1px dashed var(--muted);color:var(--muted);font-weight:500}
+.status{font-family:var(--f-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--muted)}
+.status.live{border-color:var(--ok);color:var(--ok)}
+.status.soon{border-color:var(--accent);color:var(--accent)}
+.badge{font-family:var(--f-mono);font-size:.72rem;font-weight:500;border-radius:4px;padding:1px 6px;border:1.5px solid currentColor}
+.badge[data-b="Tech A"]{color:var(--ba)}.badge[data-b="Tech B1"]{color:var(--bb1)}.badge[data-b="Tech B2"]{color:var(--bb2)}.badge[data-b="MAP"]{color:var(--bmap)}
+.crew{display:flex;flex-wrap:wrap;gap:6px 10px;font-size:.85rem}
+.crew span{display:inline-flex;gap:6px;align-items:center}
+.crew b{font-weight:700}
+.crew .none{color:var(--muted);font-style:italic}
+.warns{display:grid;gap:2px;font-size:.82rem;color:var(--bad)}
+.warns div::before{content:"⚠ "}
+.tech-name{font-weight:600;font-size:1.05rem}
+.notes{font-size:.85rem;color:var(--muted);overflow-wrap:anywhere}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:22px 18px;display:grid;gap:10px;justify-items:start}
+.empty h2{margin:0;font-family:var(--f-display);font-size:1.3rem}
+.empty p{margin:0;color:var(--muted);max-width:52ch}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:9px 14px;font:600 .9rem var(--f-body);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.danger.armed{background:var(--bad);color:var(--surface)}
+.btn.link{border:0;background:none;color:var(--muted);text-decoration:underline;padding:4px 0}
+.fab{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:6;background:var(--accent);color:var(--accent-ink);border:0;border-radius:28px;padding:14px 20px;font:700 1rem var(--f-body);box-shadow:0 6px 18px rgba(0,0,0,.22);cursor:pointer}
+.sheet{position:fixed;inset:0;z-index:20;background:rgba(8,14,20,.5);display:flex;align-items:flex-end;justify-content:center}
+.panel{background:var(--surface);width:100%;max-width:640px;max-height:92%;overflow-y:auto;border-radius:16px 16px 0 0;padding-block:18px calc(18px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:700px){.sheet{align-items:center}.panel{border-radius:16px}}
+.panel h2{margin:0 0 14px;font-family:var(--f-display);font-size:1.5rem}
+form{display:grid;gap:14px}
+.field{display:grid;gap:6px;min-width:0}
+.lbl{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+input[type=text],input[type=date],textarea{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+textarea{min-height:64px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;background:var(--bg)}
+.seg input:checked+label{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.seg input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
+.check{display:flex;gap:10px;align-items:center;font-weight:600;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+.picker{display:grid;gap:6px}
+.pick{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;background:var(--bg)}
+.pick input{width:18px;height:18px;accent-color:var(--accent);flex:none}
+.pick .nm{font-weight:600;flex:1;min-width:0;overflow-wrap:anywhere}
+.pick .fl{font-size:.75rem;color:var(--muted);white-space:nowrap}
+.pick .fl .no{color:var(--bad);font-weight:600}
+.dur{font-family:var(--f-mono);font-size:.85rem;color:var(--muted);margin:-6px 0 0}
+.err{color:var(--bad);font-size:.85rem;margin:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-top:4px}
+.actions .sp{flex:1}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:8px;font-size:.9rem;max-width:calc(100% - 32px)}
+.foot{display:flex;justify-content:flex-end}
+/* arrière-plans au choix */
+:root{--on-bg-muted:var(--muted)}
+:root[data-bg="white"]{--bg:#ffffff}
+:root[data-bg="red"]{--bg:#c62828;--on-bg-muted:rgba(255,255,255,.88)}
+@media (prefers-color-scheme: dark){:root[data-bg="white"]:not([data-theme="light"]){--bg:#080c10}:root[data-bg="red"]:not([data-theme="light"]){--bg:#4a0d10;--on-bg-muted:rgba(255,220,220,.85)}}
+:root[data-bg="white"][data-theme="dark"]{--bg:#080c10}
+:root[data-bg="red"][data-theme="dark"]{--bg:#4a0d10;--on-bg-muted:rgba(255,220,220,.85)}
+.btn.link{color:var(--on-bg-muted)}
+.hrow{display:flex;align-items:flex-start;gap:12px}
+.hrow h1{flex:1;min-width:0}
+.gear{width:40px;height:40px;flex:none;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:1.2rem;cursor:pointer}
+.settings{display:grid;gap:16px;margin-bottom:12px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.swatch{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:8px 12px;font:600 .9rem var(--f-body);cursor:pointer}
+.swatch[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:1px}
+.sw{width:20px;height:20px;border-radius:50%;border:1px solid var(--line)}
+.sw-grey{background:#eef2f5}.sw-white{background:#ffffff}.sw-red{background:#c62828}
+.quota{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;display:grid;gap:8px}
+.qrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.qrow input{width:64px;text-align:center;font:600 1.1rem var(--f-mono);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px}
+.qcount{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
+.qinfo{margin:0;font-size:.82rem;font-weight:600;color:var(--ok)}
+.qinfo.full{color:var(--bad)}
+.pick.locked{opacity:.45;cursor:not-allowed}
+.tab{flex:1 0 auto}
+.calbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+.caltitle{margin:0;font-family:var(--f-display);font-size:1.35rem;flex:1;min-width:0;text-align:center}
+html[lang="ar"] .caltitle{font-family:"IBM Plex Sans Arabic",var(--f-display)}
+.calview{flex:1 1 auto}
+.vbtn{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:7px 12px;font:600 .85rem var(--f-body);cursor:pointer}
+.vbtn[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.legend{display:flex;gap:14px;font-size:.8rem;color:var(--on-bg-muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.cal{display:grid;grid-template-columns:30px repeat(7,minmax(0,1fr));gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px}
+.wdn{font-size:.7rem;text-align:center;color:var(--muted);text-transform:capitalize;padding-bottom:2px}
+.wn{font-family:var(--f-mono);font-size:.65rem;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;align-self:center}
+.wn.h{color:var(--muted);cursor:default}
+.day{min-height:54px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);padding:4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font:inherit}
+.day.out{opacity:.4}
+.day.today .dn{background:var(--accent);color:var(--accent-ink);border-radius:50%}
+.day.sel{outline:2px solid var(--ink);outline-offset:-1px}
+.dn{font:600 .85rem var(--f-mono);width:24px;height:24px;display:grid;place-items:center}
+.dots{display:flex;gap:3px;flex-wrap:wrap;justify-content:center}
+.dot{display:inline-grid;place-items:center;min-width:16px;height:16px;border-radius:8px;font:600 .62rem var(--f-mono);font-style:normal;color:#fff;padding:0 3px}
+.legend .dot{min-width:12px;height:12px}
+.dot.c{background:var(--accent)}.dot.m{background:var(--ba)}
+.daypanel,.wkview{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:grid;gap:10px}
+.dphead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.dphead h3{margin:0;font-size:1.05rem}
+.dpbtns{display:flex;gap:6px}
+.rlist{display:grid;gap:6px}
+.ritem{display:grid;gap:2px;text-align:start;border:1px solid var(--line);border-inline-start:4px solid var(--accent);border-radius:8px;background:var(--bg);color:var(--ink);padding:8px 10px;cursor:pointer;font:inherit}
+.ritem.m{border-inline-start-color:var(--ba)}
+.rtag{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.who{font-size:.85rem;color:var(--muted)}
+.wday{display:grid;gap:6px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.wday:last-child{border-bottom:0}
+.wdh{text-align:start;background:none;border:0;padding:0;font:600 .95rem var(--f-body);color:var(--ink);cursor:pointer}
+.wday.today .wdh{color:var(--accent)}
+.wday.sel .wdh{text-decoration:underline}
+.ntext{white-space:pre-wrap;font-size:.9rem;color:var(--ink);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+textarea.big{min-height:180px}.cal{display:block;padding:6px}
+.wrow{display:grid;grid-template-columns:30px repeat(7,minmax(0,1fr));column-gap:3px;row-gap:3px;padding-block:3px}
+.wrow.head{padding-bottom:0}
+.cal .day{grid-row-end:auto;min-height:62px;align-items:flex-start;justify-content:flex-start;padding:3px;border-radius:6px}
+.wrow>.dn,.wrow .wn{align-self:start;padding-top:6px}
+.bar{position:relative;z-index:1;align-self:center;height:20px;margin:0 2px;border:0;border-radius:6px;color:#fff;font:600 .68rem var(--f-body);padding:0 6px;text-align:start;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;min-width:0}
+.bar.m{background:var(--ba)}.bar.c{background:var(--accent);color:var(--accent-ink)}
+.bar.cl{border-start-start-radius:0;border-end-start-radius:0;margin-inline-start:-4px}
+.bar.cr{border-start-end-radius:0;border-end-end-radius:0;margin-inline-end:-4px}
+.wpad{height:2px}
+.lbar{display:inline-block;width:22px;height:8px;border-radius:4px}
+.lbar.c{background:var(--accent)}.lbar.m{background:var(--ba)}
+.dchips{margin:-6px 0 12px}
+.dgrid{display:grid;gap:8px;margin-bottom:14px}
+.drow{display:grid;grid-template-columns:minmax(90px,30%) 1fr;gap:10px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:6px}
+.dtechs{display:grid;gap:6px}
+.dtech{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;text-align:start;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);padding:9px 10px;font:inherit;cursor:pointer}
+.panel .warns{margin-bottom:12px}
+
+.bkrow{display:flex;gap:8px;flex-wrap:wrap}
+.bkrow label.btn{display:inline-flex;align-items:center}
+.syncinfo{color:var(--ok)}
+.bkconfirm{border:1px solid var(--bad);background:var(--bad-soft);border-radius:8px;padding:10px 12px}
+.bkconfirm p{margin:0 0 6px}
+
+/* arabe : droite à gauche */
+html[lang="ar"] body{font-family:"IBM Plex Sans Arabic",var(--f-body)}
+html[lang="ar"] h1,html[lang="ar"] .dest,html[lang="ar"] .panel h2,html[lang="ar"] .empty h2{font-family:"IBM Plex Sans Arabic",var(--f-display);letter-spacing:0}
+html[lang="ar"] .lbl,html[lang="ar"] .status,html[lang="ar"] h1 small{letter-spacing:0;text-transform:none}
+html[dir="rtl"] .fab{right:auto;left:calc(16px + env(safe-area-inset-left,0px))}
+html[dir="rtl"] .weekbar .share{margin-left:0;margin-right:auto}
+html[dir="rtl"] .top .status{margin-left:0;margin-right:auto}
+html[dir="rtl"] .hint{padding-left:0;padding-right:28px}
+
+.weekbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+.wbtn{width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:1.3rem;line-height:1;cursor:pointer}
+.wsel{display:inline-flex;align-items:baseline;gap:6px;font-family:var(--f-display);font-weight:700;font-size:1.5rem}
+.wsel select{font:inherit;color:var(--accent);background:transparent;border:0;padding:0 2px;cursor:pointer}
+.wsel span{font-family:var(--f-mono);font-size:.75rem;font-weight:400;color:var(--muted)}
+.wrange{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);flex:1;min-width:0}
+.weekbar .share{margin-left:auto}
+.rotation{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 14px}
+.rotation summary{cursor:pointer;font-weight:600}
+.rotation ul{list-style:none;margin:10px 0 6px;padding:0;display:grid;gap:6px}
+.rotation li{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:.9rem}
+.rotation .rot{color:var(--muted);flex-basis:100%}
+.rotation strong{color:var(--ok)}
+.hint{flex-basis:100%;font-size:.75rem;color:var(--muted);padding-left:28px}
+.hint:empty{display:none}
+.hint.sugg{color:var(--ok);font-weight:600}
+.hint.busy{color:var(--bad);font-weight:600}
+.pick{flex-wrap:wrap}
+.preview{white-space:pre-wrap;font-family:var(--f-mono);font-size:.82rem;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;max-height:40vh;overflow:auto;margin:0 0 12px}
+.share-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.share-actions .btn{text-align:center;text-decoration:none}
+.btn.wa{grid-column:1/-1;background:var(--ok);border-color:var(--ok);color:var(--surface)}
+@media (prefers-reduced-motion:no-preference){.panel{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}}}
+</style>
+
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="hrow"><h1><span id="h1t">Convoyages &amp; Missions</span><small id="sub">Planning techniciens</small></h1><button class="gear" id="settingsBtn" aria-label="Réglages">⚙</button></div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+</header>
+<main><div class="wrap" id="main"></div></main>
+<button class="fab" id="fab" hidden>+ Ajouter</button>
+<div class="sheet" id="sheet" hidden><div class="panel" id="panel" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" hidden></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+/* ---------- langues ---------- */
+const D={
+fr:{title:"Convoyages & Missions",sub:"Planning techniciens",subLocal:"Enregistré sur cet appareil",
+tab_convoyages:"Convoyages",tab_missions:"Missions",tab_techs:"Techniciens",fab_convoyages:"+ Convoyage",fab_missions:"+ Mission",fab_techs:"+ Technicien",
+loading_h:"Chargement…",loading_p:"Récupération de vos missions, convoyages et techniciens.",
+empty_missions:["Aucune mission","Ajoutez une mission interne ou externe avec sa destination et ses dates : la durée se calcule toute seule."],
+empty_convoyages:["Aucun convoyage","Ajoutez un convoyage simple ou double vers l'Afrique ou l'Europe, puis affectez les techniciens."],
+empty_techs:["Aucun technicien","Ajoutez vos techniciens avec leur badge (Tech A, B1, B2, MAP), leur vaccin et leur visa Schengen."],
+add:"+ Ajouter",loadEx:"Charger des exemples",clearEx:"Effacer les exemples",noweek_c:w=>`Aucun convoyage en semaine S${w}.`,noweek_m:w=>`Aucune mission en semaine S${w}.`,nofilter:"Aucun élément pour ce filtre.",
+f_all_f:"Toutes",f_all:"Tous",f_int:"Internes",f_ext:"Externes",f_sp_f:"Spontanées",f_next:"À venir / en cours",f_simple:"Simples",f_double:"Doubles",f_rep:"Chaque semaine",f_sp:"Spontanés",f_novisa:"Sans visa",f_novac:"Sans vaccin",
+v_Interne:"Interne",v_Externe:"Externe",v_Simple:"Simple",v_Double:"Double",v_Afrique:"Afrique",v_Europe:"Europe",v_Oui:"Oui",v_Non:"Non",
+spont_f:"Spontanée",spont:"Spontané",example:"Exemple",weekly:"↻ Chaque semaine",until:d=>`jusqu'au ${d}`,noend:"sans date de fin",
+st_plan:"À planifier",st_soon:"À venir",st_done_f:"Terminée",st_live_f:"En cours",st_done:"Effectué",st_today:"Aujourd'hui",
+dest_tbd:"Destination à définir",days:n=>`${n} jour${n>1?"s":""}`,upcoming:n=>`${n} à venir`,vac:"Vaccin",visa:"Visa Schengen",visa_s:"Visa",
+noTech:"Aucun technicien affecté",toAssign:"(à affecter)",
+warn_visa:n=>`${n} : pas de visa Schengen`,warn_vac:n=>`${n} : vaccin non à jour`,warn_busy:(n,w)=>`${n} : déjà en ${w}`,busy_m:"mission",busy_c:"convoyage",
+rot_title:w=>`Rotation conseillée pour S${w}`,rot_line:(p,l,o)=>`S${p} : ${l} → <strong>${o}</strong>`,rot_free:"Aucun convoyage la semaine passée → libre",rot_note:"Simple suggestion pour équilibrer : tu restes libre d'affecter autrement.",
+wk_prev:"Semaine précédente",wk_next:"Semaine suivante",share_btn:w=>`Partager S${w}`,
+f_type:"Type",f_sp_m:"Mission spontanée",f_dest:"Destination",f_dest_ph:"Ville, base ou client",f_start:"Début",f_end:"Fin",f_techs:"Techniciens",f_notes:"Notes",
+new_missions:"Nouvelle mission",edit_missions:"Modifier la mission",f_date:"Date",f_nature:"Nature",f_zone:"Destination",f_city:"Ville / aéroport (facultatif)",f_city_ph:"Ex. Toulouse, Dakar",f_sp_c:"Convoyage spontané",f_rep:"Répéter chaque semaine (même jour)",f_until:"Jusqu'au (facultatif)",
+new_convoyages:"Nouveau convoyage",edit_convoyages:"Modifier le convoyage",f_name:"Nom et prénom",f_badge:"Badge",f_vac:"Vaccin",f_visa:"Visa Schengen",f_notes_ph:"Ex. visa expire en mars",new_techs:"Nouveau technicien",edit_techs:"Modifier le technicien",
+del:"Supprimer",confirmDel:"Confirmer la suppression",cancel:"Annuler",save:"Enregistrer",dur:n=>`Durée : ${n} jour${n>1?"s":""}`,dur_err:"La date de fin doit suivre la date de début.",techs_first:"Ajoutez d'abord des techniciens dans l'onglet Techniciens.",
+h_busy_day:"Occupé ce jour",h_last:l=>`Sem. passée : ${l}`,h_free:"Libre sem. passée",h_sugg:" · Suggéré",h_busy_range:"Occupé sur ces dates",
+e_dest:"Indiquez la destination.",e_dates:"Indiquez les dates de début et de fin.",e_order:"La date de fin doit être après la date de début.",e_cdate:"Indiquez la date du convoyage.",e_until:"La date de fin de répétition doit être après la date du convoyage.",e_name:"Indiquez le nom du technicien.",
+t_added:"Ajouté",t_edited:"Modifié",t_deleted:"Supprimé",t_exLoaded:"Exemples chargés",t_exCleared:"Exemples effacés",t_copied:"Texte copié : colle-le dans WhatsApp ou Notes",t_selected:"Texte sélectionné : copie-le",t_noteReady:"Note prête",t_pdfReady:"PDF prêt",t_pdfNA:"Le PDF n'est pas disponible pour le moment.",t_busyShare:"Un partage est déjà en cours.",t_shareFail:"Partage impossible ici.",t_saveRetry:"Enregistrement impossible pour l'instant. Vérifiez la connexion.",t_quota:"Stockage plein : supprimez d'anciennes missions.",t_saveFail:"Enregistrement impossible.",
+n_slow:"Les données ne répondent pas encore. Nouvel essai en cours…",n_broken:"Synchronisation interrompue : les modifications ne sont plus enregistrées. Rouvrez la page plus tard.",
+sh_title_c:w=>`Liste des convoyeurs hangar pour la semaine S${w}`,sh_title_m:w=>`Liste des techniciens en mission pour la semaine S${w}`,sh_range:(a,b)=>`Du ${a} au ${b}`,sh_cols_c:["Jour","Convoyeur","Nature","Destination"],sh_cols_m:["Dates","Technicien","Type","Destination"],sh_spont:", spontanée",
+sh_head:w=>`Partager S${w}`,sh_empty:"Rien de prévu cette semaine : la liste sera vide.",sh_wa:"WhatsApp (message)",sh_copy:"Copier le texte",sh_note:"Note (.txt)",sh_pdf:"PDF",sh_hint:"Pour la note et le PDF, ton téléphone ouvre son menu de partage : choisis WhatsApp ou Notes.",sh_pdf_lang:"",pdf_none:"Rien de prévu cette semaine.",close:"Fermer",file_c:"convoyeurs-hangar",file_m:"missions-techniciens",
+set_title:"Réglages",set_lang:"Langue",set_mode:"Mode",m_auto:"Auto",m_day:"Jour",m_night:"Nuit",set_bg:"Arrière-plan",bg_grey:"Gris",bg_white:"Blanc",bg_red:"Rouge"},
+
+en:{title:"Convoys & Missions",sub:"Technician planning",subLocal:"Saved on this device",
+tab_convoyages:"Convoys",tab_missions:"Missions",tab_techs:"Technicians",fab_convoyages:"+ Convoy",fab_missions:"+ Mission",fab_techs:"+ Technician",
+loading_h:"Loading…",loading_p:"Fetching your missions, convoys and technicians.",
+empty_missions:["No missions","Add an internal or external mission with its destination and dates: the duration is worked out for you."],
+empty_convoyages:["No convoys","Add a single or double convoy to Africa or Europe, then assign technicians."],
+empty_techs:["No technicians","Add your technicians with their badge (Tech A, B1, B2, MAP), vaccine and Schengen visa."],
+add:"+ Add",loadEx:"Load examples",clearEx:"Clear examples",noweek_c:w=>`No convoys in week W${w}.`,noweek_m:w=>`No missions in week W${w}.`,nofilter:"Nothing matches this filter.",
+f_all_f:"All",f_all:"All",f_int:"Internal",f_ext:"External",f_sp_f:"Unplanned",f_next:"Upcoming / ongoing",f_simple:"Single",f_double:"Double",f_rep:"Weekly",f_sp:"Unplanned",f_novisa:"No visa",f_novac:"No vaccine",
+v_Interne:"Internal",v_Externe:"External",v_Simple:"Single",v_Double:"Double",v_Afrique:"Africa",v_Europe:"Europe",v_Oui:"Yes",v_Non:"No",
+spont_f:"Unplanned",spont:"Unplanned",example:"Example",weekly:"↻ Weekly",until:d=>`until ${d}`,noend:"no end date",
+st_plan:"To plan",st_soon:"Upcoming",st_done_f:"Finished",st_live_f:"Ongoing",st_done:"Done",st_today:"Today",
+dest_tbd:"Destination to be set",days:n=>`${n} day${n>1?"s":""}`,upcoming:n=>`${n} upcoming`,vac:"Vaccine",visa:"Schengen visa",visa_s:"Visa",
+noTech:"No technician assigned",toAssign:"(to assign)",
+warn_visa:n=>`${n}: no Schengen visa`,warn_vac:n=>`${n}: vaccine not up to date`,warn_busy:(n,w)=>`${n}: already on ${w}`,busy_m:"mission",busy_c:"convoy",
+rot_title:w=>`Suggested rotation for W${w}`,rot_line:(p,l,o)=>`W${p}: ${l} → <strong>${o}</strong>`,rot_free:"No convoy last week → free",rot_note:"Only a suggestion to balance the load: you can assign differently.",
+wk_prev:"Previous week",wk_next:"Next week",share_btn:w=>`Share W${w}`,
+f_type:"Type",f_sp_m:"Unplanned mission",f_dest:"Destination",f_dest_ph:"City, base or client",f_start:"Start",f_end:"End",f_techs:"Technicians",f_notes:"Notes",
+new_missions:"New mission",edit_missions:"Edit mission",f_date:"Date",f_nature:"Type",f_zone:"Destination",f_city:"City / airport (optional)",f_city_ph:"e.g. Toulouse, Dakar",f_sp_c:"Unplanned convoy",f_rep:"Repeat every week (same day)",f_until:"Until (optional)",
+new_convoyages:"New convoy",edit_convoyages:"Edit convoy",f_name:"Full name",f_badge:"Badge",f_vac:"Vaccine",f_visa:"Schengen visa",f_notes_ph:"e.g. visa expires in March",new_techs:"New technician",edit_techs:"Edit technician",
+del:"Delete",confirmDel:"Confirm delete",cancel:"Cancel",save:"Save",dur:n=>`Duration: ${n} day${n>1?"s":""}`,dur_err:"The end date must come after the start date.",techs_first:"Add technicians first in the Technicians tab.",
+h_busy_day:"Busy that day",h_last:l=>`Last week: ${l}`,h_free:"Free last week",h_sugg:" · Suggested",h_busy_range:"Busy on these dates",
+e_dest:"Enter the destination.",e_dates:"Enter the start and end dates.",e_order:"The end date must come after the start date.",e_cdate:"Enter the convoy date.",e_until:"The repeat end date must come after the convoy date.",e_name:"Enter the technician's name.",
+t_added:"Added",t_edited:"Updated",t_deleted:"Deleted",t_exLoaded:"Examples loaded",t_exCleared:"Examples cleared",t_copied:"Text copied: paste it into WhatsApp or Notes",t_selected:"Text selected: copy it",t_noteReady:"Note ready",t_pdfReady:"PDF ready",t_pdfNA:"PDF is not available right now.",t_busyShare:"A share is already open.",t_shareFail:"Sharing isn't possible here.",t_saveRetry:"Couldn't save right now. Check your connection.",t_quota:"Storage full: delete old missions.",t_saveFail:"Couldn't save.",
+n_slow:"Data isn't responding yet. Retrying…",n_broken:"Sync stopped: changes are no longer saved. Reopen the page later.",
+sh_title_c:w=>`Hangar convoy crew list for week W${w}`,sh_title_m:w=>`Technicians on mission for week W${w}`,sh_range:(a,b)=>`From ${a} to ${b}`,sh_cols_c:["Day","Crew","Type","Destination"],sh_cols_m:["Dates","Technician","Type","Destination"],sh_spont:", unplanned",
+sh_head:w=>`Share W${w}`,sh_empty:"Nothing planned this week: the list will be empty.",sh_wa:"WhatsApp (message)",sh_copy:"Copy text",sh_note:"Note (.txt)",sh_pdf:"PDF",sh_hint:"For the note and the PDF, your phone opens its share menu: pick WhatsApp or Notes.",sh_pdf_lang:"",pdf_none:"Nothing planned this week.",close:"Close",file_c:"hangar-convoy-crew",file_m:"mission-technicians",
+set_title:"Settings",set_lang:"Language",set_mode:"Mode",m_auto:"Auto",m_day:"Day",m_night:"Night",set_bg:"Background",bg_grey:"Grey",bg_white:"White",bg_red:"Red"},
+
+ar:{title:"النقل والمهام",sub:"تخطيط التقنيين",subLocal:"محفوظ على هذا الجهاز",
+tab_convoyages:"النقل",tab_missions:"المهام",tab_techs:"التقنيون",fab_convoyages:"+ نقل",fab_missions:"+ مهمة",fab_techs:"+ تقني",
+loading_h:"جارٍ التحميل…",loading_p:"جلب المهام وعمليات النقل والتقنيين.",
+empty_missions:["لا توجد مهام","أضف مهمة داخلية أو خارجية مع الوجهة والتواريخ، وستُحسب المدة تلقائيًا."],
+empty_convoyages:["لا توجد عمليات نقل","أضف عملية نقل فردية أو مزدوجة نحو إفريقيا أو أوروبا، ثم عيّن التقنيين."],
+empty_techs:["لا يوجد تقنيون","أضف التقنيين مع الشارة (Tech A، B1، B2، MAP) واللقاح وتأشيرة شنغن."],
+add:"+ إضافة",loadEx:"تحميل أمثلة",clearEx:"حذف الأمثلة",noweek_c:w=>`لا توجد عمليات نقل في الأسبوع S${w}.`,noweek_m:w=>`لا توجد مهام في الأسبوع S${w}.`,nofilter:"لا شيء يطابق هذا التصفية.",
+f_all_f:"الكل",f_all:"الكل",f_int:"داخلية",f_ext:"خارجية",f_sp_f:"طارئة",f_next:"قادمة / جارية",f_simple:"فردي",f_double:"مزدوج",f_rep:"كل أسبوع",f_sp:"طارئ",f_novisa:"بدون تأشيرة",f_novac:"بدون لقاح",
+v_Interne:"داخلية",v_Externe:"خارجية",v_Simple:"فردي",v_Double:"مزدوج",v_Afrique:"إفريقيا",v_Europe:"أوروبا",v_Oui:"نعم",v_Non:"لا",
+spont_f:"طارئة",spont:"طارئ",example:"مثال",weekly:"↻ كل أسبوع",until:d=>`حتى ${d}`,noend:"بدون تاريخ نهاية",
+st_plan:"للتخطيط",st_soon:"قادمة",st_done_f:"منتهية",st_live_f:"جارية",st_done:"تم",st_today:"اليوم",
+dest_tbd:"الوجهة غير محددة",days:n=>`${n} ${n>1&&n<11?"أيام":"يوم"}`,upcoming:n=>`${n} قادمة`,vac:"اللقاح",visa:"تأشيرة شنغن",visa_s:"التأشيرة",
+noTech:"لم يُعيَّن أي تقني",toAssign:"(للتعيين)",
+warn_visa:n=>`${n}: لا يملك تأشيرة شنغن`,warn_vac:n=>`${n}: اللقاح غير محدّث`,warn_busy:(n,w)=>`${n}: مشغول في ${w}`,busy_m:"مهمة",busy_c:"عملية نقل",
+rot_title:w=>`التناوب المقترح للأسبوع S${w}`,rot_line:(p,l,o)=>`S${p}: ${l} ← <strong>${o}</strong>`,rot_free:"لا نقل في الأسبوع الماضي ← متاح",rot_note:"مجرد اقتراح لتوزيع العمل بالتساوي، ويمكنك التعيين بشكل مختلف.",
+wk_prev:"الأسبوع السابق",wk_next:"الأسبوع التالي",share_btn:w=>`مشاركة S${w}`,
+f_type:"النوع",f_sp_m:"مهمة طارئة",f_dest:"الوجهة",f_dest_ph:"مدينة أو قاعدة أو زبون",f_start:"البداية",f_end:"النهاية",f_techs:"التقنيون",f_notes:"ملاحظات",
+new_missions:"مهمة جديدة",edit_missions:"تعديل المهمة",f_date:"التاريخ",f_nature:"النوع",f_zone:"الوجهة",f_city:"المدينة / المطار (اختياري)",f_city_ph:"مثال: تولوز، داكار",f_sp_c:"نقل طارئ",f_rep:"تكرار كل أسبوع (نفس اليوم)",f_until:"حتى (اختياري)",
+new_convoyages:"عملية نقل جديدة",edit_convoyages:"تعديل عملية النقل",f_name:"الاسم الكامل",f_badge:"الشارة",f_vac:"اللقاح",f_visa:"تأشيرة شنغن",f_notes_ph:"مثال: التأشيرة تنتهي في مارس",new_techs:"تقني جديد",edit_techs:"تعديل التقني",
+del:"حذف",confirmDel:"تأكيد الحذف",cancel:"إلغاء",save:"حفظ",dur:n=>`المدة: ${n} ${n>1&&n<11?"أيام":"يوم"}`,dur_err:"يجب أن يكون تاريخ النهاية بعد تاريخ البداية.",techs_first:"أضف التقنيين أولًا من تبويب التقنيين.",
+h_busy_day:"مشغول في هذا اليوم",h_last:l=>`الأسبوع الماضي: ${l}`,h_free:"متاح الأسبوع الماضي",h_sugg:" · مقترح",h_busy_range:"مشغول في هذه التواريخ",
+e_dest:"أدخل الوجهة.",e_dates:"أدخل تاريخي البداية والنهاية.",e_order:"يجب أن يكون تاريخ النهاية بعد تاريخ البداية.",e_cdate:"أدخل تاريخ النقل.",e_until:"يجب أن يكون تاريخ نهاية التكرار بعد تاريخ النقل.",e_name:"أدخل اسم التقني.",
+t_added:"تمت الإضافة",t_edited:"تم التعديل",t_deleted:"تم الحذف",t_exLoaded:"تم تحميل الأمثلة",t_exCleared:"تم حذف الأمثلة",t_copied:"تم نسخ النص: الصقه في واتساب أو الملاحظات",t_selected:"تم تحديد النص: انسخه",t_noteReady:"الملاحظة جاهزة",t_pdfReady:"ملف PDF جاهز",t_pdfNA:"ملف PDF غير متاح حاليًا.",t_busyShare:"هناك مشاركة مفتوحة بالفعل.",t_shareFail:"المشاركة غير ممكنة هنا.",t_saveRetry:"تعذّر الحفظ حاليًا. تحقّق من الاتصال.",t_quota:"التخزين ممتلئ: احذف مهام قديمة.",t_saveFail:"تعذّر الحفظ.",
+n_slow:"البيانات لا تستجيب بعد. إعادة المحاولة…",n_broken:"توقفت المزامنة: لم تعد التعديلات تُحفظ. أعد فتح الصفحة لاحقًا.",
+sh_title_c:w=>`قائمة تقنيي النقل بالحظيرة للأسبوع S${w}`,sh_title_m:w=>`قائمة التقنيين في مهمة للأسبوع S${w}`,sh_range:(a,b)=>`من ${a} إلى ${b}`,sh_cols_c:["اليوم","التقني","النوع","الوجهة"],sh_cols_m:["التواريخ","التقني","النوع","الوجهة"],sh_spont:"، طارئة",
+sh_head:w=>`مشاركة S${w}`,sh_empty:"لا شيء مبرمج هذا الأسبوع: ستكون القائمة فارغة.",sh_wa:"واتساب (رسالة)",sh_copy:"نسخ النص",sh_note:"ملاحظة (.txt)",sh_pdf:"PDF",sh_hint:"للملاحظة وملف PDF، يفتح هاتفك قائمة المشاركة: اختر واتساب أو الملاحظات.",sh_pdf_lang:"ملف PDF يُنشأ بالفرنسية.",pdf_none:"",close:"إغلاق",file_c:"",file_m:"",
+set_title:"الإعدادات",set_lang:"اللغة",set_mode:"الوضع",m_auto:"تلقائي",m_day:"نهار",m_night:"ليل",set_bg:"الخلفية",bg_grey:"رمادي",bg_white:"أبيض",bg_red:"أحمر"}
+};
+let LANG="fr";
+function TL(l,k,...a){const s=(D[l]&&D[l][k]!==undefined&&D[l][k]!=="")?D[l][k]:D.fr[k];return typeof s==="function"?s(...a):(s??k)}
+const T=(k,...a)=>TL(LANG,k,...a);
+const V=v=>T("v_"+v);
+const LOC={fr:"fr-FR",en:"en-GB",ar:"ar-MA"};
+
+Object.assign(D.fr,{q_label:"Convoyeurs demandés",q_count:(n,q)=>`${n} / ${q} affectés`,q_full:"Complet",q_left:n=>`Reste ${n}`,q_none:"Indique le nombre demandé pour limiter les affectations.",q_limit:(q,w)=>`Limite atteinte : ${q} convoyeurs demandés pour S${w}.`,e_quota:(q,w)=>`Trop de convoyeurs : ${q} demandés pour S${w}.`});
+Object.assign(D.en,{q_label:"Crew requested",q_count:(n,q)=>`${n} / ${q} assigned`,q_full:"Full",q_left:n=>`${n} left`,q_none:"Enter the number requested to cap assignments.",q_limit:(q,w)=>`Limit reached: ${q} crew requested for W${w}.`,e_quota:(q,w)=>`Too many crew: ${q} requested for W${w}.`});
+Object.assign(D.ar,{q_label:"عدد التقنيين المطلوب",q_count:(n,q)=>`${n} / ${q} معيّنون`,q_full:"مكتمل",q_left:n=>`متبقٍ ${n}`,q_none:"أدخل العدد المطلوب لتحديد التعيينات.",q_limit:(q,w)=>`تم بلوغ الحد: ${q} مطلوبون للأسبوع S${w}.`,e_quota:(q,w)=>`عدد كبير جدًا: ${q} مطلوبون للأسبوع S${w}.`});
+
+Object.assign(D.fr,{tab_cal:"Calendrier",tab_notes:"Notes",fab_notes:"+ Note",fab_cal:"",empty_notes:["Aucune note","Ajoute une note : consignes, rappels, infos sur un avion ou un technicien."],new_notes:"Nouvelle note",edit_notes:"Modifier la note",n_title:"Titre",n_title_ph:"Ex. Rappel visas",n_text:"Note",e_note:"Écris un titre ou un texte.",updated:d=>`Modifiée le ${d}`,cal_month:"Mois",cal_week:"Semaine",cal_today:"Aujourd'hui",cal_none:"Rien de prévu ce jour.",lg_c:"Convoyage",lg_m:"Mission",add_c:"+ Convoyage",add_m:"+ Mission",cal_prev:"Précédent",cal_next:"Suivant"});
+Object.assign(D.en,{tab_cal:"Calendar",tab_notes:"Notes",fab_notes:"+ Note",fab_cal:"",empty_notes:["No notes","Add a note: instructions, reminders, aircraft or technician info."],new_notes:"New note",edit_notes:"Edit note",n_title:"Title",n_title_ph:"e.g. Visa reminders",n_text:"Note",e_note:"Write a title or some text.",updated:d=>`Updated ${d}`,cal_month:"Month",cal_week:"Week",cal_today:"Today",cal_none:"Nothing planned this day.",lg_c:"Convoy",lg_m:"Mission",add_c:"+ Convoy",add_m:"+ Mission",cal_prev:"Previous",cal_next:"Next"});
+Object.assign(D.ar,{tab_cal:"التقويم",tab_notes:"ملاحظات",fab_notes:"+ ملاحظة",fab_cal:"",empty_notes:["لا توجد ملاحظات","أضف ملاحظة: تعليمات أو تذكيرات أو معلومات عن طائرة أو تقني."],new_notes:"ملاحظة جديدة",edit_notes:"تعديل الملاحظة",n_title:"العنوان",n_title_ph:"مثال: تذكير بالتأشيرات",n_text:"الملاحظة",e_note:"اكتب عنوانًا أو نصًا.",updated:d=>`عُدّلت في ${d}`,cal_month:"شهر",cal_week:"أسبوع",cal_today:"اليوم",cal_none:"لا شيء مبرمج في هذا اليوم.",lg_c:"نقل",lg_m:"مهمة",add_c:"+ نقل",add_m:"+ مهمة",cal_prev:"السابق",cal_next:"التالي"});
+Object.assign(D.fr,{set_backup:"Sauvegarde",bk_export:"Exporter une sauvegarde (.json)",bk_import:"Importer une sauvegarde",bk_hint:"Dans le menu d'enregistrement, choisis Dropbox ou OneDrive pour y garder le fichier.",bk_confirm:n=>`Remplacer toutes les données actuelles par ce fichier (${n} éléments) ?`,bk_replace:"Remplacer",bk_bad:"Ce fichier n'est pas une sauvegarde de cette application.",bk_done:"Sauvegarde importée",bk_saved:"Sauvegarde prête",sync_ok:"Synchronisé · PC et téléphone",sync_saving:"Enregistrement…",sync_info:"Ouvre ce même lien sur ton PC et ton téléphone avec le même compte Claude : chaque modification apparaît automatiquement sur les deux."});
+Object.assign(D.en,{set_backup:"Backup",bk_export:"Export a backup (.json)",bk_import:"Import a backup",bk_hint:"In the save menu, choose Dropbox or OneDrive to keep the file there.",bk_confirm:n=>`Replace all current data with this file (${n} items)?`,bk_replace:"Replace",bk_bad:"This file isn't a backup from this app.",bk_done:"Backup imported",bk_saved:"Backup ready",sync_ok:"Synced · PC and phone",sync_saving:"Saving…",sync_info:"Open this same link on your PC and phone with the same Claude account: every change shows up on both automatically."});
+Object.assign(D.ar,{set_backup:"النسخ الاحتياطي",bk_export:"تصدير نسخة احتياطية (.json)",bk_import:"استيراد نسخة احتياطية",bk_hint:"في قائمة الحفظ، اختر Dropbox أو OneDrive للاحتفاظ بالملف هناك.",bk_confirm:n=>`استبدال كل البيانات الحالية بهذا الملف (${n} عنصر)؟`,bk_replace:"استبدال",bk_bad:"هذا الملف ليس نسخة احتياطية من هذا التطبيق.",bk_done:"تم استيراد النسخة",bk_saved:"النسخة الاحتياطية جاهزة",sync_ok:"متزامن · الحاسوب والهاتف",sync_saving:"جارٍ الحفظ…",sync_info:"افتح نفس الرابط على الحاسوب والهاتف بنفس حساب Claude: كل تعديل يظهر تلقائيًا على الجهازين."});
+Object.assign(D.fr,{d_dates:"Dates",d_dur:"Durée",d_date:"Date",d_week:"Semaine",d_repeat:"Répétition",d_techs:"Techniciens affectés",d_edit:"Modifier",d_tap:"Touche un technicien pour ouvrir sa fiche.",d_nature:"Nature",d_zone:"Zone",d_city:"Ville / aéroport"});
+Object.assign(D.en,{d_dates:"Dates",d_dur:"Duration",d_date:"Date",d_week:"Week",d_repeat:"Repeat",d_techs:"Assigned technicians",d_edit:"Edit",d_tap:"Tap a technician to open their card.",d_nature:"Type",d_zone:"Zone",d_city:"City / airport"});
+Object.assign(D.ar,{d_dates:"التواريخ",d_dur:"المدة",d_date:"التاريخ",d_week:"الأسبوع",d_repeat:"التكرار",d_techs:"التقنيون المعيّنون",d_edit:"تعديل",d_tap:"المس اسم التقني لفتح بطاقته.",d_nature:"النوع",d_zone:"المنطقة",d_city:"المدينة / المطار"});
+const BADGES=["Tech A","Tech B1","Tech B2","MAP"];
+const KEY="missions-convoyages-v1", PKEY="missions-convoyages-prefs";
+let state={missions:[],convoyages:[],techs:[],notes:[],quota:{},prefs:null};
+let prefs={lang:"fr",mode:"auto",bg:"grey"};
+const HOST_THEME=document.documentElement.getAttribute("data-theme");
+function isoWeekNow(){return isoWeek(new Date())}
+let mode="pending", ref=null, writing=false, dirty=false, note="", editing=null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));
+function todayStr(d=new Date()){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return todayStr(d)}
+const fmtL=(l,d)=>d?new Date(d+"T00:00:00").toLocaleDateString(LOC[l],{day:"numeric",month:"short",year:"numeric"}):"—";
+const fmtShortL=(l,d)=>d?new Date(d+"T00:00:00").toLocaleDateString(LOC[l],{day:"numeric",month:"short"}):"—";
+const fmt=d=>fmtL(LANG,d), fmtShort=d=>fmtShortL(LANG,d);
+const dayNameL=(l,d)=>{const s=new Date(d+"T00:00:00").toLocaleDateString(LOC[l],{weekday:"long",day:"numeric",month:"short"});return s.charAt(0).toUpperCase()+s.slice(1)};
+const dayName=d=>dayNameL(LANG,d);
+const nbDays=(a,b)=>(!a||!b)?null:Math.round((Date.parse(b)-Date.parse(a))/864e5)+1;
+const techById=id=>state.techs.find(t=>t.id===id);
+function normalize(d){d=d?JSON.parse(JSON.stringify(d)):{};return{missions:Array.isArray(d.missions)?d.missions:[],convoyages:Array.isArray(d.convoyages)?d.convoyages:[],techs:Array.isArray(d.techs)?d.techs:[],notes:Array.isArray(d.notes)?d.notes:[],quota:(d.quota&&typeof d.quota==="object")?d.quota:{},prefs:d.prefs||null}}
+
+/* ---------- réglages : langue, mode, arrière-plan ---------- */
+function applyPrefs(){const h=document.documentElement;LANG=D[prefs.lang]?prefs.lang:"fr";
+ h.lang=LANG;h.dir=LANG==="ar"?"rtl":"ltr";h.dataset.bg=prefs.bg||"grey";
+ if(prefs.mode==="day")h.setAttribute("data-theme","light");else if(prefs.mode==="night")h.setAttribute("data-theme","dark");
+ else{if(HOST_THEME)h.setAttribute("data-theme",HOST_THEME);else h.removeAttribute("data-theme")}
+ document.title=T("title");$("#settingsBtn").setAttribute("aria-label",T("set_title"))}
+function setPref(k,v){prefs={...prefs,[k]:v};state.prefs=prefs;try{localStorage.setItem(PKEY,JSON.stringify(prefs))}catch(e){}applyPrefs();render();if(editing&&editing.kind==="settings")openSettings();persist()}
+function openSettings(){editing={kind:"settings"};
+ const grp=(k,label,opts)=>`<div class="field"><span class="lbl">${label}</span><div class="seg">${opts.map(([v,l],i)=>`<input type="radio" id="s-${k}-${i}" name="${k}" value="${v}" ${prefs[k]===v?"checked":""} data-pref="${k}"><label for="s-${k}-${i}">${l}</label>`).join("")}</div></div>`;
+ $("#panel").innerHTML=`<h2>${T("set_title")}</h2><div class="settings">
+ ${grp("lang",T("set_lang"),[["fr","Français"],["ar","العربية"],["en","English"]])}
+ ${grp("mode",T("set_mode"),[["auto",T("m_auto")],["day","☀ "+T("m_day")],["night","☾ "+T("m_night")]])}
+ <div class="field"><span class="lbl">${T("set_bg")}</span><div class="swatches">${[["grey",T("bg_grey")],["white",T("bg_white")],["red",T("bg_red")]].map(([v,l])=>`<button type="button" class="swatch" data-bgv="${v}" aria-pressed="${prefs.bg===v}"><span class="sw sw-${v}"></span>${l}</button>`).join("")}</div></div>
+ <div class="field"><span class="lbl">${T("set_backup")}</span>
+  ${mode==="cloud"?`<p class="notes syncinfo">✓ ${T("sync_info")}</p>`:""}
+  <div class="bkrow"><button type="button" class="btn dlb" id="bkExport">${T("bk_export")}</button>
+  <label class="btn" for="bkFile">${T("bk_import")}</label><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
+  <p class="notes">${T("bk_hint")}</p>
+  ${pendingImport?`<div class="bkconfirm"><p>${T("bk_confirm",pendingImport.missions.length+pendingImport.convoyages.length+pendingImport.techs.length+pendingImport.notes.length)}</p><div class="actions"><button type="button" class="btn" id="bkCancel">${T("cancel")}</button><button type="button" class="btn danger armed" id="bkReplace">${T("bk_replace")}</button></div></div>`:""}
+ </div>
+ </div><div class="actions"><span class="sp"></span><button type="button" class="btn primary" id="cancel">${T("close")}</button></div>`;
+ $("#sheet").hidden=false;
+ getDl().then(dl=>{if(!dl)document.querySelectorAll("#panel .dlb").forEach(b=>b.hidden=true)})}
+let pendingImport=null;
+async function exportBackup(){const dl=await getDl();if(!dl)return;
+ try{await dl.save({filename:`sauvegarde-convoyages-missions-${todayStr()}.json`,data:JSON.stringify({app:"convoyages-missions",version:1,saved:new Date().toISOString(),data:state},null,2)});toast(T("bk_saved"))}
+ catch(e){if(e&&e.code==="declined")return;toast(T("t_shareFail"))}}
+function readBackup(file){const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);const d=j&&j.app==="convoyages-missions"?j.data:(j&&Array.isArray(j.techs)?j:null);if(!d)throw 0;pendingImport=normalize(d);openSettings()}catch(e){toast(T("bk_bad"))}};r.readAsText(file)}
+function applyImport(){const keepPrefs=state.prefs;state=pendingImport;if(!state.prefs)state.prefs=keepPrefs;pendingImport=null;adoptPrefs();closeForm();render();persist();toast(T("bk_done"))}
+
+/* ---------- semaines ISO ---------- */
+function isoWeek(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-day);const y=t.getUTCFullYear();return{y,w:Math.ceil(((t-Date.UTC(y,0,1))/864e5+1)/7)}}
+function weekStart(y,w){const j4=new Date(Date.UTC(y,0,4));const day=j4.getUTCDay()||7;const m=new Date(j4);m.setUTCDate(j4.getUTCDate()-day+1+(w-1)*7);return m}
+const weeksIn=y=>isoWeek(new Date(y,11,28)).w;
+const iso=d=>d.toISOString().slice(0,10);
+function plus(d,n){const x=new Date(d);x.setUTCDate(x.getUTCDate()+n);return x}
+let ui={tab:"convoyages",filter:{missions:"all",convoyages:"all",techs:"all"},week:isoWeekNow(),cal:(()=>{const t=todayStr();return{y:+t.slice(0,4),m:+t.slice(5,7)-1,sel:t,view:"month"}})()};
+function occIn(c,ws){if(!c.date)return null;const wss=iso(ws),wes=iso(plus(ws,6));
+ if(!c.repeat)return(c.date>=wss&&c.date<=wes)?c.date:null;
+ const wd=(new Date(c.date+"T00:00:00Z").getUTCDay()+6)%7;const os=iso(plus(ws,wd));
+ if(os<c.date||(c.until&&os>c.until))return null;return os}
+function itemsOfWeek(y,w){const ws=weekStart(y,w);return state.convoyages.map(c=>({c,d:occIn(c,ws)})).filter(x=>x.d).sort((a,b)=>a.d.localeCompare(b.d))}
+const weekItems=()=>itemsOfWeek(ui.week.y,ui.week.w);
+function weekRange(){const ws=weekStart(ui.week.y,ui.week.w);return[iso(ws),iso(plus(ws,6))]}
+function missionWeek(){const[a,b]=weekRange();return state.missions.filter(m=>m.debut&&m.debut<=b&&(m.fin||m.debut)>=a)}
+const wkey=(y,w)=>`${y}-W${w}`;
+const quotaOf=(y,w)=>+(state.quota[wkey(y,w)]||0);
+function crewOfWeek(y,w,excl){const s=new Set();itemsOfWeek(y,w).forEach(({c})=>{if(c.id!==excl)(c.techs||[]).forEach(id=>{if(techById(id))s.add(id)})});return s}
+
+/* occupation : le technicien est-il déjà pris ce jour-là ? */
+function busyOn(tid,d,excl){
+ for(const m of state.missions){if(m.id!==excl&&(m.techs||[]).includes(tid)&&m.debut&&m.debut<=d&&(m.fin||m.debut)>=d)return T("busy_m")+" "+(m.destination||"");}
+ for(const c of state.convoyages){if(c.id===excl||!(c.techs||[]).includes(tid)||!c.date)continue;
+  if(!c.repeat){if(c.date===d)return T("busy_c")+" "+(c.destination||V(c.zone))}
+  else if(d>=c.date&&(!c.until||d<=c.until)&&((Date.parse(d)-Date.parse(c.date))/864e5)%7===0)return T("busy_c")+" "+(c.destination||V(c.zone))}
+ return null}
+function busyRange(tid,a,b,excl){if(!a)return null;b=b||a;let d=new Date(a+"T00:00:00Z");for(let i=0;i<62&&iso(d)<=b;i++,d=plus(d,1)){const r=busyOn(tid,iso(d),excl);if(r)return r}return null}
+function conflicts(ids,a,b,excl){const w=[];(ids||[]).forEach(id=>{const t=techById(id);if(!t)return;const r=busyRange(id,a,b,excl);if(r)w.push(T("warn_busy",t.nom,r.trim()))});return w}
+
+/* rotation : nature faite la semaine précédente → nature suggérée */
+function lastNature(tid,y,w){let py=y,pw=w-1;if(pw<1){py--;pw=weeksIn(py)}const ws=weekStart(py,pw);let n=null;
+ for(const c of state.convoyages){if(!(c.techs||[]).includes(tid))continue;if(occIn(c,ws)){if(c.nature==="Double")return"Double";n="Simple"}}return n}
+const opposite=n=>n==="Double"?"Simple":n==="Simple"?"Double":null;
+function rotationPanel(){if(!state.techs.length)return"";const{y,w}=ui.week;const pw=w===1?weeksIn(y-1):w-1;
+ const rows=[...state.techs].sort((a,b)=>a.nom.localeCompare(b.nom)).map(t=>{const l=lastNature(t.id,y,w);return`<li><b>${esc(t.nom)}</b><span class="badge" data-b="${esc(t.badge)}">${esc(t.badge)}</span><span class="rot">${l?T("rot_line",pw,V(l),V(opposite(l))):T("rot_free")}</span></li>`}).join("");
+ return`<details class="rotation"><summary>${T("rot_title",w)}</summary><ul>${rows}</ul><p class="notes">${T("rot_note")}</p></details>`}
+function quotaBar(){const{y,w}=ui.week;const q=quotaOf(y,w);const n=crewOfWeek(y,w).size;
+ let st="";if(q>0)st=n>=q?`<span class="chip ${n>q?"bad":"ok"}">${T("q_full")}</span>`:`<span class="chip acc">${T("q_left",q-n)}</span>`;
+ return`<div class="quota"><label for="quota" class="lbl">${T("q_label")} · S${w}</label>
+ <div class="qrow"><button type="button" class="wbtn" data-q="-1" aria-label="−">−</button><input type="number" id="quota" min="0" max="99" inputmode="numeric" value="${q||""}" placeholder="0"><button type="button" class="wbtn" data-q="1" aria-label="+">+</button>
+ <span class="qcount">${q>0?T("q_count",n,q):""}</span>${st}</div>${q>0?"":`<p class="notes">${T("q_none")}</p>`}</div>`}
+function setQuota(v){const{y,w}=ui.week;v=Math.max(0,Math.min(99,Math.round(+v||0)));if(v)state.quota[wkey(y,w)]=v;else delete state.quota[wkey(y,w)];render();persist()}
+function defDate(){const[a,b]=weekRange();const t=todayStr();return t>=a&&t<=b?t:a}
+function weekOf(dstr){return isoWeek(new Date(dstr+"T00:00:00"))}
+function weekBar(){const{y,w}=ui.week;const[a,b]=weekRange();const n=weeksIn(y);const rtl=LANG==="ar";
+ return`<div class="weekbar"><button class="wbtn" data-wk="-1" aria-label="${T("wk_prev")}">${rtl?"›":"‹"}</button>
+ <label class="wsel" for="wksel"><select id="wksel">${Array.from({length:n},(_,i)=>`<option value="${i+1}" ${i+1===w?"selected":""}>S${i+1}</option>`).join("")}</select><span>${y}</span></label>
+ <span class="wrange">${fmtShort(a)} – ${fmt(b)}</span>
+ <button class="wbtn" data-wk="1" aria-label="${T("wk_next")}">${rtl?"‹":"›"}</button>
+ <button class="btn primary share" id="shareBtn">${T("share_btn",w)}</button></div>`}
+function shiftWeek(n){let{y,w}=ui.week;w+=n;if(w<1){y--;w=weeksIn(y)}else if(w>weeksIn(y)){y++;w=1}ui.week={y,w};render()}
+
+function mStatus(m){const t=todayStr();if(!m.debut)return[T("st_plan"),""];const fin=m.fin||m.debut;if(t<m.debut)return[T("st_soon"),"soon"];if(t>fin)return[T("st_done_f"),"past"];return[T("st_live_f"),"live"]}
+function cStatus(c,d){d=d||c.date;const t=todayStr();if(!d)return[T("st_plan"),""];if(t<d)return[T("st_soon"),"soon"];if(t>d)return[T("st_done"),"past"];return[T("st_today"),"live"]}
+function warns(item,zone){const w=[];(item.techs||[]).forEach(id=>{const t=techById(id);if(!t)return;if(zone==="Europe"&&!t.visa)w.push(T("warn_visa",t.nom));if(zone==="Afrique"&&!t.vaccin)w.push(T("warn_vac",t.nom))});return w}
+const isPast=s=>s[1]==="past";
+
+/* ---------- rendu ---------- */
+function crew(ids){const ts=(ids||[]).map(techById).filter(Boolean);if(!ts.length)return`<div class="crew"><span class="none">${T("noTech")}</span></div>`;return'<div class="crew">'+ts.map(t=>`<span><b>${esc(t.nom)}</b><span class="badge" data-b="${esc(t.badge)}">${esc(t.badge)}</span></span>`).join("")+"</div>"}
+function sortByDate(arr,key){return[...arr].sort((a,b)=>{const pa=isPast(key==="debut"?mStatus(a):cStatus(a)),pb=isPast(key==="debut"?mStatus(b):cStatus(b));if(pa!==pb)return pa?1:-1;const da=a[key]||"9999",db=b[key]||"9999";return pa?db.localeCompare(da):da.localeCompare(db)})}
+const warnBlock=w=>w.length?`<div class="warns">${w.map(x=>`<div>${esc(x)}</div>`).join("")}</div>`:"";
+
+function missionCard(m){const s=mStatus(m);const d=nbDays(m.debut,m.fin);
+return`<button class="card ${isPast(s)?"past":""}" data-edit="missions:${m.id}">
+<div class="top"><span class="chip ${m.type==="Externe"?"acc":""}">${V(m.type)}</span>${m.spontanee?`<span class="chip">${T("spont_f")}</span>`:""}${m.exemple?`<span class="chip ex">${T("example")}</span>`:""}<span class="status ${s[1]}">${s[0]}</span></div>
+<div class="dest">${esc(m.destination||T("dest_tbd"))}</div>
+<div class="when"><b>${fmtShort(m.debut)}</b> → <b>${fmt(m.fin)}</b>${d?` · ${T("days",d)}`:""}</div>
+${crew(m.techs)}${warnBlock(isPast(s)?[]:conflicts(m.techs,m.debut,m.fin,m.id))}${m.notes?`<div class="notes">${esc(m.notes)}</div>`:""}</button>`}
+
+function convCard({c,d}){const s=cStatus(c,d);const w=isPast(s)?[]:[...warns(c,c.zone),...conflicts(c.techs,d,d,c.id)];
+return`<button class="card ${isPast(s)?"past":""}" data-edit="convoyages:${c.id}">
+<div class="top"><span class="chip ${c.nature==="Double"?"acc":""}">${V(c.nature)}</span><span class="chip">${V(c.zone)}</span>${c.repeat?`<span class="chip">${T("weekly")}</span>`:""}${c.spontane?`<span class="chip">${T("spont")}</span>`:""}${c.exemple?`<span class="chip ex">${T("example")}</span>`:""}<span class="status ${s[1]}">${s[0]}</span></div>
+<div class="dest">${esc(c.destination||V(c.zone))}</div>
+<div class="when"><b>${dayName(d)}</b>${c.repeat?` · ${c.until?T("until",fmt(c.until)):T("noend")}`:""}</div>
+${crew(c.techs)}${warnBlock(w)}${c.notes?`<div class="notes">${esc(c.notes)}</div>`:""}</button>`}
+
+function techCard(t){const t0=todayStr();const n=state.missions.filter(m=>(m.techs||[]).includes(t.id)&&(m.fin||m.debut||"9999")>=t0).length+state.convoyages.filter(c=>(c.techs||[]).includes(t.id)&&((c.repeat?(c.until||"9999"):c.date)||"9999")>=t0).length;
+return`<button class="card" data-edit="techs:${t.id}">
+<div class="top"><span class="badge" data-b="${esc(t.badge)}">${esc(t.badge)}</span>${t.exemple?`<span class="chip ex">${T("example")}</span>`:""}<span class="status">${T("upcoming",n)}</span></div>
+<div class="tech-name">${esc(t.nom)}</div>
+<div class="top"><span class="chip ${t.vaccin?"ok":"bad"}">${T("vac")} : ${V(t.vaccin?"Oui":"Non")}</span><span class="chip ${t.visa?"ok":"bad"}">${T("visa")} : ${V(t.visa?"Oui":"Non")}</span></div>
+${t.notes?`<div class="notes">${esc(t.notes)}</div>`:""}</button>`}
+
+function filters(k){return{
+ missions:[["all","f_all_f",()=>true],["Interne","f_int",m=>m.type==="Interne"],["Externe","f_ext",m=>m.type==="Externe"],["sp","f_sp_f",m=>m.spontanee],["next","f_next",m=>!isPast(mStatus(m))]],
+ convoyages:[["all","f_all",()=>true],["Simple","f_simple",c=>c.nature==="Simple"],["Double","f_double",c=>c.nature==="Double"],["Afrique","v_Afrique",c=>c.zone==="Afrique"],["Europe","v_Europe",c=>c.zone==="Europe"],["rep","f_rep",c=>c.repeat],["sp","f_sp",c=>c.spontane]],
+ techs:[["all","f_all",()=>true],...BADGES.map(b=>[b,null,t=>t.badge===b]),["novisa","f_novisa",t=>!t.visa],["novac","f_novac",t=>!t.vaccin]]}[k]}
+
+/* ---------- calendrier ---------- */
+function occOn(c,d){if(!c.date)return false;if(!c.repeat)return c.date===d;return d>=c.date&&(!c.until||d<=c.until)&&Math.round((Date.parse(d)-Date.parse(c.date))/864e5)%7===0}
+function itemsOn(d){return{cs:state.convoyages.filter(c=>occOn(c,d)),ms:state.missions.filter(m=>m.debut&&m.debut<=d&&(m.fin||m.debut)>=d)}}
+const names=ids=>(ids||[]).map(techById).filter(Boolean).map(t=>t.nom).join(", ")||T("toAssign");
+function rowC(c,d){return`<button class="ritem c" data-detail="convoyages:${c.id}:${d||""}"><span class="rtag">${V(c.nature)} · ${V(c.zone)}</span><b>${esc(c.destination||V(c.zone))}</b><span class="who">${esc(names(c.techs))}</span></button>`}
+function rowM(m){return`<button class="ritem m" data-detail="missions:${m.id}:"><span class="rtag">${V(m.type)}</span><b>${esc(m.destination)}</b><span class="who">${esc(names(m.techs))}</span></button>`}
+function calHead(label){const rtl=LANG==="ar";const c=ui.cal;
+ return`<div class="calbar"><button class="wbtn" data-calnav="-1" aria-label="${T("cal_prev")}">${rtl?"›":"‹"}</button><h2 class="caltitle">${label}</h2><button class="wbtn" data-calnav="1" aria-label="${T("cal_next")}">${rtl?"‹":"›"}</button>
+ <div class="seg calview"><button type="button" class="vbtn" data-calview="month" aria-pressed="${c.view==="month"}">${T("cal_month")}</button><button type="button" class="vbtn" data-calview="week" aria-pressed="${c.view==="week"}">${T("cal_week")}</button></div>
+ <button class="btn" data-caltoday="1">${T("cal_today")}</button></div>
+ <div class="legend"><span><i class="lbar c"></i>${T("lg_c")}</span><span><i class="lbar m"></i>${T("lg_m")}</span></div>`}
+function dayPanel(d){const{cs,ms}=itemsOn(d);
+ return`<div class="daypanel"><div class="dphead"><h3>${dayName(d)} · S${weekOf(d).w}</h3><div class="dpbtns"><button class="btn primary" data-addc="1">${T("add_c")}</button><button class="btn" data-addm="1">${T("add_m")}</button></div></div>
+ ${cs.length||ms.length?`<div class="rlist">${cs.map(c=>rowC(c,d)).join("")}${ms.map(rowM).join("")}</div>`:`<p class="notes">${T("cal_none")}</p>`}</div>`}
+function calendarView(){const c=ui.cal;const t0=todayStr();
+ if(c.view==="week"){const wk=weekOf(c.sel);const ws=weekStart(wk.y,wk.w);const a=iso(ws),b=iso(plus(ws,6));
+  let h=calHead(`S${wk.w} · ${fmtShort(a)} – ${fmt(b)}`)+'<div class="wkview">';
+  for(let i=0;i<7;i++){const d=iso(plus(ws,i));const{cs,ms}=itemsOn(d);
+   h+=`<div class="wday ${d===t0?"today":""} ${d===c.sel?"sel":""}"><button class="wdh" data-day="${d}">${dayName(d)}</button>${cs.length||ms.length?`<div class="rlist">${cs.map(c=>rowC(c,d)).join("")}${ms.map(rowM).join("")}</div>`:""}</div>`}
+  return h+"</div>"+dayPanel(c.sel)}
+ const first=new Date(Date.UTC(c.y,c.m,1));const last=new Date(Date.UTC(c.y,c.m+1,0));let d=plus(first,-((first.getUTCDay()+6)%7));
+ const label=first.toLocaleDateString(LOC[LANG],{month:"long",year:"numeric",timeZone:"UTC"});
+ const wd=Array.from({length:7},(_,i)=>new Date(Date.UTC(2024,0,1+i)).toLocaleDateString(LOC[LANG],{weekday:"short",timeZone:"UTC"}));
+ let h=calHead(label.charAt(0).toUpperCase()+label.slice(1))+`<div class="cal"><div class="wrow head"><span class="wn h">S</span>${wd.map(x=>`<span class="wdn">${x}</span>`).join("")}</div>`;
+ const diff=(x,y)=>Math.round((Date.parse(x)-Date.parse(y))/864e5);
+ while(d<=last){const a=iso(d),b=iso(plus(d,6));const wk=isoWeek(new Date(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()));
+  let row=`<div class="wrow"><button class="wn" data-calweek="${a}" style="grid-column:1;grid-row:1">S${wk.w}</button>`;
+  const segs=[];
+  state.missions.filter(m=>m.debut&&m.debut<=b&&(m.fin||m.debut)>=a).forEach(m=>{const st=Math.max(0,diff(m.debut,a)),en=Math.min(6,diff(m.fin||m.debut,a));segs.push({k:"m",id:m.id,st,en,cl:m.debut<a,cr:(m.fin||m.debut)>b,lab:m.destination||V(m.type),dd:""})});
+  for(let i=0;i<7;i++){const ds=iso(plus(d,i));state.convoyages.filter(x=>occOn(x,ds)).forEach(x=>segs.push({k:"c",id:x.id,st:i,en:i,lab:(x.nature==="Double"?"D":"S")+" · "+(x.destination||V(x.zone)),dd:ds}))}
+  segs.sort((p,q)=>p.st-q.st||(q.en-q.st)-(p.en-p.st));const lanes=[];
+  segs.forEach(g=>{let l=lanes.findIndex(e=>e<g.st);if(l<0){l=lanes.length;lanes.push(-1)}lanes[l]=g.en;g.l=l});
+  const span=lanes.length+3;
+  for(let i=0;i<7;i++){const x=plus(d,i);const ds=iso(x);const out=x.getUTCMonth()!==c.m;
+   row+=`<button class="day ${out?"out":""} ${ds===t0?"today":""} ${ds===c.sel?"sel":""}" data-day="${ds}" style="grid-column:${i+2};grid-row:1/${span}"><span class="dn">${x.getUTCDate()}</span></button>`}
+  segs.forEach(g=>{const l=g.l;
+   row+=`<button class="bar ${g.k} ${g.cl?"cl":""} ${g.cr?"cr":""}" style="grid-column:${g.st+2}/${g.en+3};grid-row:${l+2}" data-detail="${g.k==="m"?"missions":"convoyages"}:${g.id}:${g.dd}" title="${esc(g.lab)}">${esc(g.lab)}</button>`});
+  row+=`<span class="wpad" style="grid-column:2/-1;grid-row:${lanes.length+2}"></span></div>`;h+=row;d=plus(d,7)}
+ return h+"</div>"+dayPanel(c.sel)}
+/* fiche détaillée : mission ou convoyage, avec ses techniciens */
+function openDetail(kind,id,dd){const it=state[kind].find(x=>x.id===id);if(!it)return;editing={kind:"detail"};
+ const row=(l,v)=>`<div class="drow"><span class="lbl">${l}</span><span>${v}</span></div>`;let body="",title,chips="",w=[];
+ if(kind==="missions"){const s=mStatus(it);const n=nbDays(it.debut,it.fin);title=esc(it.destination||T("dest_tbd"));
+  chips=`<span class="chip ${it.type==="Externe"?"acc":""}">${V(it.type)}</span>${it.spontanee?`<span class="chip">${T("spont_f")}</span>`:""}<span class="status ${s[1]}">${s[0]}</span>`;
+  const wa=weekOf(it.debut).w,wb=weekOf(it.fin||it.debut).w;
+  body=row(T("d_dates"),`${fmt(it.debut)} → ${fmt(it.fin)}`)+row(T("d_dur"),n?T("days",n):"—")+row(T("d_week"),wa===wb?`S${wa}`:`S${wa} – S${wb}`);
+  w=isPast(s)?[]:conflicts(it.techs,it.debut,it.fin,it.id)}
+ else{const d=dd||it.date;const s=cStatus(it,d);title=esc(it.destination||V(it.zone));
+  chips=`<span class="chip ${it.nature==="Double"?"acc":""}">${V(it.nature)}</span><span class="chip">${V(it.zone)}</span>${it.spontane?`<span class="chip">${T("spont")}</span>`:""}<span class="status ${s[1]}">${s[0]}</span>`;
+  body=row(T("d_date"),dayName(d)+" "+d.slice(0,4))+row(T("d_week"),`S${weekOf(d).w}`)+row(T("d_nature"),V(it.nature))+row(T("d_zone"),V(it.zone))+(it.destination?row(T("d_city"),esc(it.destination)):"")+(it.repeat?row(T("d_repeat"),`${T("weekly")} · ${it.until?T("until",fmt(it.until)):T("noend")}`):"");
+  w=isPast(s)?[]:[...warns(it,it.zone),...conflicts(it.techs,d,d,it.id)]}
+ const ts=(it.techs||[]).map(techById).filter(Boolean);
+ const techs=ts.length?`<div class="dtechs">${ts.map(t=>`<button class="dtech" data-edit="techs:${t.id}"><b>${esc(t.nom)}</b><span class="badge" data-b="${esc(t.badge)}">${esc(t.badge)}</span><span class="chip ${t.vaccin?"ok":"bad"}">${T("vac")} ${t.vaccin?"✓":"✗"}</span><span class="chip ${t.visa?"ok":"bad"}">${T("visa_s")} ${t.visa?"✓":"✗"}</span></button>`).join("")}</div><p class="notes">${T("d_tap")}</p>`:`<p class="notes">${T("noTech")}</p>`;
+ $("#panel").innerHTML=`<h2>${title}</h2><div class="top dchips">${chips}</div><div class="dgrid">${body}</div>
+ <div class="field"><span class="lbl">${T("d_techs")} (${ts.length})</span>${techs}</div>${warnBlock(w)}${it.notes?`<div class="field"><span class="lbl">${T("f_notes")}</span><div class="ntext">${esc(it.notes)}</div></div>`:""}
+ <div class="actions"><span class="sp"></span><button type="button" class="btn" id="cancel">${T("close")}</button><button type="button" class="btn primary" data-edit="${kind}:${it.id}">${T("d_edit")}</button></div>`;
+ $("#sheet").hidden=false}
+function calSelect(d){ui.cal.sel=d;ui.cal.y=+d.slice(0,4);ui.cal.m=+d.slice(5,7)-1;ui.week=weekOf(d);render()}
+function calNav(n){const c=ui.cal;if(c.view==="week"){calSelect(iso(plus(new Date(c.sel+"T00:00:00Z"),7*n)));return}
+ let m=c.m+n,y=c.y;if(m<0){m=11;y--}else if(m>11){m=0;y++}const t=todayStr();const f=`${y}-${String(m+1).padStart(2,"0")}-01`;calSelect(t.slice(0,7)===f.slice(0,7)?t:f)}
+/* ---------- notes ---------- */
+function noteCard(n){return`<button class="card" data-edit="notes:${n.id}"><div class="tech-name">${esc(n.titre||(n.texte||"").split("\n")[0])}</div>${n.texte?`<div class="ntext">${esc(n.texte)}</div>`:""}<div class="when">${T("updated",fmt(n.updated))}</div></button>`}
+
+function render(){
+ $("#h1t").textContent=T("title");
+ const upM=missionWeek().length, upC=weekItems().length;
+ $("#tabs").innerHTML=[["convoyages",upC],["missions",upM],["techs",state.techs.length],["cal",""],["notes",state.notes.length]].map(([k,n])=>`<button class="tab" role="tab" aria-selected="${ui.tab===k}" data-tab="${k}">${T("tab_"+k)}${n!==""?`<span class="n">${n}</span>`:""}</button>`).join("");
+ setSync();
+ $("#fab").hidden=mode==="pending"||ui.tab==="cal";
+ $("#fab").textContent=T("fab_"+ui.tab);
+ const k=ui.tab;let html="";
+ if(note)html+=`<div class="note">${esc(T(note))}</div>`;
+ if(mode==="pending"){html+=`<div class="empty"><h2>${T("loading_h")}</h2><p>${T("loading_p")}</p></div>`;$("#main").innerHTML=html;return}
+ if(k==="cal"){html+=calendarView();$("#main").innerHTML=html;return}
+ if(k==="notes"){html+=state.notes.length?'<div class="list">'+[...state.notes].sort((a,b)=>(b.updated||"").localeCompare(a.updated||"")).map(noteCard).join("")+"</div>":emptyState("notes");$("#main").innerHTML=html;return}
+ const all=state[k];
+ if(!all.length){html+=emptyState(k)}
+ else{
+  if(k!=="techs")html+=weekBar();
+  if(k==="convoyages")html+=quotaBar()+rotationPanel();
+  const F=filters(k);
+  html+='<div class="filters">'+F.map(([id,lk])=>`<button class="fchip" aria-pressed="${ui.filter[k]===id}" data-filter="${esc(id)}">${lk?T(lk):esc(id)}</button>`).join("")+"</div>";
+  const f=(F.find(x=>x[0]===ui.filter[k])||F[0])[2];
+  let list=k==="convoyages"?weekItems().filter(x=>f(x.c)):k==="missions"?missionWeek().filter(f):all.filter(f);
+  if(k==="missions")list=sortByDate(list,"debut");else if(k==="techs")list=[...list].sort((a,b)=>BADGES.indexOf(a.badge)-BADGES.indexOf(b.badge)||a.nom.localeCompare(b.nom));
+  const emptyMsg=k==="convoyages"?T("noweek_c",ui.week.w):k==="missions"?T("noweek_m",ui.week.w):T("nofilter");
+  html+='<div class="list">'+(list.length?list.map(k==="missions"?missionCard:k==="convoyages"?convCard:techCard).join(""):`<div class="empty"><p>${emptyMsg}</p></div>`)+"</div>";
+  if([...state.missions,...state.convoyages,...state.techs].some(x=>x.exemple))html+=`<div class="foot"><button class="btn link" id="clearEx">${T("clearEx")}</button></div>`;
+ }
+ $("#main").innerHTML=html;
+}
+function emptyState(k){const txt=T("empty_"+k);const none=k!=="notes"&&!state.missions.length&&!state.convoyages.length&&!state.techs.length;
+ return`<div class="empty"><h2>${txt[0]}</h2><p>${txt[1]}</p><div class="actions"><button class="btn primary" data-new="1">${T("add")}</button>${none?`<button class="btn" id="loadEx">${T("loadEx")}</button>`:""}</div></div>`}
+
+/* ---------- formulaires ---------- */
+function seg(name,opts,val,lab=V){return`<div class="seg">${opts.map((o,i)=>`<input type="radio" id="f-${name}-${i}" name="${name}" value="${esc(o)}" ${o===val?"checked":""}><label for="f-${name}-${i}">${esc(lab(o))}</label>`).join("")}</div>`}
+function picker(sel){if(!state.techs.length)return`<p class="notes">${T("techs_first")}</p>`;
+ return`<div class="picker">${[...state.techs].sort((a,b)=>BADGES.indexOf(a.badge)-BADGES.indexOf(b.badge)).map((t,i)=>`<label class="pick" for="f-tech-${i}"><input type="checkbox" id="f-tech-${i}" name="techs" value="${t.id}" ${(sel||[]).includes(t.id)?"checked":""}><span class="nm">${esc(t.nom)}</span><span class="badge" data-b="${esc(t.badge)}">${esc(t.badge)}</span><span class="fl">${t.vaccin?T("vac")+" ✓":`<span class="no">${T("vac")} ✗</span>`} · ${t.visa?T("visa_s")+" ✓":`<span class="no">${T("visa_s")} ✗</span>`}</span><span class="hint" data-tid="${t.id}"></span></label>`).join("")}</div>`}
+function openForm(kind,id,pre){
+ const item=id?state[kind].find(x=>x.id===id):null;editing={kind,id:item?.id};
+ let body="";const title=T((item?"edit_":"new_")+kind);
+ if(kind==="missions"){const m=item||{type:"Interne",spontanee:false};
+  body=`<div class="field"><span class="lbl">${T("f_type")}</span>${seg("type",["Interne","Externe"],m.type)}</div>
+  <label class="check" for="f-sp"><input type="checkbox" id="f-sp" name="spontanee" ${m.spontanee?"checked":""}>${T("f_sp_m")}</label>
+  <label class="field" for="f-dest"><span class="lbl">${T("f_dest")}</span><input type="text" id="f-dest" name="destination" required value="${esc(m.destination)}" placeholder="${T("f_dest_ph")}"></label>
+  <div class="row2"><label class="field" for="f-debut"><span class="lbl">${T("f_start")}</span><input type="date" id="f-debut" name="debut" required value="${esc(m.debut||pre||defDate())}"></label><label class="field" for="f-fin"><span class="lbl">${T("f_end")}</span><input type="date" id="f-fin" name="fin" required value="${esc(m.fin||m.debut||pre||defDate())}"></label></div>
+  <p class="dur" id="dur"></p>
+  <div class="field"><span class="lbl">${T("f_techs")}</span>${picker(m.techs)}</div>
+  <label class="field" for="f-notes"><span class="lbl">${T("f_notes")}</span><textarea id="f-notes" name="notes">${esc(m.notes)}</textarea></label>`}
+ else if(kind==="convoyages"){const c=item||{nature:"Simple",zone:"Afrique",spontane:false};
+  body=`<label class="field" for="f-date"><span class="lbl">${T("f_date")}</span><input type="date" id="f-date" name="date" required value="${esc(c.date||pre||defDate())}"></label>
+  <div class="field"><span class="lbl">${T("f_nature")}</span>${seg("nature",["Simple","Double"],c.nature)}</div>
+  <div class="field"><span class="lbl">${T("f_zone")}</span>${seg("zone",["Afrique","Europe"],c.zone)}</div>
+  <label class="field" for="f-dest"><span class="lbl">${T("f_city")}</span><input type="text" id="f-dest" name="destination" value="${esc(c.destination)}" placeholder="${T("f_city_ph")}"></label>
+  <label class="check" for="f-sp"><input type="checkbox" id="f-sp" name="spontane" ${c.spontane?"checked":""}>${T("f_sp_c")}</label>
+  <label class="check" for="f-rep"><input type="checkbox" id="f-rep" name="repeat" ${c.repeat?"checked":""}>${T("f_rep")}</label>
+  <label class="field" for="f-until" id="untilBox"><span class="lbl">${T("f_until")}</span><input type="date" id="f-until" name="until" value="${esc(c.until)}"></label>
+  <div class="field"><span class="lbl">${T("f_techs")}</span><p class="qinfo" id="qinfo" hidden></p>${picker(c.techs)}</div>
+  <div class="warns" id="fwarn"></div>
+  <label class="field" for="f-notes"><span class="lbl">${T("f_notes")}</span><textarea id="f-notes" name="notes">${esc(c.notes)}</textarea></label>`}
+ else if(kind==="notes"){const n=item||{};
+  body=`<label class="field" for="f-titre"><span class="lbl">${T("n_title")}</span><input type="text" id="f-titre" name="titre" value="${esc(n.titre)}" placeholder="${T("n_title_ph")}"></label>
+  <label class="field" for="f-texte"><span class="lbl">${T("n_text")}</span><textarea id="f-texte" name="texte" class="big">${esc(n.texte)}</textarea></label>`}
+ else{const t=item||{badge:"Tech A",vaccin:true,visa:true};
+  body=`<label class="field" for="f-nom"><span class="lbl">${T("f_name")}</span><input type="text" id="f-nom" name="nom" required value="${esc(t.nom)}"></label>
+  <div class="field"><span class="lbl">${T("f_badge")}</span>${seg("badge",BADGES,t.badge,x=>x)}</div>
+  <div class="field"><span class="lbl">${T("f_vac")}</span>${seg("vaccin",["Oui","Non"],t.vaccin?"Oui":"Non")}</div>
+  <div class="field"><span class="lbl">${T("f_visa")}</span>${seg("visa",["Oui","Non"],t.visa?"Oui":"Non")}</div>
+  <label class="field" for="f-notes"><span class="lbl">${T("f_notes")}</span><textarea id="f-notes" name="notes" placeholder="${T("f_notes_ph")}">${esc(t.notes)}</textarea></label>`}
+ $("#panel").innerHTML=`<h2>${title}</h2><form id="f" novalidate>${body}<p class="err" id="ferr" hidden></p>
+ <div class="actions">${item?`<button type="button" class="btn danger" id="del">${T("del")}</button>`:""}<span class="sp"></span><button type="button" class="btn" id="cancel">${T("cancel")}</button><button type="submit" class="btn primary">${T("save")}</button></div></form>`;
+ $("#sheet").hidden=false;
+ const f=$("#f");f.addEventListener("input",liveForm);f.addEventListener("change",liveForm);liveForm();
+}
+function quotaCheck(d,sel){if(!d)return null;const wk=weekOf(d);const q=quotaOf(wk.y,wk.w);if(!q)return null;const crewSet=crewOfWeek(wk.y,wk.w,editing.id);sel.forEach(id=>crewSet.add(id));return{q,w:wk.w,crewSet,full:crewSet.size>=q,over:crewSet.size>q}}
+function liveForm(){const f=$("#f");if(!f)return;const fd=new FormData(f);
+ if(editing.kind==="missions"){const d=nbDays(fd.get("debut"),fd.get("fin"));$("#dur").textContent=d>0?T("dur",d):T("dur_err");
+  const a=fd.get("debut"),b=fd.get("fin");
+  f.querySelectorAll(".hint").forEach(h=>{const r=a&&b&&b>=a?busyRange(h.dataset.tid,a,b,editing.id):null;h.className="hint"+(r?" busy":"");h.textContent=r?T("h_busy_range"):""})}
+ if(editing.kind==="convoyages"){const d=fd.get("date"),n=fd.get("nature");const sel=fd.getAll("techs");
+  $("#untilBox").hidden=!fd.has("repeat");
+  const w=[...warns({techs:sel},fd.get("zone")),...(d?conflicts(sel,d,d,editing.id):[])];$("#fwarn").innerHTML=w.map(x=>`<div>${esc(x)}</div>`).join("");
+  const qc=quotaCheck(d,sel);const qi=$("#qinfo");
+  f.querySelectorAll('input[name="techs"]').forEach(cb=>{const lock=qc&&qc.full&&!cb.checked&&!qc.crewSet.has(cb.value);cb.disabled=!!lock;cb.closest(".pick").classList.toggle("locked",!!lock)});
+  if(qc){qi.hidden=false;qi.className="qinfo"+(qc.full?" full":"");qi.textContent=qc.full?T("q_limit",qc.q,qc.w):T("q_count",qc.crewSet.size,qc.q)+" · S"+qc.w}else qi.hidden=true;
+  const wk=d?weekOf(d):null;
+  f.querySelectorAll(".hint").forEach(h=>{const tid=h.dataset.tid;const b=d?busyOn(tid,d,editing.id):null;
+   if(b){h.className="hint busy";h.textContent=T("h_busy_day");return}
+   const l=wk?lastNature(tid,wk.y,wk.w):null;const ok=!l||opposite(l)===n;
+   h.className="hint"+(ok?" sugg":"");h.textContent=(l?T("h_last",V(l)):T("h_free"))+(ok?T("h_sugg"):"")})}}
+function closeForm(){$("#sheet").hidden=true;$("#panel").innerHTML="";editing=null}
+function submitForm(e){e.preventDefault();const f=e.target,fd=new FormData(f),err=$("#ferr");const k=editing.kind;let o;
+ const fail=m=>{err.textContent=m;err.hidden=false};
+ if(k==="missions"){o={type:fd.get("type"),spontanee:fd.has("spontanee"),destination:fd.get("destination").trim(),debut:fd.get("debut"),fin:fd.get("fin"),techs:fd.getAll("techs"),notes:fd.get("notes").trim()};
+  if(!o.destination)return fail(T("e_dest"));if(!o.debut||!o.fin)return fail(T("e_dates"));if(o.fin<o.debut)return fail(T("e_order"))}
+ else if(k==="convoyages"){o={date:fd.get("date"),nature:fd.get("nature"),zone:fd.get("zone"),destination:fd.get("destination").trim(),spontane:fd.has("spontane"),repeat:fd.has("repeat"),until:fd.has("repeat")?(fd.get("until")||""):"",techs:fd.getAll("techs"),notes:fd.get("notes").trim()};
+  if(!o.date)return fail(T("e_cdate"));if(o.until&&o.until<o.date)return fail(T("e_until"));
+  const qc=quotaCheck(o.date,o.techs);if(qc&&qc.over)return fail(T("e_quota",qc.q,qc.w))}
+ else if(k==="notes"){o={titre:fd.get("titre").trim(),texte:fd.get("texte").trim(),updated:todayStr()};if(!o.titre&&!o.texte)return fail(T("e_note"))}
+ else{o={nom:fd.get("nom").trim(),badge:fd.get("badge"),vaccin:fd.get("vaccin")==="Oui",visa:fd.get("visa")==="Oui",notes:fd.get("notes").trim()};if(!o.nom)return fail(T("e_name"))}
+ if(editing.id){const i=state[k].findIndex(x=>x.id===editing.id);const prev=state[k][i];state[k][i]={...prev,...o,id:prev.id,exemple:false}}
+ else state[k].push({...o,id:uid()});
+ const wasNew=!editing.id;closeForm();render();persist();toast(T(wasNew?"t_added":"t_edited"));
+}
+function deleteItem(btn){if(!btn.classList.contains("armed")){btn.classList.add("armed");btn.textContent=T("confirmDel");return}
+ const{kind,id}=editing;state[kind]=state[kind].filter(x=>x.id!==id);
+ if(kind==="techs"){[...state.missions,...state.convoyages].forEach(x=>x.techs=(x.techs||[]).filter(t=>t!==id))}
+ closeForm();render();persist();toast(T("t_deleted"))}
+
+/* ---------- partage hebdomadaire ---------- */
+function shareData(kind,l){const t=(k,...a)=>TL(l,k,...a),v=x=>t("v_"+x);const{y,w}=ui.week;const[a,b]=weekRange();const range=t("sh_range",fmtL(l,a),fmtL(l,b));const rows=[];let lines=[];
+ if(kind==="convoyages"){const title=t("sh_title_c",w);let cur="";
+  weekItems().forEach(({c,d})=>{const ts=(c.techs||[]).map(techById).filter(Boolean);const day=dayNameL(l,d);
+   if(day!==cur){lines.push("",day);cur=day}
+   (ts.length?ts:[{nom:t("toAssign")}]).forEach(x=>{lines.push(`- ${x.nom} : ${v(c.nature)} - ${v(c.zone)}`);rows.push([day,x.nom,v(c.nature),v(c.zone)])})});
+  return{title,range,cols:t("sh_cols_c"),rows,text:[title,range,...lines].join("\n"),file:`${t("file_c")}-S${w}-${y}`,none:t("pdf_none")}}
+ const title=t("sh_title_m",w);
+ sortByDate(missionWeek(),"debut").forEach(m=>{const ts=(m.techs||[]).map(techById).filter(Boolean);const dates=`${fmtShortL(l,m.debut)} - ${fmtShortL(l,m.fin||m.debut)}`;
+  lines.push("",`${m.destination} (${v(m.type)}${m.spontanee?t("sh_spont"):""}) : ${dates}`);
+  (ts.length?ts:[{nom:t("toAssign")}]).forEach(x=>{lines.push(`- ${x.nom}`);rows.push([dates,x.nom,v(m.type),m.destination])})});
+ return{title,range,cols:t("sh_cols_m"),rows,text:[title,range,...lines].join("\n"),file:`${t("file_m")}-S${w}-${y}`,none:t("pdf_none")}}
+let shareCur=null;
+function openShare(){const kind=ui.tab;const s=shareData(kind,LANG);shareCur={kind,...s};editing={kind:"share"};
+ $("#panel").innerHTML=`<h2>${T("sh_head",ui.week.w)}</h2>
+ ${s.rows.length?"":`<p class="notes">${T("sh_empty")}</p>`}
+ <pre class="preview">${esc(s.text)}</pre>
+ <div class="share-actions">
+  <a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(s.text)}" target="_blank" rel="noopener">${T("sh_wa")}</a>
+  <button type="button" class="btn" id="copyTxt">${T("sh_copy")}</button>
+  <button type="button" class="btn dlb" id="saveNote">${T("sh_note")}</button>
+  <button type="button" class="btn dlb" id="savePdf">${T("sh_pdf")}</button>
+ </div>
+ <p class="notes">${T("sh_hint")} ${LANG==="ar"?T("sh_pdf_lang"):""}</p>
+ <div class="actions"><span class="sp"></span><button type="button" class="btn" id="cancel">${T("close")}</button></div>`;
+ $("#sheet").hidden=false;
+ getDl().then(dl=>{if(!dl)document.querySelectorAll(".dlb").forEach(b=>b.hidden=true)});
+}
+const MIME={pdf:"application/pdf",txt:"text/plain",json:"application/json"};
+const localDl={async save({filename,data}){const ext=filename.split(".").pop();const blob=data instanceof Blob?data:new Blob([data],{type:(MIME[ext]||"application/octet-stream")+";charset=utf-8"});
+ const file=new File([blob],filename,{type:MIME[ext]||blob.type});
+ if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:filename});return{status:"saved"}}catch(e){if(e&&e.name==="AbortError")throw{code:"declined"}}}
+ const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);return{status:"saved"}}};
+let dlP=null;function getDl(){if(!dlP)dlP=Promise.resolve(localDl);return dlP}
+async function copyText(){const t=shareCur.text;try{await navigator.clipboard.writeText(t);toast(T("t_copied"))}catch(e){const p=document.querySelector(".preview");const r=document.createRange();r.selectNodeContents(p);const s=getSelection();s.removeAllRanges();s.addRange(r);toast(T("t_selected"))}}
+async function saveFile(kind){const dl=await getDl();if(!dl)return;let data,name;
+ if(kind==="txt"){data=shareCur.text;name=shareCur.file+".txt"}
+ else{if(!window.jspdf){toast(T("t_pdfNA"));return}const s=LANG==="ar"?shareData(shareCur.kind,"fr"):shareCur;data=buildPdf(s);name=s.file+".pdf"}
+ try{await dl.save({filename:name,data});toast(T(kind==="txt"?"t_noteReady":"t_pdfReady"))}
+ catch(e){if(e&&e.code==="declined")return;if(e&&e.code==="rate_limited"){toast(T("t_busyShare"));return}toast(T("t_shareFail"))}}
+function buildPdf(s){const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:"mm",format:"a4"});const L=15,W=180;let y=20;
+ const clean=t=>String(t).replace(/[–—]/g,"-").replace(/ | /g," ");
+ doc.setFont("helvetica","bold");doc.setFontSize(15);doc.splitTextToSize(clean(s.title),W).forEach(l=>{doc.text(l,L,y);y+=7});
+ doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(90);doc.text(clean(s.range),L,y);y+=9;doc.setTextColor(0);
+ const cw=[42,58,30,50];const head=()=>{doc.setFillColor(230,235,240);doc.rect(L,y-5,W,7,"F");doc.setFont("helvetica","bold");let x=L+2;s.cols.forEach((c,i)=>{doc.text(c,x,y);x+=cw[i]});y+=7;doc.setFont("helvetica","normal")};
+ head();
+ if(!s.rows.length)doc.text(s.none,L+2,y);
+ let prev="";s.rows.forEach(r=>{if(y>280){doc.addPage();y=20;head()}let x=L+2;
+  r.forEach((v,i)=>{const t=(i===0&&v===prev)?"":clean(v);doc.text(doc.splitTextToSize(t,cw[i]-3)[0]||"",x,y);x+=cw[i]});prev=r[0];
+  doc.setDrawColor(220);doc.line(L,y+2,L+W,y+2);y+=7});
+ return doc.output("blob")}
+
+/* ---------- exemples ---------- */
+function loadExamples(){
+ const t=[["Youssef El Amrani","Tech B1",true,true],["Sara Bennani","Tech B2",true,false],["Hamza Tazi","Tech A",false,true],["Nadia Alaoui","MAP",true,true]].map(([nom,badge,vaccin,visa])=>({id:uid(),nom,badge,vaccin,visa,notes:"",exemple:true}));
+ state.techs=t;
+ state.missions=[
+  {id:uid(),type:"Externe",spontanee:false,destination:"Dakar – escale client",debut:addDays(4),fin:addDays(7),techs:[t[0].id,t[3].id],notes:"",exemple:true},
+  {id:uid(),type:"Interne",spontanee:true,destination:"Casablanca – hangar 2",debut:addDays(0),fin:addDays(1),techs:[t[2].id],notes:"",exemple:true},
+  {id:uid(),type:"Externe",spontanee:false,destination:"Abidjan",debut:addDays(-12),fin:addDays(-9),techs:[t[1].id],notes:"",exemple:true}];
+ state.convoyages=[
+  {id:uid(),date:addDays(9),nature:"Simple",zone:"Europe",destination:"Toulouse",spontane:false,techs:[t[0].id,t[1].id],notes:"",exemple:true},
+  {id:uid(),date:addDays(14),nature:"Double",zone:"Afrique",destination:"Libreville",spontane:true,techs:[t[2].id,t[3].id],notes:"",exemple:true},
+  {id:uid(),date:addDays(-6),nature:"Double",zone:"Afrique",destination:"Nouakchott",spontane:false,repeat:true,until:"",techs:[t[3].id],notes:"",exemple:true}];
+ render();persist();toast(T("t_exLoaded"))}
+function clearExamples(){for(const k of["missions","convoyages","techs"])state[k]=state[k].filter(x=>!x.exemple);const ids=new Set(state.techs.map(t=>t.id));[...state.missions,...state.convoyages].forEach(x=>x.techs=(x.techs||[]).filter(i=>ids.has(i)));render();persist();toast(T("t_exCleared"))}
+
+/* ---------- stockage ---------- */
+async function persist(){
+ if(mode==="local"){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}return}
+ if(mode!=="cloud")return;
+ dirty=true;if(writing)return;writing=true;setSync();
+ while(dirty){dirty=false;const body=JSON.parse(JSON.stringify(state));
+  try{await ref.set(body)}catch(e){
+   if(e&&e.code==="unavailable"){await new Promise(r=>setTimeout(r,700+Math.random()*900));try{await ref.set(body)}catch(e2){toast(T("t_saveRetry"))}}
+   else if(e&&e.code==="quota_exceeded")toast(T("t_quota"));
+   else toast(T("t_saveFail"))}}
+ writing=false;setSync()}
+function setSync(){$("#sub").textContent=mode==="local"?T("subLocal"):mode==="cloud"?(writing||dirty?T("sync_saving"):T("sync_ok")):T("sub")}
+let toastT;function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2200)}
+function adoptPrefs(){if(state.prefs){prefs={...prefs,...state.prefs};try{localStorage.setItem(PKEY,JSON.stringify(prefs))}catch(e){}applyPrefs()}else if(prefs)state.prefs=prefs}
+
+async function boot(){
+ try{const p=JSON.parse(localStorage.getItem(PKEY)||"null");if(p)prefs={...prefs,...p}}catch(e){}
+ applyPrefs();render();
+ let db=null,id=null;
+ try{if(false){db=await claude.use("db");const u=await claude.use("user");id=u?await u.id():null}}catch(e){}
+ if(db&&id){
+  ref=db.doc("data/users/"+id+"/app");
+  const timer=setTimeout(()=>{if(mode==="pending"){mode="cloud";note="n_slow";render()}},10000);
+  ref.onSnapshot(s=>{
+   if(!s.metadata.fromCache){clearTimeout(timer);if(note==="n_slow")note=""}
+   const first=mode==="pending";mode="cloud";
+   if(!first&&(writing||dirty))return;
+   state=normalize(s.exists?s.data():null);adoptPrefs();if(!$("#sheet").hidden&&editing)return;render()},
+  e=>{clearTimeout(timer);mode="cloud";note="n_broken";render()});
+ }else{
+  mode="local";try{state=normalize(JSON.parse(localStorage.getItem(KEY)||"null"))}catch(e){state=normalize(null)}adoptPrefs();render()}
+}
+
+/* ---------- événements ---------- */
+document.addEventListener("click",e=>{
+ if(e.target.closest("#settingsBtn")){pendingImport=null;openSettings();return}
+ if(e.target.closest("#bkExport")){exportBackup();return}
+ if(e.target.closest("#bkReplace")){applyImport();return}
+ if(e.target.closest("#bkCancel")){pendingImport=null;openSettings();return}
+ const dt=e.target.closest("[data-detail]");if(dt){const[k,id,dd]=dt.dataset.detail.split(":");openDetail(k,id,dd);return}
+ const dy=e.target.closest("[data-day]");if(dy){calSelect(dy.dataset.day);return}
+ const cw=e.target.closest("[data-calweek]");if(cw){ui.cal.view="week";calSelect(cw.dataset.calweek);return}
+ const cn=e.target.closest("[data-calnav]");if(cn){calNav(+cn.dataset.calnav);return}
+ const cv=e.target.closest("[data-calview]");if(cv){ui.cal.view=cv.dataset.calview;render();return}
+ if(e.target.closest("[data-caltoday]")){calSelect(todayStr());return}
+ if(e.target.closest("[data-addc]")){openForm("convoyages",null,ui.cal.sel);return}
+ if(e.target.closest("[data-addm]")){openForm("missions",null,ui.cal.sel);return}
+ const sw=e.target.closest("[data-bgv]");if(sw){setPref("bg",sw.dataset.bgv);return}
+ const tab=e.target.closest("[data-tab]");if(tab){ui.tab=tab.dataset.tab;render();return}
+ const fl=e.target.closest("[data-filter]");if(fl){ui.filter[ui.tab]=fl.dataset.filter;render();return}
+ const ed=e.target.closest("[data-edit]");if(ed){const[k,id]=ed.dataset.edit.split(":");openForm(k,id);return}
+ if(e.target.closest("[data-new]")||e.target.closest("#fab")){openForm(ui.tab);return}
+ const wk=e.target.closest("[data-wk]");if(wk){shiftWeek(+wk.dataset.wk);return}
+ const qb=e.target.closest("[data-q]");if(qb){setQuota(quotaOf(ui.week.y,ui.week.w)+(+qb.dataset.q));return}
+ if(e.target.closest("#shareBtn")){openShare();return}
+ if(e.target.closest("#copyTxt")){copyText();return}
+ if(e.target.closest("#saveNote")){saveFile("txt");return}
+ if(e.target.closest("#savePdf")){saveFile("pdf");return}
+ if(e.target.closest("#loadEx")){loadExamples();return}
+ if(e.target.closest("#clearEx")){clearExamples();return}
+ if(e.target.closest("#cancel")||e.target===$("#sheet")){closeForm();return}
+ const del=e.target.closest("#del");if(del){deleteItem(del);return}
+});
+document.addEventListener("change",e=>{
+ if(e.target.id==="wksel"){ui.week={y:ui.week.y,w:+e.target.value};render()}
+ if(e.target.id==="quota")setQuota(e.target.value);
+ if(e.target.id==="bkFile"&&e.target.files&&e.target.files[0])readBackup(e.target.files[0]);
+ if(e.target.dataset&&e.target.dataset.pref)setPref(e.target.dataset.pref,e.target.value);
+});
+document.addEventListener("submit",e=>{if(e.target.id==="f")submitForm(e)});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#sheet").hidden)closeForm()});
+boot();
+
+</script>
+
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}</script>
+</body>
+</html>

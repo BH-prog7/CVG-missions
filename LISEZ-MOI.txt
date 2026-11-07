@@ -1,0 +1,16 @@
+Convoyages & Missions - version PWA
+
+Installation
+1. Mettez tout le contenu de ce dossier en ligne sur un hébergement HTTPS
+   (GitHub Pages, Netlify, Cloudflare Pages...). Une PWA ne s'installe pas
+   depuis un fichier ouvert directement sur l'appareil.
+2. Ouvrez l'adresse obtenue :
+   - iPhone (Safari) : Partager > Sur l'écran d'accueil
+   - Android (Chrome) : menu > Installer l'application
+   - PC (Chrome/Edge) : icône d'installation dans la barre d'adresse
+3. L'application fonctionne ensuite hors ligne.
+
+Données
+Les données sont enregistrées sur chaque appareil. Pour passer du PC au
+téléphone, utilisez Réglages > Sauvegarde : exportez sur un appareil
+(dans Dropbox ou OneDrive) puis importez sur l'autre.
