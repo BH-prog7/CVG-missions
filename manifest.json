@@ -1,7 +1,7 @@
 {
-  "name": "Convoyages & Missions",
-  "short_name": "Convoyages",
-  "description": "Répartition des techniciens entre convoyages et missions, semaine par semaine.",
+  "name": "Hangar Est",
+  "short_name": "Hangar Est",
+  "description": "Hangar Est : techniciens, CVG, missions, messages prêts et outils.",
   "lang": "fr",
   "start_url": "./index.html",
   "scope": "./",
