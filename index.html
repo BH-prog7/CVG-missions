@@ -1096,7 +1096,7 @@ function calendarView(){const c=ui.cal;const t0=todayStr();
  while(d<=last){const a=iso(d),b=iso(plus(d,6));const wk=isoWeek(new Date(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()));
   let row=`<div class="wrow"><button class="wn" data-calweek="${a}" style="grid-column:1;grid-row:1">S${wk.w}</button>`;
   const segs=[];
-  state.missions.filter(m=>m.debut&&m.debut<=b&&(m.fin||m.debut)>=a).forEach(m=>{const st=Math.max(0,diff(m.debut,a)),en=Math.min(6,diff(m.fin||m.debut,a));segs.push({k:"m",id:m.id,st,en,cl:m.debut<a,cr:(m.fin||m.debut)>b,lab:m.destination||V(m.type),dd:""})});
+  state.missions.filter(m=>m.debut&&m.debut<=b&&(m.fin||m.debut)>=a).forEach(m=>{const st=Math.max(0,diff(m.debut,a)),en=Math.min(6,diff(m.fin||m.debut,a));const ts=(m.techs||[]).map(techById).filter(Boolean);const dst=m.destination||V(m.type);(ts.length?ts.map(t=>t.nom+" · "+dst):[dst]).forEach(nm=>segs.push({k:"m",id:m.id,st,en,cl:m.debut<a,cr:(m.fin||m.debut)>b,lab:nm,dd:""}))});
   state.depannages.filter(m=>m.debut&&m.debut<=b&&(m.fin||m.debut)>=a).forEach(m=>{const st=Math.max(0,diff(m.debut,a)),en=Math.min(6,diff(m.fin||m.debut,a));segs.push({k:"d",id:m.id,st,en,cl:m.debut<a,cr:(m.fin||m.debut)>b,lab:m.objet||T("dep_one"),dd:""})});
   (state.formations||[]).filter(f=>f.debut&&f.debut<=b&&(f.fin||f.debut)>=a).forEach(f=>{const st=Math.max(0,diff(f.debut,a)),en=Math.min(6,diff(f.fin||f.debut,a));segs.push({k:"f",id:f.id,st,en,cl:f.debut<a,cr:(f.fin||f.debut)>b,lab:"🎓 "+f.nom,dd:""})});
   (state.events||[]).filter(ev=>ev.debut&&ev.debut<=b&&(ev.fin||ev.debut)>=a).forEach(ev=>{const st=Math.max(0,diff(ev.debut,a)),en=Math.min(6,diff(ev.fin||ev.debut,a));segs.push({k:"e",id:ev.id,st,en,cl:ev.debut<a,cr:(ev.fin||ev.debut)>b,lab:"📌 "+ev.titre,dd:""})});
