@@ -2513,7 +2513,7 @@ function fbLocalSave(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch
 let fbMT=null;function fbSaveMeta(){clearTimeout(fbMT);fbMT=setTimeout(()=>{try{localStorage.setItem(FB_MK,JSON.stringify({known:fb.known,base:fb.base}))}catch(e){}},400)}
 function fbStTxt(){if(fb.off)return"📴 Hors ligne";if(fb.err)return"⚠️ Erreur de synchronisation";if(typeof navigator!=="undefined"&&navigator.onLine===false)return"📴 Hors ligne";const col=fbRole()?"team":"pub";if(fb.pushing||(fb.meta[col]&&fb.meta[col].pend))return"⏳ Envoi…";if(fb.known[col])return"☁️ Synchronisé";if(fb.empty[col])return"☁️ Rien de partagé pour l'instant";return"⏳ Connexion…"}
 function fbStatus(){const el=document.getElementById("fbst");if(el)el.textContent=fbStTxt()}
-function fbBar(){if(!fb.on)return"";const r=fbRole();return`<div class="fbbar ${r==="master"?"m":"r"}"><span class="fbwho">${r==="master"?`✏️ Master : <b>${esc(fb.name||"—")}</b>`:"👁️ Lecture seule"}</span><span class="fbst" id="fbst">${fbStTxt()}</span><span class="fbbtns"><button type="button" class="btn link" id="fbJournal">🕘 Journal</button>${r==="master"?`<button type="button" class="btn link" id="fbCodes">🔑 Codes</button>`:`<button type="button" class="btn link" id="fbToMaster">🔑 Code master</button>`}<button type="button" class="btn link" id="fbOut">Déconnexion</button></span></div>`}
+function fbBar(){if(!fb.on)return"";const r=fbRole();return`<div class="fbbar ${r==="master"?"m":"r"}"><span class="fbwho">${r==="master"?`✏️ Master : <b>${esc(fb.name||"—")}</b>`:`👔 <b>${esc(fb.name||"Chef d'équipe")}</b>`}</span><span class="fbst" id="fbst">${fbStTxt()}</span><span class="fbbtns"><button type="button" class="btn link" id="fbJournal">🕘 Journal</button>${r==="master"?`<button type="button" class="btn link" id="fbCodes">🔑 Codes</button>`:`<button type="button" class="btn link" id="fbToMaster">🔑 Code master</button>`}<button type="button" class="btn link" id="fbOut">Déconnexion</button></span></div>`}
 function fbLoad(){if(window.firebase&&firebase.firestore&&firebase.auth)return Promise.resolve();return FB_SDK.reduce((p,u)=>p.then(()=>new Promise((ok,ko)=>{const s=document.createElement("script");s.src=u;s.onload=ok;s.onerror=ko;document.head.appendChild(s)})),Promise.resolve())}
 function fbStart(){fb.on=true;try{const m=JSON.parse(fbLS(FB_MK)||"null");if(m){fb.known=m.known||{};fb.base=m.base||{}}}catch(e){}
  if(ui.space==="ce"&&!fbRole()){ui.space=null;render()}
@@ -2551,7 +2551,7 @@ async function fbPush(quiet){if(!fb.db||fbRole()!=="master")return;if(fb.pushing
  finally{fb.pushing=false;fbStatus()}}
 function fbMigrate(){if(fbRole()!=="master")return;let n=false;for(const col of["pub","team"])if(fb.empty[col]&&!fb.known[col]){fb.known[col]=true;FB_COLS[col].forEach(k=>fb.base[k]={});n=true}if(n){fbSaveMeta();fbPush(true)}}
 function fbGuard(){let ch=false;for(const col of["pub","team"]){if(!fb.known[col]||!fb.rem[col])continue;if(col==="team"&&!fbRole())continue;for(const k of FB_COLS[col]){const v=fbAsm(k,fb.base[k]||{});if(JSON.stringify(v)!==JSON.stringify(state[k])){state[k]=v;ch=true}}}
- if(ch){fbLocalSave();if(ui.space==="ce"||ui.space==="tech")toast("🔒 Lecture seule : entre le code master pour modifier.",3200);setTimeout(render,0)}}
+ if(ch){fbLocalSave();if(ui.space==="ce"||ui.space==="tech")toast("🔒 Seul le master peut modifier.",3000);setTimeout(render,0)}}
 function fbAfter(){if(!fb.on||!fb.db)return;if(fbRole()==="master")fbPush();else fbGuard()}
 function enterCe(){closeForm();ui.open={};ui.space="ce";ui.tab="cal";fbLS("hangar-space","ce");render();window.scrollTo(0,0)}
 function openCeLogin(toMaster){editing={kind:"login"};
@@ -2568,13 +2568,13 @@ async function fbLogin(){const inp=$("#lg-code"),err=$("#lg-err"),b=$("#lgGo");i
  b.disabled=false;b.textContent="Entrer";
  if(stop){say(stop);return}
  if(!role){say("Code incorrect.");inp.value="";inp.focus();return}
- fb.role=role;fbLS(FB_RK,role);if(role==="master")openNameStep();else{fb.name="";fbLS(FB_NK,null);enterCe();toast("👁️ Mode lecture",2500)}}
-function openNameStep(){editing={kind:"login"};const last=fbLS(FB_LK)||fb.name||"";
- $("#panel").innerHTML=`<h2>✏️ Mode master</h2><p class="notes">Écris ton nom. Il sera affiché sur chaque modification : « Modifié par … ».</p>
+ fb.role=role;fbLS(FB_RK,role);openNameStep()}
+function openNameStep(){editing={kind:"login"};const m=fbRole()==="master";const last=fbLS(FB_LK)||fb.name||"";
+ $("#panel").innerHTML=`<h2>${m?"✏️ Mode master":"👔 Chef d'équipe"}</h2><p class="notes">${m?"Écris ton nom. Il sera affiché sur chaque modification : « Modifié par … ».":"Écris ton nom."}</p>
  <label class="field" for="lg-name"><span class="lbl">Ton nom</span><input type="text" id="lg-name" maxlength="40" autocomplete="name" value="${esc(last)}"></label>
  <p class="err" id="lg-err" hidden>Écris ton nom (2 lettres minimum).</p>
  <div class="actions"><span class="sp"></span><button type="button" class="btn primary" id="lgName">Continuer</button></div>`;$("#sheet").hidden=false;setTimeout(()=>{const i=$("#lg-name");if(i){i.focus();i.select()}},50)}
-function fbSetName(){const i=$("#lg-name");if(!i)return;const v=i.value.trim().replace(/\s+/g," ").toUpperCase();if(v.length<2){$("#lg-err").hidden=false;return}fb.name=v;fbLS(FB_NK,v);fbLS(FB_LK,v);enterCe();toast("✏️ Mode master : "+v,2500)}
+function fbSetName(){const i=$("#lg-name");if(!i)return;const v=i.value.trim().replace(/\s+/g," ").toUpperCase();if(v.length<2){$("#lg-err").hidden=false;return}fb.name=v;fbLS(FB_NK,v);fbLS(FB_LK,v);enterCe();toast(fbRole()==="master"?"✏️ Mode master : "+v:"👔 Bienvenue "+v,2500)}
 async function fbLogout(){try{if(fb.auth)await fb.auth.signOut()}catch(e){}fb.role=null;fbLS(FB_RK,null);fb.name="";fbLS(FB_NK,null);if(fb.unsub.team){fb.unsub.team();fb.unsub.team=null}closeForm();ui.space=null;fbLS("hangar-space",null);render();window.scrollTo(0,0);toast("Déconnecté")}
 async function openJournal(){editing={kind:"journal"};
  $("#panel").innerHTML=`<h2>🕘 Journal des modifications</h2><div id="jlist"><p class="notes">Chargement…</p></div><div class="actions"><span class="sp"></span><button type="button" class="btn" id="cancel">${T("close")}</button></div>`;$("#sheet").hidden=false;
@@ -2597,7 +2597,7 @@ async function fbChange(w){const ids=w==="m"?["cd-mo","cd-mn","cd-mn2"]:["cd-ro"
   ids.forEach(id=>{const x=$("#"+id);if(x)x.value=""});toast(w==="m"?"✅ Code master changé":"✅ Code lecture changé",3500)}
  catch(e){const cd=String(e&&e.code||"");toast(cd.includes("network")?"Pas de connexion Internet.":cd.includes("too-many")?"Trop d'essais : attends quelques minutes.":cd.includes("weak")?"Code trop faible (6 caractères minimum).":"Code actuel incorrect.",3500)}}
 function fbMbyHtml(x){return x&&x.mby?`<p class="mby">✏️ Modifié par <b>${esc(x.mby)}</b>${x.mat?" · "+fbDT(x.mat):""}</p>`:""}
-function fbAfterOpen(x){if($("#sheet").hidden)return;const p=$("#panel");if(!p||p.querySelector(".mby,.ronote"))return;const ro=isRO();const add=(fb.on?fbMbyHtml(x):"")+(ro?`<p class="ronote">🔒 Lecture seule : entre le code master pour modifier.</p>`:"");if(add){const h=p.querySelector("h2");if(h)h.insertAdjacentHTML("afterend",add);else p.insertAdjacentHTML("afterbegin",add)}if(ro)$("#sheet").classList.add("rosheet")}
+function fbAfterOpen(x){if($("#sheet").hidden)return;const p=$("#panel");if(!p||p.querySelector(".mby,.ronote"))return;const ro=isRO();const add=(fb.on?fbMbyHtml(x):"");if(add){const h=p.querySelector("h2");if(h)h.insertAdjacentHTML("afterend",add);else p.insertAdjacentHTML("afterbegin",add)}if(ro)$("#sheet").classList.add("rosheet")}
 const fbWrap=(f,get)=>function(){const r=f.apply(this,arguments);try{fbAfterOpen(get.apply(null,arguments))}catch(_){}return r};
 const fbFind=(k,id)=>id&&Array.isArray(state[k])?state[k].find(x=>x&&x.id===id):null;
 openForm=fbWrap(openForm,(k,id)=>fbFind(k,id));
@@ -2610,7 +2610,7 @@ openVEdit=fbWrap(openVEdit,()=>null);
 openAnnonce=fbWrap(openAnnonce,id=>fbFind("annonces",id));
 document.addEventListener("click",e=>{const sp=e.target.closest('[data-space="ce"]');if(!sp||!fb.on||ui.space==="ce")return;const r=fbRole();
  if(!r){e.stopPropagation();e.preventDefault();openCeLogin(false);return}
- if(r==="master"&&!fb.name){e.stopPropagation();e.preventDefault();openNameStep()}},true);
+ if(!fb.name){e.stopPropagation();e.preventDefault();openNameStep()}},true);
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.id)return;
  switch(b.id){case"lgGo":fbLogin();break;case"lgName":fbSetName();break;case"fbOut":fbLogout();break;case"fbJournal":openJournal();break;case"fbCodes":openCodes();break;case"fbToMaster":openCeLogin(true);break;case"cdMaster":fbChange("m");break;case"cdRead":fbChange("r");break}});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="lg-code"){e.preventDefault();fbLogin()}else if(e.target.id==="lg-name"){e.preventDefault();fbSetName()}});
