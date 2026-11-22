@@ -315,6 +315,10 @@ button.ancard{cursor:pointer}
 .dragh:hover{background:var(--sunk)}
 .csec.dragging{opacity:.85;box-shadow:0 10px 28px rgba(8,18,30,.25);border-color:var(--accent);transform:scale(1.01)}
 .rlim{font-size:1.35rem;font-weight:800;text-decoration:underline;letter-spacing:.03em}
+.calcolbtn{margin-inline-start:auto;min-height:0;padding:2px 6px}
+.ccols{display:grid;gap:8px;margin:6px 0 12px}
+.ccol{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--surface);font-weight:600}
+.ccol input{width:56px;height:36px;border:0;background:none;padding:0;cursor:pointer}
 .nbadge{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:var(--bad);color:#fff;font-size:.78rem;font-weight:800;margin-inline-start:8px}
 .trlist{display:grid;gap:6px;margin:6px 0 10px}
 .trlist .tcrow{justify-content:space-between}
@@ -431,6 +435,7 @@ header .wrap:has(#tabs[hidden]){padding-bottom:12px}
 .vdh .vshift{width:auto;margin-inline-start:auto;padding:6px 8px;font-size:.85rem}
 .vdh .btn{padding:6px 10px;font-size:.85rem}
 .vrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 36px;gap:6px;align-items:end}
+.vrow .vtime{grid-column:span 2}.vrow .vtime+.vtime{grid-column:span 2}
 .vrow input{width:100%;min-width:0;font:inherit;font-size:.92rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 8px}
 .vrow .vlv{padding:7px 8px;font-size:.92rem}
 .vrow input[data-cnv]{text-transform:uppercase}
@@ -668,6 +673,48 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 
 @media (min-width:700px){.panel{border-radius:20px}}
 .panel h2{font-family:var(--f-body);font-size:1.3rem;font-weight:800;padding-bottom:12px;margin-bottom:16px;border-bottom:1px solid var(--line)}
 .toast{border-radius:10px;box-shadow:var(--shadow-2)}
+
+/* ==== finitions ==== */
+input[type=time]{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+.row2{align-items:end}
+.rowper{grid-template-columns:auto minmax(0,1fr)}.row2 .seg{flex-wrap:nowrap}.bar{white-space:nowrap!important;line-height:20px}.vdh .vshift{max-width:98px}.row2 .seg label{padding:9px 10px;white-space:nowrap}
+.vbtn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.bar.m,.lbar.m{background:#c2410c}.ritem.m{border-inline-start-color:#c2410c}
+.bar.e,.lbar.e{background:#be185d}.ritem.e{border-inline-start-color:#be185d}
+.cardact{gap:6px;margin-top:0}
+.cbtn{font-size:.78rem;padding:5px 9px;border-radius:8px}
+.vdh{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:6px}.vdh .vshift{max-width:104px;margin:0}.vdh .btn{white-space:nowrap;padding:6px 8px}.vdh .vdate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.legend{flex-wrap:wrap;row-gap:6px}
+.empty{box-shadow:none}
+.status{white-space:nowrap}
+.csearch{padding-inline-start:12px}
+.nowchip{font-size:.85rem;font-weight:600;color:#c2410c;background:color-mix(in srgb,#c2410c 12%,var(--surface));border-radius:6px;padding:4px 8px;justify-self:start}
+.flagbtn{justify-self:end;min-height:0;padding:2px 0}
+.gsearch{position:relative;display:grid;gap:6px}
+.gres:empty{display:none}
+.gres{display:grid;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:var(--shadow-2)}
+.gitem{display:flex;align-items:center;gap:10px;width:100%;text-align:start;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.gitem:hover{border-color:var(--accent)}.gic{font-size:1.1rem}.gsub{color:var(--muted);font-size:.85rem}.garr{margin-inline-start:auto;color:var(--muted);font-size:1.3rem}
+.ghist{display:grid;gap:6px;margin:10px 0 14px}
+.gev{display:grid;gap:2px;padding:8px 10px;border-inline-start:3px solid var(--accent);background:var(--bg);border-radius:8px}
+.gevk{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+
+/* ==== synchronisation ==== */
+.fbbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:8px 12px;margin:0 0 10px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:.88rem}
+.fbbar.m{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.fbwho b{font-weight:800}
+.fbst{color:var(--muted);font-size:.8rem}
+.fbbtns{margin-inline-start:auto;display:flex;flex-wrap:wrap;gap:2px}
+.fbbtns .btn{padding:4px 8px;font-size:.82rem;min-height:0}
+.mby{margin:-4px 0 10px;font-size:.82rem;color:var(--muted)}
+.ronote{margin:0 0 10px;padding:7px 10px;border-radius:8px;background:var(--sunk);font-size:.86rem;font-weight:600}
+#sheet.rosheet .actions .primary:not(.share):not(#cancel),#sheet.rosheet .danger,#sheet.rosheet #del{display:none!important}
+body.ro .cbtn[data-edit],body.ro [data-tdel],body.ro [data-vadd],body.ro [data-vrm],body.ro [data-addm],body.ro [data-addd],body.ro [data-addc]{display:none!important}
+.jlist{display:grid;gap:6px;max-height:60vh;overflow:auto}
+.jrow{padding:8px 10px;border-radius:8px;background:var(--sunk);font-size:.88rem;display:grid;gap:2px}
+.jrow .jl{font-weight:600}.jrow small{color:var(--muted)}
+.cdsec{display:grid;gap:8px;margin:12px 0 16px;padding:10px;border:1px solid var(--line);border-radius:12px}
+.cdsec h3{margin:0;font-size:.95rem}
 </style>
 
 </head>
@@ -831,6 +878,8 @@ Object.assign(D.ar,{tab_depannages:"الإصلاحات",fab_depannages:"+ إصل
 Object.assign(D.fr,{f_leave:"Congés",add_leave:"+ Ajouter un congé",warn_leave:(n,a,b)=>`${n} : en congé du ${a} au ${b}`,h_leave:"En congé",on_leave:"En congé",lg_l:"Congé",e_leave:"La fin du congé doit être après le début.",t_leave:n=>`Attention : ${n} en congé à cette date`,leave_now:d=>`En congé jusqu'au ${d}`,leave_next:(a,b)=>`Congé du ${a} au ${b}`,f_onleave:"En congé",rm_leave:"Retirer ce congé"});
 Object.assign(D.en,{f_leave:"Leave",add_leave:"+ Add leave",warn_leave:(n,a,b)=>`${n}: on leave from ${a} to ${b}`,h_leave:"On leave",on_leave:"On leave",lg_l:"Leave",e_leave:"Leave end must come after its start.",t_leave:n=>`Warning: ${n} on leave on this date`,leave_now:d=>`On leave until ${d}`,leave_next:(a,b)=>`Leave ${a} to ${b}`,f_onleave:"On leave",rm_leave:"Remove this leave"});
 Object.assign(D.ar,{f_leave:"العطل",add_leave:"+ إضافة عطلة",warn_leave:(n,a,b)=>`${n}: في عطلة من ${a} إلى ${b}`,h_leave:"في عطلة",on_leave:"في عطلة",lg_l:"عطلة",e_leave:"يجب أن تكون نهاية العطلة بعد بدايتها.",t_leave:n=>`انتباه: ${n} في عطلة في هذا التاريخ`,leave_now:d=>`في عطلة حتى ${d}`,leave_next:(a,b)=>`عطلة من ${a} إلى ${b}`,f_onleave:"في عطلة",rm_leave:"حذف هذه العطلة"});
+const A_NIV=["A5","A6","A7","A8","A9","A10","A11","A12","A13"];
+const badgeTxt=t=>(t.badge||"")+(t.badge==="Tech A"&&t.niv?" · "+t.niv:"");
 const BADGES=["MAP B1","MAP B2","MAP B3","Tech B1","Tech B2","Tech B3","Tech A","Stagiaire"];
 const KEY="missions-convoyages-v1", PKEY="missions-convoyages-prefs";
 let state={missions:[],convoyages:[],techs:[],notes:[],parts:[],contacts:[],events:[],depannages:[],quota:{},prefs:null};
@@ -853,7 +902,7 @@ const techById=id=>state.techs.find(t=>t.id===id);
 const SEED_TECHS=[["seed-alaoui","ALAOUI","MAP B1",true,true,true],["seed-nemrouch","NEMROUCH","MAP B1",false,true,true],["seed-raji","RAJI","MAP B2",true,true,true],["seed-zakaria","ZAKARIA","MAP B2",true,true,true],["seed-benhadine","BEN HADINE","MAP B1",true,true,true],["seed-elihabi","EL IHABI","MAP B1",false,false,true],["seed-bouzid","BOUZID","Tech B1",true,true,true],["seed-elmokhtari","EL MOKHTARI","Tech B1",true,true,true],["seed-dinane","DINANE","Tech B1",true,true,true],["seed-slaiki","SLAIKI","Tech B1",true,true,true],["seed-nejjam","NEJJAM","Tech B1",true,true,true],["seed-chetouani","CHETOUANI","Tech B1",false,true,true],["seed-arib","ARIB","Tech B2",true,true,true],["seed-taouira","TAOUIRA","Tech B2",true,true,true],["seed-sbabhi","SBABHI","Tech B2",true,true,true],["seed-zanana","ZANANA","Tech A",true,false,true],["seed-sakani","SAKANI","Tech A",true,false,true],["seed-missaoui","MISSAOUI","Tech A",true,false,true],["seed-aabdane","A.ABDANE","Tech A",true,false,true],["seed-taki","TAKI","Tech A",true,false,true],["seed-benlaatef","BENLAATEF","Tech A",true,false,true],["seed-lahmer","LAHMER","Tech A",true,false,true],["seed-salsaoui","SALSAOUI","Tech A",true,false,true],["seed-kohaila","KOHAILA","Tech A",true,false,true],["seed-ettaib","ETTAIB","Tech A",true,false,true],["seed-elmoussaoui","EL MOUSSAOUI","Tech A",true,false,true],["seed-elidrissi","EL IDRISSI","Tech A",true,false,true],["seed-lamchaouri","LAMCHAOURI","Tech A",true,false,true],["seed-fakraoui","FAKRAOUI","Tech A",true,false,true],["seed-nouaji","NOUAJI","Tech A",true,false,true],["seed-khoumri","KHOUMRI","Tech A",true,false,true],["seed-bensalih","BENSALIH","Tech A",true,false,true],["seed-rabahi","RABAHI","Tech A",true,false,true],["seed-guennaoui","GUENNAOUI","Tech A",true,false,true],["seed-alaoui-2","ALAOUI","MAP B1",true,true,true],["seed-ouakrim","OUAKRIM","Tech A",false,false,false],["seed-ibnelkhattab","IBN ELKHATTAB","Tech A",false,false,false],["seed-ghalem","GHALEM","Tech A",false,false,false],["seed-ejjebli","EJJEBLI","Tech A",false,false,false],["seed-bentaybi","BENTAYBI","Tech A",false,false,false],["seed-ellahyani","ELLAHYANI","Tech A",false,false,false],["seed-btali","B. TALI","Tech A",false,false,false],["seed-elbanouji","EL BANOUJI","Tech A",false,false,false],["seed-lkhalidi","LKHALIDI","Tech A",false,false,false],["seed-moudakkar","MOUDAKKAR","Tech A",false,false,false],["seed-talbaoui","TALBAOUI","Tech A",false,false,false],["seed-makil","MAKIL","Tech A",false,false,false],["seed-benzouita","BENZOUITA","Tech A",false,false,false],["seed-ezzaouia","EZ-ZAOUIA","Tech A",false,false,false],["seed-idouglid","IDOUGLID","Tech A",false,false,false],["seed-elbertali","EL BERTALI","Tech A",false,false,false],["seed-mabchour","MABCHOUR","Tech A",false,false,false],["seed-mouldy","MOULDY","Tech A",false,false,false],["seed-boussaoud","BOUSSAOUD","Tech A",false,false,false],["seed-aitmbarek","AIT MBAREK","Tech A",false,false,false]];
 const SEED_V1=["seed-alaoui","seed-nemrouch","seed-raji","seed-zakaria","seed-benhadine","seed-elihabi"];
 function seedTechs(techs,done){done=new Set(done||[]);const have=new Set(techs.map(t=>normName(t.nom)));SEED_TECHS.forEach(([id,nom,badge,vaccin,visa,aprs])=>{if(done.has(id)||have.has(normName(nom))||techs.some(t=>t.id===id))return;techs.push({id,nom,badge,vaccin,visa,aprs,notes:"",conges:[]});have.add(normName(nom))});return techs}
-function normalize(d){d=d?JSON.parse(JSON.stringify(d)):{};const sDone=Array.isArray(d.seedIds)?d.seedIds:(d.seeded?SEED_V1:[]);if(SEED_TECHS.some(x=>!sDone.includes(x[0])))d.techs=seedTechs(Array.isArray(d.techs)?d.techs:[],sDone);(Array.isArray(d.techs)?d.techs:[]).forEach(t=>{if(/^Stagiaire /.test(t.badge||""))t.badge="Stagiaire"});const _up=upNames({techs:d.techs,taskSheets:d.taskSheets,renforts:d.renforts,formations:d.formations});return{seeded:true,seedIds:SEED_TECHS.map(x=>x[0]),missions:Array.isArray(d.missions)?d.missions:[],convoyages:Array.isArray(d.convoyages)?d.convoyages:[],techs:Array.isArray(d.techs)?d.techs:[],tpl:(d.tpl&&typeof d.tpl==="object")?d.tpl:{},notes:Array.isArray(d.notes)?d.notes:[],mymissions:Array.isArray(d.mymissions)?d.mymissions:[],toolsCfg:(d.toolsCfg&&typeof d.toolsCfg==="object")?d.toolsCfg:{},taskSheets:Array.isArray(d.taskSheets)?d.taskSheets:[],renforts:Array.isArray(d.renforts)?d.renforts:[],annonces:Array.isArray(d.annonces)?d.annonces:[],releves:Array.isArray(d.releves)?d.releves:[],formations:Array.isArray(d.formations)?d.formations:[],arcWeeks:(d.arcWeeks&&typeof d.arcWeeks==="object")?d.arcWeeks:{},cePin:typeof d.cePin==="string"&&d.cePin?d.cePin:"3600",tsCats:Array.isArray(d.tsCats)?d.tsCats:[],secOrder:(d.secOrder&&typeof d.secOrder==="object")?d.secOrder:{},msgCfg:(d.msgCfg&&typeof d.msgCfg==="object")?d.msgCfg:{},tankCaps:(d.tankCaps&&typeof d.tankCaps==="object")?d.tankCaps:{},leaveBal:d.leaveBal??"",holEdits:(d.holEdits&&typeof d.holEdits==="object")?d.holEdits:{add:[],del:[]},mycvg:Array.isArray(d.mycvg)?d.mycvg:[],parts:Array.isArray(d.parts)?d.parts:[],contacts:Array.isArray(d.contacts)?d.contacts:[],events:Array.isArray(d.events)?d.events:[],visits:(d.visits&&typeof d.visits==="object")?d.visits:{},depannages:Array.isArray(d.depannages)?d.depannages:[],quota:(d.quota&&typeof d.quota==="object")?d.quota:{},prefs:d.prefs||null}}
+function normalize(d){d=d?JSON.parse(JSON.stringify(d)):{};const sDone=Array.isArray(d.seedIds)?d.seedIds:(d.seeded?SEED_V1:[]);if(SEED_TECHS.some(x=>!sDone.includes(x[0])))d.techs=seedTechs(Array.isArray(d.techs)?d.techs:[],sDone);(Array.isArray(d.techs)?d.techs:[]).forEach(t=>{if(/^Stagiaire /.test(t.badge||""))t.badge="Stagiaire"});const _up=upNames({techs:d.techs,taskSheets:d.taskSheets,renforts:d.renforts,formations:d.formations});return{seeded:true,seedIds:SEED_TECHS.map(x=>x[0]),missions:Array.isArray(d.missions)?d.missions:[],convoyages:Array.isArray(d.convoyages)?d.convoyages:[],techs:Array.isArray(d.techs)?d.techs:[],tpl:(d.tpl&&typeof d.tpl==="object")?d.tpl:{},notes:Array.isArray(d.notes)?d.notes:[],mymissions:Array.isArray(d.mymissions)?d.mymissions:[],toolsCfg:(d.toolsCfg&&typeof d.toolsCfg==="object")?d.toolsCfg:{},taskSheets:Array.isArray(d.taskSheets)?d.taskSheets:[],renforts:Array.isArray(d.renforts)?d.renforts:[],annonces:Array.isArray(d.annonces)?d.annonces:[],releves:Array.isArray(d.releves)?d.releves:[],formations:Array.isArray(d.formations)?d.formations:[],arcWeeks:(d.arcWeeks&&typeof d.arcWeeks==="object")?d.arcWeeks:{},cePin:typeof d.cePin==="string"&&d.cePin?d.cePin:"3600",tsCats:Array.isArray(d.tsCats)?d.tsCats:[],secOrder:(d.secOrder&&typeof d.secOrder==="object")?d.secOrder:{},calColors:(d.calColors&&typeof d.calColors==="object")?d.calColors:{},msgCfg:(d.msgCfg&&typeof d.msgCfg==="object")?d.msgCfg:{},tankCaps:(d.tankCaps&&typeof d.tankCaps==="object")?d.tankCaps:{},leaveBal:d.leaveBal??"",holEdits:(d.holEdits&&typeof d.holEdits==="object")?d.holEdits:{add:[],del:[]},mycvg:Array.isArray(d.mycvg)?d.mycvg:[],parts:Array.isArray(d.parts)?d.parts:[],contacts:Array.isArray(d.contacts)?d.contacts:[],events:Array.isArray(d.events)?d.events:[],visits:(d.visits&&typeof d.visits==="object")?d.visits:{},depannages:Array.isArray(d.depannages)?d.depannages:[],quota:(d.quota&&typeof d.quota==="object")?d.quota:{},prefs:d.prefs||null}}
 
 /* ---------- réglages : langue, mode, arrière-plan ---------- */
 function applyPrefs(){const h=document.documentElement;LANG="fr";
@@ -991,19 +1040,24 @@ return`<button class="card ${isPast(s)?"past":""}" data-edit="missions:${m.id}">
 <div class="when"><b>${fmtShort(m.debut)}</b> → <b>${fmt(m.fin)}</b>${d?` · ${T("days",d)}`:""}</div>
 ${crew(m.techs)}${warnBlock(isPast(s)?[]:conflicts(m.techs,m.debut,m.fin,m.id))}${m.notes?`<div class="notes">${esc(m.notes)}</div>`:""}</button>`}
 
-function convCard({c,d}){const s=cStatus(c,c.noday?iso(plus(new Date(d+"T00:00:00Z"),6)):d);const w=isPast(s)?[]:[...warns(c,c.zone),...(c.noday?[]:conflicts(c.techs,d,d,c.id))];
+function convCard({c,d}){const s=cStatus(c,c.noday?iso(plus(new Date(d+"T00:00:00Z"),6)):d);const w=isPast(s)?[]:[...warns(c,c.zone),...(c.noday?[]:convWarns(c.techs,d,c.periode||"Journée",c.id))];
 return`<button class="card ${isPast(s)?"past":""}" data-edit="convoyages:${c.id}">
 <div class="top"><span class="chip ${c.nature==="Double"?"acc":""}">${V(c.nature)}</span><span class="chip">${V(c.zone)}</span>${c.repeat?`<span class="chip">${T("weekly")}</span>`:""}${c.spontane?`<span class="chip">${T("spont")}</span>`:""}${c.exemple?`<span class="chip ex">${T("example")}</span>`:""}<span class="status ${s[1]}">${s[0]}</span></div>
 <div class="dest">${esc(c.destination||(c.zone?V(c.zone):T("dest_tbd")))}</div>
-<div class="when"><b>${c.noday?T("day_tbd"):dayName(d)}</b>${c.repeat?` · ${c.until?T("until",fmt(c.until)):T("noend")}`:""}</div>
+<div class="when"><b>${c.noday?T("day_tbd"):dayName(d)}</b> · ${perTxt(c)}${c.repeat?` · ${c.until?T("until",fmt(c.until)):T("noend")}`:""}</div>
 ${crew(c.techs,weekOf(d))}${warnBlock(w)}${c.notes?`<div class="notes">${esc(c.notes)}</div>`:""}</button>`}
 
+const FLK="hangar-show-flags";function showFlags(){try{return localStorage.getItem(FLK)==="1"}catch(e){return false}}
+function techNow(t){const d=todayStr();const lv=(t.conges||[]).find(c=>c.debut&&c.debut<=d&&(c.fin||c.debut)>=d);const out=[];
+ if(lv)out.push(`<div class="leavechip now">🌴 En congé jusqu'au ${fmt(lv.fin||lv.debut)}</div>`);
+ state.missions.filter(m=>(m.techs||[]).includes(t.id)&&m.debut&&m.debut<=d&&(m.fin||m.debut)>=d).forEach(m=>out.push(`<div class="nowchip">🧳 En mission : ${esc(m.destination||"")} jusqu'au ${fmt(m.fin||m.debut)}</div>`));
+ return out.join("")}
 function techCard(t){const t0=todayStr();const n=[...state.missions,...state.depannages].filter(m=>(m.techs||[]).includes(t.id)&&(m.fin||m.debut||"9999")>=t0).length+state.convoyages.filter(c=>(c.techs||[]).includes(t.id)&&((c.repeat?(c.until||"9999"):c.date)||"9999")>=t0).length;
 return`<button class="card" data-edit="techs:${t.id}">
-<div class="top"><span class="tech-name">${esc(t.nom)}</span><span class="badge" data-b="${esc(t.badge)}">${esc(t.badge)}</span>${t.exemple?`<span class="chip ex">${T("example")}</span>`:""}<span class="status">${T("upcoming",n)}</span></div>
-<div class="top"><span class="chip ${t.vaccin?"ok":"bad"}">${T("vac")} : ${V(t.vaccin?"Oui":"Non")}</span><span class="chip ${t.visa?"ok":"bad"}">${T("visa")} : ${V(t.visa?"Oui":"Non")}</span><span class="chip ${t.aprs?"ok":"bad"}">${T("aprs")} : ${V(t.aprs?"Oui":"Non")}</span></div>
-${leaveChip(t)}
-<div class="cardact"><span class="cbtn" data-edit="techs:${t.id}">✏️ Modifier</span><span class="cbtn del" data-tdel="${t.id}">🗑️ Supprimer</span></div>
+<div class="top"><span class="tech-name">${esc(t.nom)}</span><span class="badge" data-b="${esc(t.badge)}">${esc(badgeTxt(t))}</span>${t.exemple?`<span class="chip ex">${T("example")}</span>`:""}</div>
+${showFlags()?`<div class="top"><span class="chip ${t.vaccin?"ok":"bad"}">${T("vac")} : ${V(t.vaccin?"Oui":"Non")}</span><span class="chip ${t.visa?"ok":"bad"}">${T("visa")} : ${V(t.visa?"Oui":"Non")}</span><span class="chip ${t.aprs?"ok":"bad"}">${T("aprs")} : ${V(t.aprs?"Oui":"Non")}</span></div>`:""}
+${techNow(t)}
+<div class="cardact"><span class="cbtn" data-gtech="${t.id}">🕘 Historique</span><span class="cbtn" data-edit="techs:${t.id}">✏️ Modifier</span><span class="cbtn del" data-tdel="${t.id}">🗑️ Supprimer</span></div>
 ${t.notes?`<div class="notes">${esc(t.notes)}</div>`:""}</button>`}
 
 function filters(k){return{
@@ -1016,13 +1070,13 @@ function filters(k){return{
 function occOn(c,d){if(!c.date||c.noday)return false;if(!c.repeat)return c.date===d;return d>=c.date&&(!c.until||d<=c.until)&&Math.round((Date.parse(d)-Date.parse(c.date))/864e5)%7===0}
 function itemsOn(d){return{cs:state.convoyages.filter(c=>occOn(c,d)),ms:state.missions.filter(m=>m.debut&&m.debut<=d&&(m.fin||m.debut)>=d),ds:state.depannages.filter(m=>m.debut&&m.debut<=d&&(m.fin||m.debut)>=d)}}
 const names=ids=>(ids||[]).map(techById).filter(Boolean).map(t=>t.nom).join(", ")||T("toAssign");
-function rowC(c,d){return`<button class="ritem c" data-detail="convoyages:${c.id}:${d||""}"><span class="rtag">${V(c.nature)} · ${V(c.zone)}</span><b>${esc(c.destination||V(c.zone))}</b><span class="who">${esc(names(c.techs))}</span></button>`}
+function rowC(c,d){return`<button class="ritem c" data-detail="convoyages:${c.id}:${d||""}"><span class="rtag">${V(c.nature)} · ${V(c.zone)} · ${perTxt(c)}</span><b>${esc(c.destination||V(c.zone))}</b><span class="who">${esc(names(c.techs))}</span></button>`}
 function rowM(m){return`<button class="ritem m" data-detail="missions:${m.id}:"><span class="rtag">${V(m.type)}</span><b>${esc(m.destination)}</b><span class="who">${esc(names(m.techs))}</span></button>`}
 function calHead(label){const rtl=LANG==="ar";const c=ui.cal;
  return`<div class="calbar"><button class="wbtn" data-calnav="-1" aria-label="${T("cal_prev")}">${rtl?"›":"‹"}</button><h2 class="caltitle">${label}</h2><button class="wbtn" data-calnav="1" aria-label="${T("cal_next")}">${rtl?"‹":"›"}</button>
  <div class="seg calview"><button type="button" class="vbtn" data-calview="month" aria-pressed="${c.view==="month"}">${T("cal_month")}</button><button type="button" class="vbtn" data-calview="week" aria-pressed="${c.view==="week"}">${T("cal_week")}</button></div>
  <button class="btn" data-caltoday="1">${T("cal_today")}</button></div>
- <div class="legend"><span><i class="lbar c"></i>${T("lg_c")}</span><span><i class="lbar m"></i>${T("lg_m")}</span><span><i class="lbar d"></i>${T("lg_d")}</span><span><i class="lbar l"></i>${T("lg_l")}</span><span><i class="lbar v"></i>${T("vs_prog")}</span><span><i class="lbar f"></i>Formation</span><span><i class="lbar e"></i>${T("lg_e")}</span></div>`}
+ <div class="legend"><span><i class="lbar c"></i>${T("lg_c")}</span><span><i class="lbar m"></i>${T("lg_m")}</span><span><i class="lbar d"></i>${T("lg_d")}</span><span><i class="lbar l"></i>${T("lg_l")}</span><span><i class="lbar v"></i>${T("vs_prog")}</span><span><i class="lbar f"></i>Formation</span><span><i class="lbar e"></i>${T("lg_e")}</span><button type="button" class="btn link calcolbtn" id="calColors">🎨 Couleurs</button></div>`}
 function dayPanel(d){const{cs,ms,ds}=itemsOn(d);const lvs=state.techs.filter(t=>leaveRange(t,d,d));
  return`<div class="daypanel"><div class="dphead"><h3>${dayName(d)} · S${weekOf(d).w}</h3><div class="dpbtns"><button class="btn primary" data-addc="1">${T("add_c")}</button><button class="btn" data-addm="1">${T("add_m")}</button><button class="btn" data-addd="1">${T("add_d")}</button><button class="btn" data-vnew="${d}">${T("vs_addcal")}</button><button class="btn" data-fmnew="${d}">+ Formation</button><button class="btn" data-evnew="${d}">${T("ev_add")}</button></div></div>
  ${lvs.length?`<p class="leaveline">🌴 ${T("on_leave")} : ${lvs.map(t=>esc(t.nom)).join(", ")}</p>`:""}
@@ -1046,7 +1100,7 @@ function calendarView(){const c=ui.cal;const t0=todayStr();
   (state.formations||[]).filter(f=>f.debut&&f.debut<=b&&(f.fin||f.debut)>=a).forEach(f=>{const st=Math.max(0,diff(f.debut,a)),en=Math.min(6,diff(f.fin||f.debut,a));segs.push({k:"f",id:f.id,st,en,cl:f.debut<a,cr:(f.fin||f.debut)>b,lab:"🎓 "+f.nom,dd:""})});
   (state.events||[]).filter(ev=>ev.debut&&ev.debut<=b&&(ev.fin||ev.debut)>=a).forEach(ev=>{const st=Math.max(0,diff(ev.debut,a)),en=Math.min(6,diff(ev.fin||ev.debut,a));segs.push({k:"e",id:ev.id,st,en,cl:ev.debut<a,cr:(ev.fin||ev.debut)>b,lab:"📌 "+ev.titre,dd:""})});
   state.techs.forEach(t=>(t.conges||[]).filter(c=>c.debut&&c.debut<=b&&(c.fin||c.debut)>=a).forEach(c=>{const st=Math.max(0,diff(c.debut,a)),en=Math.min(6,diff(c.fin||c.debut,a));segs.push({k:"l",id:t.id,st,en,cl:c.debut<a,cr:(c.fin||c.debut)>b,lab:"🌴 "+t.nom,dd:""})}));
-  for(let i=0;i<7;i++){const ds=iso(plus(d,i));state.convoyages.filter(x=>occOn(x,ds)).forEach(x=>{const ts=(x.techs||[]).map(techById).filter(Boolean);(ts.length?ts.map(t=>t.nom):[T("toAssign")]).forEach(nm=>segs.push({k:"c",id:x.id,st:i,en:i,lab:nm,dd:ds}))})}
+  for(let i=0;i<7;i++){const ds=iso(plus(d,i));state.convoyages.filter(x=>occOn(x,ds)).forEach(x=>{const ts=(x.techs||[]).map(techById).filter(Boolean);(ts.length?ts.map(t=>t.nom):[T("toAssign")]).forEach(nm=>segs.push({k:"c",id:x.id,st:i,en:i,lab:((x.periode||"Journée")==="Nuit"?"🌙 ":"")+nm,dd:ds}))})}
   segs.sort((p,q)=>p.st-q.st||(q.en-q.st)-(p.en-p.st));const lanes=[];
   segs.forEach(g=>{let l=lanes.findIndex(e=>e<g.st);if(l<0){l=lanes.length;lanes.push(-1)}lanes[l]=g.en;g.l=l});
   const vsAll=[0,1,2,3,4,5,6].map(i=>visitsOn(iso(plus(d,i))));const maxV=Math.max(0,...vsAll.map(x=>x.length));const span=lanes.length+maxV+3;
@@ -1222,7 +1276,7 @@ const VDAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
 if(!ui.vweek)ui.vweek=isoWeekNow();
 function vKey(){return`${ui.vweek.y}-W${ui.vweek.w}`}
 function vWeek(create){state.visits=state.visits||{};let w=state.visits[vKey()];if(!w&&create){w=state.visits[vKey()]={days:{},shifts:{}}}return w||{days:{},shifts:{}}}
-function vRow(d,i,r){return`<div class="vrow"><label class="field" for="v-im-${d}-${i}"><span class="tfl">${T("vs_im")}</span><input type="text" id="v-im-${d}-${i}" data-vf="im" data-vd="${d}" data-vi="${i}" data-cnv="1" value="${esc(r.im||"CN-")}" autocapitalize="characters"></label><label class="field" for="v-ty-${d}-${i}"><span class="tfl">${T("vs_ty")}</span><input type="text" id="v-ty-${d}-${i}" data-vf="ty" data-vd="${d}" data-vi="${i}" value="${esc(r.ty??"Check A")}"></label><label class="field" for="v-lv-${d}-${i}"><span class="tfl">${T("vs_lv")}</span><select id="v-lv-${d}-${i}" data-vf="lv" data-vd="${d}" data-vi="${i}" class="sel vlv"><option value="">${T("vs_lv_ph")}</option>${VDAYS.map(x=>`<option value="${x}" ${r.lv===x?"selected":""}>${x}</option>`).join("")}${r.lv&&!VDAYS.includes(r.lv)?`<option value="${esc(r.lv)}" selected>${esc(r.lv)}</option>`:""}</select></label><button type="button" class="wbtn" data-vrm="${d}:${i}" aria-label="${T("vs_rm")}">✕</button></div>`}
+function vRow(d,i,r){return`<div class="vrow"><label class="field" for="v-im-${d}-${i}"><span class="tfl">${T("vs_im")}</span><input type="text" id="v-im-${d}-${i}" data-vf="im" data-vd="${d}" data-vi="${i}" data-cnv="1" value="${esc(r.im||"CN-")}" autocapitalize="characters"></label><label class="field" for="v-ty-${d}-${i}"><span class="tfl">${T("vs_ty")}</span><input type="text" id="v-ty-${d}-${i}" data-vf="ty" data-vd="${d}" data-vi="${i}" value="${esc(r.ty??"Check A")}"></label><label class="field" for="v-lv-${d}-${i}"><span class="tfl">${T("vs_lv")}</span><select id="v-lv-${d}-${i}" data-vf="lv" data-vd="${d}" data-vi="${i}" class="sel vlv"><option value="">${T("vs_lv_ph")}</option>${VDAYS.map(x=>`<option value="${x}" ${r.lv===x?"selected":""}>${x}</option>`).join("")}${r.lv&&!VDAYS.includes(r.lv)?`<option value="${esc(r.lv)}" selected>${esc(r.lv)}</option>`:""}</select></label><button type="button" class="wbtn" data-vrm="${d}:${i}" aria-label="${T("vs_rm")}">✕</button><label class="field vtime" for="v-he-${d}-${i}"><span class="tfl">Heure d'entrée</span><input type="time" id="v-he-${d}-${i}" data-vf="he" data-vd="${d}" data-vi="${i}" value="${esc(r.he||"")}"></label><label class="field vtime" for="v-hf-${d}-${i}"><span class="tfl">Heure de fin</span><input type="time" id="v-hf-${d}-${i}" data-vf="hf" data-vd="${d}" data-vi="${i}" value="${esc(r.hf||"")}"></label></div>`}
 function visitsSection(){const{y,w}=ui.vweek;const wk=vWeek(false);const ws=weekStart(y,w);const rtl=LANG==="ar";
  const total=Object.values(wk.days||{}).reduce((a,r)=>a+r.length,0);
  return`<section class="vsec"><h2 class="sech">📋 ${T("vs_title")}</h2>
@@ -1230,7 +1284,7 @@ function visitsSection(){const{y,w}=ui.vweek;const wk=vWeek(false);const ws=week
  <div class="vdays">${VDAYS.map((nm,d)=>{const rows=(wk.days||{})[d]||[];const sh=(wk.shifts||{})[d]||"Journée";
   return`<div class="vday ${rows.length?"has":""}"><div class="vdh"><b>${nm}</b><span class="vdate">${fmtShort(iso(plus(ws,d)))}</span><select class="sel vshift" data-vsh="${d}" aria-label="${nm}"><option value="Journée" ${sh==="Journée"?"selected":""}>${T("vs_day")}</option><option value="Nuit" ${sh==="Nuit"?"selected":""}>${T("vs_night")}</option></select><button type="button" class="btn" data-vadd="${d}">${T("vs_add")}</button></div>${rows.map((r,i)=>vRow(d,i,r)).join("")}</div>`}).join("")}</div></section>`}
 function vText(){const{w}=ui.vweek;const wk=vWeek(false);const out=["Bonjour","",`Programme visites checks S${w}`];let any=false;
- VDAYS.forEach((nm,d)=>{const rows=((wk.days||{})[d]||[]).map(r=>{let im=(r.im||"").trim().toUpperCase();if(im==="CN-")im="";const base=[im,(r.ty||"").trim()].filter(Boolean).join(" ");const lv=(r.lv||"").trim();return base+(lv?(base?" - ":"")+"Livraison : "+lv:"")}).filter(Boolean);
+ VDAYS.forEach((nm,d)=>{const rows=((wk.days||{})[d]||[]).map(r=>{let im=(r.im||"").trim().toUpperCase();if(im==="CN-")im="";const base=[im,(r.ty||"").trim()].filter(Boolean).join(" ");const lv=(r.lv||"").trim();const hh=vHours(r);return base+(hh?(base?" - ":"")+hh:"")+(lv?(base||hh?" - ":"")+"Livraison : "+lv:"")}).filter(Boolean);
   if(!rows.length)return;any=true;out.push("",`${nm} ${((wk.shifts||{})[d]||"Journée").toLowerCase()}`,...rows)});
  out.push("","Cordialement");return{text:out.join("\n"),any}}
 function openVShare(){const v=vText();editing={kind:"vshare"};shareCur={text:v.text};
@@ -1243,18 +1297,20 @@ function vInput(t){const d=+t.dataset.vd,i=+t.dataset.vi;if(t.dataset.cnv&&!t.va
 
 /* programme visites dans le calendrier */
 Object.assign(D.fr,{vs_prog:"Programme",vs_addcal:"+ Visite",vs_lvl:"Livraison"});Object.assign(D.en,{vs_prog:"Programme",vs_addcal:"+ Check",vs_lvl:"Delivery"});Object.assign(D.ar,{vs_prog:"البرنامج",vs_addcal:"+ زيارة",vs_lvl:"التسليم"});
+function vHours(r){return r.he&&r.hf?`${r.he} → ${r.hf}`:r.he?`Entrée ${r.he}`:r.hf?`Fin ${r.hf}`:""}
 function visitsOn(dstr){const wk=weekOf(dstr);const key=`${wk.y}-W${wk.w}`;const d=(new Date(dstr+"T00:00:00Z").getUTCDay()+6)%7;const rows=(((state.visits||{})[key]||{}).days||{})[d]||[];return rows.map((r,i)=>({r,i,key,d}))}
 function vShort(r){const im=(r.im||"").toUpperCase().replace(/^CN-?/,"");return[im,r.ty].filter(Boolean).join(" ")||"?"}
-function rowV(x){return`<button class="ritem v" data-vedit="${x.key}:${x.d}:${x.i}"><span class="rtag">📋 ${T("vs_prog")}</span><b>${esc(x.r.im||"")} ${esc(x.r.ty||"")}</b>${x.r.lv?`<span class="who">${T("vs_lvl")} : ${esc(x.r.lv)}</span>`:""}</button>`}
+function rowV(x){return`<button class="ritem v" data-vedit="${x.key}:${x.d}:${x.i}"><span class="rtag">📋 ${T("vs_prog")}</span><b>${esc(x.r.im||"")} ${esc(x.r.ty||"")}</b>${vHours(x.r)?`<span class="who">🕒 ${esc(vHours(x.r))}</span>`:""}${x.r.lv?`<span class="who">${T("vs_lvl")} : ${esc(x.r.lv)}</span>`:""}</button>`}
 function openVEdit(key,d,i){const isNew=i===null;const wk=(state.visits||{})[key]||{days:{}};const r=isNew?{im:"CN-",ty:"Check A",lv:""}:(((wk.days||{})[d])||[])[i];if(!r)return;editing={kind:"vedit",key,d,i};
  $("#panel").innerHTML=`<h2>📋 ${VDAYS[d]} · S${key.split("-W")[1]}</h2><form id="vf" novalidate>
  <label class="field" for="ve-im"><span class="lbl">${T("vs_im")}</span><input type="text" id="ve-im" data-cnv2="1" value="${esc(r.im||"CN-")}" autocapitalize="characters"></label>
  <label class="field" for="ve-ty"><span class="lbl">${T("vs_ty")}</span><input type="text" id="ve-ty" value="${esc(r.ty??"")}"></label>
+ <div class="row2"><label class="field" for="ve-he"><span class="lbl">Heure d'entrée</span><input type="time" id="ve-he" value="${esc(r.he||"")}"></label><label class="field" for="ve-hf"><span class="lbl">Heure de fin</span><input type="time" id="ve-hf" value="${esc(r.hf||"")}"></label></div>
  <label class="field" for="ve-lv"><span class="lbl">${T("vs_lv")}</span><select id="ve-lv" class="sel"><option value="">${T("vs_lv_ph")}</option>${VDAYS.map(x=>`<option value="${x}" ${r.lv===x?"selected":""}>${x}</option>`).join("")}</select></label>
  <div class="actions">${isNew?"":`<button type="button" class="btn danger" id="veDel">${T("del")}</button>`}<span class="sp"></span><button type="button" class="btn" id="cancel">${T("cancel")}</button><button type="submit" class="btn primary">${T("save")}</button></div></form>`;
  $("#sheet").hidden=false}
 function saveVEdit(){const{key,d,i}=editing;state.visits=state.visits||{};const wk=state.visits[key]=state.visits[key]||{days:{},shifts:{}};wk.days=wk.days||{};wk.days[d]=wk.days[d]||[];
- let im=$("#ve-im").value.trim().toUpperCase();if(im&&!im.startsWith("CN-"))im="CN-"+im.replace(/^CN-?/,"");const o={im:im||"CN-",ty:$("#ve-ty").value.trim(),lv:$("#ve-lv").value};
+ let im=$("#ve-im").value.trim().toUpperCase();if(im&&!im.startsWith("CN-"))im="CN-"+im.replace(/^CN-?/,"");const o={im:im||"CN-",ty:$("#ve-ty").value.trim(),he:$("#ve-he").value,hf:$("#ve-hf").value,lv:$("#ve-lv").value};
  if(i===null)wk.days[d].push(o);else wk.days[d][i]=o;const isNew=i===null;closeForm();render();persist();toast(T(isNew?"t_added":"t_edited"))}
 function delVEdit(btn){if(!btn.classList.contains("armed")){btn.classList.add("armed");btn.textContent=T("confirmDel");return}const{key,d,i}=editing;((state.visits[key]||{}).days||{})[d].splice(i,1);closeForm();render();persist();toast(T("t_deleted"))}
 
@@ -1416,7 +1472,7 @@ function lvMonths(r){const{dep,ret}=ui.lv;const last=iso(plus(new Date(ret+"T00:
   h+=g+`</div></div>`;m=new Date(Date.UTC(y,mo+1,1))}
  return h}
 function lvText(r){const bal=+state.leaveBal||0;const ded=ui.lv.nat==="Congé annuel";
- return[`Demande de congé`,``,`Nature : ${ui.lv.nat}`,`Départ : ${lvLong(ui.lv.dep)}`,`Reprise : ${lvLong(ui.lv.ret)}`,`Nombre de jours : ${r?r.n:0}`,...(ded?[`Solde restant : ${bal-(r?r.n:0)} jour(s)`]:[])].join("\n")}
+ return[`Demande de congé`,``,`Nature : ${ui.lv.nat}`,`Départ : ${lvLong(ui.lv.dep)}`,`Reprise : ${lvLong(ui.lv.ret)}`,`Nombre de jours : ${r?r.n:0}`,...(ded&&String(state.leaveBal??"").trim()!==""?[`Solde restant : ${bal-(r?r.n:0)} jour(s)`]:[])].join("\n")}
 function openLeaveCalc(){editing={kind:"lvcalc"};const r=lvCalc();const bal=state.leaveBal??"";const ded=ui.lv.nat==="Congé annuel";const after=(+bal||0)-(r?r.n:0);const txt=lvText(r);shareCur={text:txt};
  const yrs=[...new Set([ui.lv.dep.slice(0,4),ui.lv.ret.slice(0,4)])];
  $("#panel").innerHTML=`<h2>🌴 Calcul de congé</h2>
@@ -1426,7 +1482,7 @@ function openLeaveCalc(){editing={kind:"lvcalc"};const r=lvCalc();const bal=stat
  <label class="field" for="lv-ret"><span class="tfl">Date de retour (reprise)</span><input type="date" id="lv-ret" value="${ui.lv.ret}"></label>
  <label class="field wide" for="lv-bal"><span class="tfl">Solde actuel (jours) — modifiable</span><input type="number" id="lv-bal" step="0.5" inputmode="decimal" value="${bal}" placeholder="Ex. 18"></label></div>
  ${r?`<div class="cctot"><div class="all"><span>Jours de congé</span><b>${r.n}</b></div><div><span>Dimanches</span><b>${r.sun}</b></div><div><span>Fériés</span><b>${r.hol.length}</b></div></div>
- ${ded?`<p class="lvbal ${after<0?"neg":""}">Solde après ce congé : <b>${after}</b> jour(s)</p>`:`<p class="notes">Ce type de congé ne retire rien du solde.</p>`}
+ ${ded?(String(bal).trim()===""?`<p class="notes">Indique ton solde actuel pour voir le solde restant.</p>`:`<p class="lvbal ${after<0?"neg":""}">Solde après ce congé : <b>${after}</b> jour(s)</p>`):`<p class="notes">Ce type de congé ne retire rien du solde.</p>`}
  ${r.hol.length?`<p class="notes">Jours fériés non comptés : ${r.hol.map(h=>`${new Date(h.date+"T00:00:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short"})} (${esc(h.name)})`).join(", ")}</p>`:""}
  <p class="notes">${r.cal} jour(s) calendaires, du départ à la veille de la reprise. Les samedis sont comptés, les dimanches et les jours fériés non.</p>
  <div class="lvlegend"><span><i class="lvd cnt"></i>Compté</span><span><i class="lvd sun"></i>Dimanche</span><span><i class="lvd hol"></i>Férié</span></div>
@@ -1540,7 +1596,7 @@ function tsGet(id){const o=(state.taskSheets||[]).find(x=>x.id===id);return o?ts
 function tsChip(t,date){const tech=t.id&&state.techs.find(x=>x.id===t.id);const lv=tech&&leaveRange(tech,date);const nm=t.id?tsTechName(t.id,t.nom):t.nom;
  return`<span class="tschip ${lv?"lv":""}" data-id="${esc(t.id||"")}" data-nom="${esc(nm)}">${lv?"⚠️ ":""}${esc(nm)}${t.id?"":" <small>(autre)</small>"}<button type="button" data-tschipx="1" aria-label="Retirer ${esc(nm)}">✕</button></span>`}
 const TS_PRIO={"TRVX":["MAP B1","MAP B2","Tech B1"],"B2":["MAP B2","Tech A"],"ENG 1":["MAP B1","Tech B1","Tech A"],"ENG 2":["MAP B1","Tech B1","Tech A"],"Lub":["Tech B1","Tech A"],"Weekly":["Tech B1","Tech B2","Tech A"],"Cabine":["Tech A","Tech B1","Tech B2"]};
-function tsTechOpts(date,cat){const opt=t=>`<option value="${t.id}">${esc(t.nom)}${t.badge?" ("+esc(t.badge)+")":""}${leaveRange(t,date)?" ⚠️ congé":""}</option>`;const byName=(a,b)=>a.nom.localeCompare(b.nom);
+function tsTechOpts(date,cat){const opt=t=>`<option value="${t.id}">${esc(t.nom)}${t.badge?" ("+esc(badgeTxt(t))+")":""}${leaveRange(t,date)?" ⚠️ congé":""}</option>`;const byName=(a,b)=>a.nom.localeCompare(b.nom);
  const P=TS_PRIO[cat];let body;
  if(P){const rank=t=>{let i=P.indexOf(t.badge);if(i<0&&t.badge==="MAP")i=P.findIndex(x=>x.startsWith("MAP"));return i};
   const rec=state.techs.filter(t=>rank(t)>=0).sort((a,b)=>rank(a)-rank(b)||byName(a,b)),oth=state.techs.filter(t=>rank(t)<0).sort(byName);
@@ -1858,7 +1914,7 @@ function tvRepSection(){const L=tvSheets();if(!L.length)return`<section class="t
 function tvProgSection(){const now=weekOf(todayStr());const y=ui.tv.y||now.y,w=ui.tv.w||now.w;const ws=weekStart(y,w);const wk=(state.visits||{})[`${y}-W${w}`]||{days:{},shifts:{}};
  const days=VDAYS.map((nm,d)=>{const rows=((wk.days||{})[d]||[]).filter(r=>(r.im&&r.im!=="CN-")||r.ty);return{nm,d,rows,date:iso(plus(ws,d)),sh:(wk.shifts||{})[d]||"Journée"}}).filter(x=>x.rows.length);
  return`<section class="tplsec"><div class="weekbar"><button class="wbtn" data-tvw="-1" aria-label="Semaine précédente">‹</button><b class="cclab">S${w} · ${fmtShort(iso(ws))} – ${fmt(iso(plus(ws,6)))}</b><button class="wbtn" data-tvw="1" aria-label="Semaine suivante">›</button></div>
- ${days.length?days.map(x=>`<div class="tvday ${x.date===todayStr()?"today":""}"><div class="tvdh"><b>${x.nm}</b> <span>${fmtShort(x.date)} · ${esc(x.sh)}</span></div>${x.rows.map(r=>`<div class="tvrow"><b>${esc((r.im||"").toUpperCase())}</b><span>${esc(r.ty||"")}${r.lv?` · Livraison : ${esc(r.lv)}`:""}</span></div>`).join("")}</div>`).join(""):`<p class="notes">Aucun avion programmé cette semaine.</p>`}</section>`}
+ ${days.length?days.map(x=>`<div class="tvday ${x.date===todayStr()?"today":""}"><div class="tvdh"><b>${x.nm}</b> <span>${fmtShort(x.date)} · ${esc(x.sh)}</span></div>${x.rows.map(r=>`<div class="tvrow"><b>${esc((r.im||"").toUpperCase())}</b><span>${esc(r.ty||"")}${vHours(r)?` · 🕒 ${esc(vHours(r))}`:""}${r.lv?` · Livraison : ${esc(r.lv)}`:""}</span></div>`).join("")}</div>`).join(""):`<p class="notes">Aucun avion programmé cette semaine.</p>`}</section>`}
 function tvShiftWeek(n){const now=weekOf(todayStr());const y=ui.tv.y||now.y,w=ui.tv.w||now.w;const d=plus(weekStart(y,w),7*n);const k=weekOf(iso(d));ui.tv.y=k.y;ui.tv.w=k.w;render()}
 
 /* ---------- messages des chefs aux techniciens ---------- */
@@ -1897,7 +1953,7 @@ function rlList(){return[...(state.releves||[])].filter(r=>!ui.rl.q||normName([r
 function rlCard(r){return`<button type="button" class="ancard rlcard" data-rlopen="${r.id}">${r.im&&r.im!=="CN-"?`<div class="rlim">${esc(r.im)}</div>`:""}<div class="anhead">🔄 <b>${esc(r.titre||"Consignes")}</b></div><div class="antext">${esc(r.texte||"").replace(/\n/g,"<br>")}</div><div class="anmeta">Chef : <b>${esc(r.par||"—")}</b> · ${anWhen(r)}</div></button>`}
 function rlListHtml(){return rlList().map(rlCard).join("")||`<p class="notes">${ui.rl.q?"Aucune consigne trouvée.":"Aucune consigne enregistrée."}</p>`}
 function rlSection(){return`<section class="tplsec"><p class="notes">🔒 Visible uniquement dans l'espace Contremaître et C/E.</p><button type="button" class="btn primary" data-rlnew="1">+ Nouvelle relève</button>
- <input type="search" id="rl-q" class="csearch" placeholder="🔍 Rechercher une consigne, un nom…" value="${esc(ui.rl.q||"")}">
+ <input type="search" id="rl-q" class="csearch" placeholder="🔍 Rechercher…" value="${esc(ui.rl.q||"")}">
  <div class="anlist" id="rlList">${rlListHtml()}</div></section>`}
 function rlText(r){return[`🔄 Relève — ${anWhen(r)}`,...(r.im&&r.im!=="CN-"?[`Immatriculation : ${r.im}`]:[]),`Titre : ${r.titre||"—"}`,"",r.texte||"","",`Chef : ${r.par||"—"}`].join("\n")}
 function openReleve(id){editing={kind:"rl"};const r=(state.releves||[]).find(x=>x.id===id)||{id:uid(),titre:"",im:"CN-",texte:"",par:(()=>{try{return localStorage.getItem("hangar-an-auteur")||""}catch(e){return""}})(),vac:""};ui.rl={...ui.rl,id:r.id,del:false};const saved=(state.releves||[]).some(x=>x.id===r.id);
@@ -1924,6 +1980,59 @@ document.addEventListener("pointerdown",e=>{const h=e.target.closest(".dragh");i
   state.secOrder={...(state.secOrder||{}),[box.dataset.secs]:[...box.querySelectorAll(":scope>.csec")].map(x=>x.dataset.sec)};persist()};
  document.addEventListener("pointermove",move);document.addEventListener("pointerup",up);document.addEventListener("pointercancel",up)});
 document.addEventListener("touchmove",e=>{if(document.querySelector(".csec.dragging"))e.preventDefault()},{passive:false});
+
+/* ---------- convoyage : période journée / nuit ---------- */
+function cvgPeriodWarns(sel,d,per,excl){const w=[];if(!d)return w;(sel||[]).forEach(id=>{const t=techById(id);if(!t)return;
+ state.convoyages.filter(c=>c.id!==excl&&!c.noday&&(c.techs||[]).includes(id)&&occOn(c,d)).forEach(c=>{const p=c.periode||"Journée";if(p===per)return;const h=c.heure?` à ${c.heure}`:"";const where=c.destination||(c.zone?V(c.zone):"");
+  w.push(p==="Nuit"?`🌙 ${t.nom} a un CVG cette nuit${h}${where?" ("+where+")":""}`:`☀️ ${t.nom} a un CVG cette journée${h}${where?" ("+where+")":""}`)})});return w}
+function convWarns(sel,d,per,excl){const pw=cvgPeriodWarns(sel,d,per,excl);const nm=new Set((sel||[]).map(techById).filter(Boolean).filter(t=>pw.some(x=>x.includes(" "+t.nom+" a un CVG"))).map(t=>t.nom));return[...pw,...conflicts(sel,d,d,excl).filter(x=>!([...nm].some(n=>x.startsWith(n+" :"))&&x.includes(T("busy_c"))))]}
+const perTxt=c=>`${(c.periode||"Journée")==="Nuit"?"🌙 Nuit":"☀️ Journée"}${c.heure?" · "+c.heure:""}`;
+/* ---------- couleurs du calendrier ---------- */
+const CAL_KINDS=[["c","Convoyage"],["m","Mission"],["d","Dépannage"],["l","Congé"],["v","Programme visites"],["f","Formation"],["e","Événement"]];
+function applyCalColors(){let el=document.getElementById("calColorsCss");if(!el){el=document.createElement("style");el.id="calColorsCss";document.head.appendChild(el)}const C=state.calColors||{};let css="";
+ ["c","m","d","f","e"].forEach(k=>{if(C[k])css+=`.bar.${k},.lbar.${k}{background:${C[k]}!important;color:#fff!important}.ritem.${k}{border-inline-start-color:${C[k]}!important}`});
+ if(C.l)css+=`.bar.l{background:${C.l}2e!important;color:inherit!important;outline-color:${C.l}!important}.lbar.l{background:${C.l}!important;outline-color:${C.l}!important}`;
+ if(C.v)css+=`.vbar{border-inline-start-color:${C.v}!important;background:${C.v}24!important;color:${C.v}!important}.lbar.v{border-inline-start-color:${C.v}!important;background:${C.v}33!important}.ritem.v{border-inline-start-color:${C.v}!important;background:${C.v}1a!important}`;
+ el.textContent=css}
+const rgbHex=c=>{const m=String(c).match(/\d+/g);return m&&m.length>=3?"#"+m.slice(0,3).map(x=>(+x).toString(16).padStart(2,"0")).join(""):"#888888"};
+function openCalColors(){editing={kind:"calcol"};const C=state.calColors||{};const cur=k=>{if(C[k])return C[k];const e=document.querySelector(`.legend .lbar.${k}`);if(!e)return"#888888";const cs=getComputedStyle(e);return rgbHex(k==="v"?cs.borderInlineStartColor||cs.borderLeftColor:k==="l"?cs.outlineColor:cs.backgroundColor)};
+ $("#panel").innerHTML=`<h2>🎨 Couleurs du calendrier</h2><p class="notes">Touche une couleur pour la changer.</p>
+ <div class="ccols">${CAL_KINDS.map(([k,l])=>`<label class="ccol" for="cc-${k}"><span>${l}</span><input type="color" id="cc-${k}" data-calcol="${k}" value="${cur(k)}"></label>`).join("")}</div>
+ <div class="actions"><button type="button" class="btn link" id="calColReset">Couleurs d'origine</button><span class="sp"></span><button type="button" class="btn primary" id="cancel">${T("close")}</button></div>`;$("#sheet").hidden=false}
+
+/* ---------- recherche globale (espace chef d'équipe) ---------- */
+const imNorm=x=>String(x||"").toUpperCase().replace(/\s+/g,"").replace(/^CN-?/,"");
+function gAllIms(){const m=new Map();const add=(im)=>{const k=imNorm(im);if(k)m.set(k,"CN-"+k)};
+ Object.values(state.visits||{}).forEach(w=>Object.values(w.days||{}).forEach(rs=>rs.forEach(r=>add(r.im))));(state.taskSheets||[]).forEach(o=>add(o.im));(state.releves||[]).forEach(r=>add(r.im));return m}
+function gSearchBar(){return`<div class="gsearch"><input type="search" id="gq" class="csearch" placeholder="🔍 Technicien ou immatriculation (historique)…" value="${esc(ui.gq||"")}" autocomplete="off"><div id="gres" class="gres">${gResults()}</div></div>`}
+function gResults(){const q=(ui.gq||"").trim();if(q.length<2)return"";const nq=normName(q),iq=imNorm(q);
+ const ts=state.techs.filter(t=>normName(t.nom).includes(nq)).sort((a,b)=>a.nom.localeCompare(b.nom)).slice(0,8);
+ const ims=[...gAllIms()].filter(([k])=>k.includes(iq)).sort((a,b)=>a[0].localeCompare(b[0])).slice(0,8);
+ if(!ts.length&&!ims.length)return`<p class="notes">Aucun résultat pour « ${esc(q)} ».</p>`;
+ return`${ts.map(t=>`<button type="button" class="gitem" data-gtech="${t.id}"><span class="gic">👷</span><b>${esc(t.nom)}</b><span class="badge" data-b="${esc(t.badge)}">${esc(badgeTxt(t))}</span><span class="garr">›</span></button>`).join("")}${ims.map(([,im])=>`<button type="button" class="gitem" data-gim="${esc(im)}"><span class="gic">✈️</span><b>${esc(im)}</b><span class="gsub">Historique des visites</span><span class="garr">›</span></button>`).join("")}`}
+const gDate=d=>d?ccDay(d):"—";
+function gTechEvents(id){const t=techById(id);const E=[];
+ (t&&t.conges||[]).forEach(c=>E.push({k:"Congé",ic:"🌴",d:c.debut,txt:`${gDate(c.debut)} → ${gDate(c.fin||c.debut)}${c.nature?" · "+c.nature:""}`}));
+ state.convoyages.filter(c=>(c.techs||[]).includes(id)).forEach(c=>E.push({k:"CVG",ic:"✈️",d:c.date,txt:`${c.noday?"Jour à définir":gDate(c.date)}${c.repeat?" (chaque semaine)":""} · ${[c.nature,c.zone,c.destination].filter(Boolean).join(" · ")} · ${(c.periode||"Journée")}${c.heure?" "+c.heure:""}`}));
+ state.missions.filter(m=>(m.techs||[]).includes(id)).forEach(m=>E.push({k:"Mission",ic:"🧳",d:m.debut,txt:`${gDate(m.debut)} → ${gDate(m.fin||m.debut)} · ${m.destination||""} (${m.type||""})`}));
+ state.depannages.filter(m=>(m.techs||[]).includes(id)).forEach(m=>E.push({k:"Dépannage",ic:"🔧",d:m.debut,txt:`${gDate(m.debut)} → ${gDate(m.fin||m.debut)} · ${[m.objet,m.destination].filter(Boolean).join(" · ")}`}));
+ (state.renforts||[]).filter(r=>(r.techs||[]).some(x=>x.id===id)).forEach(r=>E.push({k:"Renfort",ic:"💪",d:r.date,txt:`${gDate(r.date)} · ${r.lieu}${r.obs?" · "+r.obs:""}`}));
+ (state.formations||[]).filter(f=>(f.techs||[]).some(x=>x.id===id)).forEach(f=>E.push({k:"Formation",ic:"🎓",d:f.debut,txt:`${gDate(f.debut)} → ${gDate(f.fin||f.debut)} · ${f.nom}`}));
+ (state.taskSheets||[]).map(tsFix).forEach(o=>o.rows.filter(r=>r.techs.some(x=>x.id===id)).forEach(r=>E.push({k:"Répartition",ic:"🗂️",d:o.date,txt:`${gDate(o.date)} · ${o.shift}${o.im&&o.im!=="CN-"?" · "+o.im:""} · ${r.cat}${r.obs?" — "+r.obs:""}`})));
+ return E.sort((a,b)=>(b.d||"").localeCompare(a.d||""))}
+function gImEvents(im){const k=imNorm(im);const E=[];
+ Object.entries(state.visits||{}).forEach(([key,w])=>{const[y,wn]=key.split("-W").map(Number);const ws=weekStart(y,wn);Object.entries(w.days||{}).forEach(([d,rs])=>rs.forEach(r=>{if(imNorm(r.im)!==k)return;const date=iso(plus(ws,+d));E.push({k:"Visite",ic:"📋",d:date,txt:`${gDate(date)} · ${r.ty||"Visite"}${vHours(r)?" · "+vHours(r):""}${r.lv?" · Livraison : "+r.lv:""}`})}))});
+ (state.taskSheets||[]).map(tsFix).filter(o=>imNorm(o.im)===k).forEach(o=>E.push({k:"Répartition",ic:"🗂️",d:o.date,txt:`${gDate(o.date)} · ${o.shift}${o.visite?" · "+o.visite:""} · ${tsUsed(o).length} tâche(s)${o.ce?" · Chef : "+o.ce:""}`}));
+ (state.releves||[]).filter(r=>imNorm(r.im)===k).forEach(r=>E.push({k:"Relève",ic:"🔄",d:(r.date||"").slice(0,10),txt:`${anWhen(r)} · ${r.titre||"Consignes"} · Chef : ${r.par||"—"}`}));
+ return E.sort((a,b)=>(b.d||"").localeCompare(a.d||""))}
+function gHistPanel(title,sub,E){const kinds=[...new Set(E.map(e=>e.k))];const txt=[title,sub,"",...E.map(e=>`- [${e.k}] ${e.txt}`),...(E.length?[]:["Aucun historique."])].join("\n");shareCur={text:txt};
+ $("#panel").innerHTML=`<h2>${esc(title)}</h2>${sub?`<p class="notes">${esc(sub)}</p>`:""}
+ ${kinds.length?`<div class="rfcnt">${kinds.map(k=>`<span class="chip">${E.find(e=>e.k===k).ic} ${k} ×${E.filter(e=>e.k===k).length}</span>`).join("")}</div>`:""}
+ <div class="ghist">${E.map(e=>`<div class="gev"><span class="gevk">${e.ic} ${e.k}</span><span>${esc(e.txt)}</span></div>`).join("")||`<p class="notes">Aucun historique enregistré.</p>`}</div>
+ <div class="share-actions"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">WhatsApp</a><button type="button" class="btn" id="copyTxt">${T("sh_copy")}</button><button type="button" class="btn" data-txtdoc="pdf">📄 PDF</button><button type="button" class="btn" data-txtdoc="doc">📝 Word</button></div>
+ <div class="actions"><span class="sp"></span><button type="button" class="btn" id="cancel">${T("close")}</button></div>`;$("#sheet").hidden=false}
+function openTechHistory(id){const t=techById(id);if(!t)return;editing={kind:"ghist"};gHistPanel(`👷 ${t.nom}`,`${badgeTxt(t)} · Historique`,gTechEvents(id))}
+function openImHistory(im){editing={kind:"ghist"};gHistPanel(`✈️ ${im}`,"Historique des visites, répartitions et relèves",gImEvents(im))}
 /* ---------- notes ---------- */
 function noteCard(n){return`<button class="card" data-edit="notes:${n.id}"><div class="tech-name">${esc(n.titre||(n.texte||"").split("\n")[0])}</div>${n.texte?`<div class="ntext">${esc(n.texte)}</div>`:""}<div class="when">${T("updated",fmt(n.updated))}</div></button>`}
 
@@ -1935,7 +2044,7 @@ Object.assign(D.fr,{v_:"À définir",day_tbd:"Jour à définir"});Object.assign(
 Object.assign(D.fr,{sp_tech:"Technicien",sp_exit:"Sortir"});Object.assign(D.en,{sp_tech:"Technician",sp_exit:"Exit"});Object.assign(D.ar,{sp_tech:"التقني",sp_exit:"خروج"});
 Object.assign(D.fr,{tab_visits:"Prog & Note",tl_visits:"Prog & Note",tl_outils:"Outils",tl_renfort:"Renfort",tl_formation:"Formation",fab_visits:"+ Note"});Object.assign(D.en,{tab_visits:"Prog & Notes",tl_visits:"Prog & Notes",fab_visits:"+ Note"});Object.assign(D.ar,{tab_visits:"البرنامج والملاحظات",tl_visits:"البرنامج",fab_visits:"+ ملاحظة"});
 const TAB_ICON={formation:"🎓",renfort:"💪",outils:"🛠️",techs:"👷",cal:"📅",visits:"📋",notes:"✉️",convoyages:"✈️",missions:"🧳",depannages:"🔧"};
-function render(){
+function render(){try{applyCalColors()}catch(_){}document.body.classList.toggle("ro",isRO());
  $("#h1t").textContent=T("title");
  const upM=missionWeek().length, upC=weekItems().length, upD=depWeek().length;
  const SPK="hangar-space";
@@ -1949,9 +2058,11 @@ function render(){
  $("#tabs").innerHTML=(ui.space==="tech"?[]:[["techs",state.techs.length],["cal",""],["visits",""],["outils",""],["convoyages",upC],["missions",upM],["depannages",upD],["renfort",rfWeekCount()],["formation",fmWeekCount()]]).map(([k,n])=>`<button class="tab" role="tab" aria-selected="${ui.tab===k}" data-tab="${k}"><span class="ti" aria-hidden="true">${TAB_ICON[k]}${n!==""?`<span class="n">${n}</span>`:""}</span><span class="tl">${T("tl_"+k)}</span></button>`).join("");
  setSync();
  $("#fab").hidden=mode==="pending"||ui.tab==="cal"||ui.tab==="outils"||ui.tab==="renfort"||ui.tab==="formation";
- $("#fab").textContent=T("fab_"+ui.tab);
+ $("#fab").textContent=T("fab_"+ui.tab);if(isRO())$("#fab").hidden=true;
  const k=ui.tab;let html="";
  if(note)html+=`<div class="note">${esc(T(note))}</div>`;
+ if(ui.space==="ce"&&mode!=="pending")html+=fbBar();
+ if(ui.space==="ce"&&mode!=="pending"&&k!=="techs")html+=gSearchBar();
  if(mode==="pending"){html+=`<div class="empty"><h2>${T("loading_h")}</h2><p>${T("loading_p")}</p></div>`;$("#main").innerHTML=html;return}
  if(k==="cal"){html+=calendarView();$("#main").innerHTML=html;return}
  if(k==="outils"){html+=toolsSection();$("#main").innerHTML=html;return}
@@ -1965,11 +2076,12 @@ function render(){
   if(k!=="techs")html+=weekBar();
   if(k==="convoyages")html+=quotaBar()+`<button class="btn histbtn" id="histBtn">🕘 ${T("h_btn")}</button>`+rotationPanel();
   const F=filters(k);
+  if(k==="techs")html+=`<button type="button" class="btn link flagbtn" id="flagTgl">${showFlags()?"🙈 Masquer vaccin / visa / APRS":"👁️ Afficher vaccin / visa / APRS"}</button>`;
   if(k==="techs")html+=`<input type="search" id="tq" class="csearch" placeholder="🔍 Rechercher un technicien…" value="${esc(ui.tq||"")}" autocomplete="off">`;
   html+='<div class="filters">'+F.map(([id,lk])=>`<button class="fchip" aria-pressed="${ui.filter[k]===id}" data-filter="${esc(id)}">${lk?T(lk):esc(id)}</button>`).join("")+"</div>";
   const f=(F.find(x=>x[0]===ui.filter[k])||F[0])[2];
-  let list=k==="convoyages"?weekItems().filter(x=>f(x.c)):k==="missions"?missionWeek().filter(f):k==="depannages"?depWeek().filter(f):all.filter(f).filter(t=>k!=="techs"||!ui.tq||normName(t.nom+" "+t.badge).includes(normName(ui.tq)));
-  if(k==="missions"||k==="depannages")list=sortByDate(list,"debut");else if(k==="techs")list=[...list].sort((a,b)=>BADGES.indexOf(a.badge)-BADGES.indexOf(b.badge)||a.nom.localeCompare(b.nom));
+  let list=k==="convoyages"?weekItems().filter(x=>f(x.c)):k==="missions"?missionWeek().filter(f):k==="depannages"?depWeek().filter(f):all.filter(f).filter(t=>k!=="techs"||!ui.tq||normName(t.nom+" "+badgeTxt(t)).includes(normName(ui.tq)));
+  if(k==="missions"||k==="depannages")list=sortByDate(list,"debut");else if(k==="techs")list=[...list].sort((a,b)=>BADGES.indexOf(a.badge)-BADGES.indexOf(b.badge)||((A_NIV.indexOf(a.niv)+100)%100)-((A_NIV.indexOf(b.niv)+100)%100)||a.nom.localeCompare(b.nom));
   const emptyMsg=k==="convoyages"?T("noweek_c",ui.week.w):k==="missions"?T("noweek_m",ui.week.w):k==="depannages"?T("noweek_d",ui.week.w):T("nofilter");
   html+='<div class="list">'+(list.length?list.map(k==="missions"?missionCard:k==="depannages"?depCard:k==="convoyages"?convCard:techCard).join(""):`<div class="empty"><p>${emptyMsg}</p></div>`)+"</div>";
   if([...state.missions,...state.convoyages,...state.techs].some(x=>x.exemple))html+=`<div class="foot"><button class="btn link" id="clearEx">${T("clearEx")}</button></div>`;
@@ -1983,7 +2095,7 @@ function emptyState(k){const txt=T("empty_"+k);const none=k!=="notes"&&k!=="depa
 /* ---------- formulaires ---------- */
 function seg(name,opts,val,lab=V){return`<div class="seg">${opts.map((o,i)=>`<input type="radio" id="f-${name}-${i}" name="${name}" value="${esc(o)}" ${o===val?"checked":""}><label for="f-${name}-${i}">${esc(lab(o))}</label>`).join("")}</div>`}
 function picker(sel){if(!state.techs.length)return`<p class="notes">${T("techs_first")}</p>`;
- return`<details class="tpick"><summary><span class="tpico">👷</span><span id="tpsum">${T("tp_choose")}</span></summary><div class="picker"><input type="search" class="csearch tpq" placeholder="🔍 Rechercher un technicien…" autocomplete="off">${[...state.techs].sort((a,b)=>BADGES.indexOf(a.badge)-BADGES.indexOf(b.badge)||a.nom.localeCompare(b.nom)).map((t,i)=>`<label class="pick" for="f-tech-${i}"><input type="checkbox" id="f-tech-${i}" name="techs" value="${t.id}" ${(sel||[]).includes(t.id)?"checked":""}><span class="nm">${esc(t.nom)}</span><span class="badge" data-b="${esc(t.badge)}">${esc(t.badge)}</span><span class="fl">${t.vaccin?T("vac")+" ✓":`<span class="no">${T("vac")} ✗</span>`} · ${t.visa?T("visa_s")+" ✓":`<span class="no">${T("visa_s")} ✗</span>`} · ${t.aprs?"APRS ✓":`<span class="no">APRS ✗</span>`}</span><span class="hint" data-tid="${t.id}"></span></label>`).join("")}</div></details>`}
+ return`<details class="tpick"><summary><span class="tpico">👷</span><span id="tpsum">${T("tp_choose")}</span></summary><div class="picker"><input type="search" class="csearch tpq" placeholder="🔍 Rechercher un technicien…" autocomplete="off">${[...state.techs].sort((a,b)=>BADGES.indexOf(a.badge)-BADGES.indexOf(b.badge)||a.nom.localeCompare(b.nom)).map((t,i)=>`<label class="pick" for="f-tech-${i}"><input type="checkbox" id="f-tech-${i}" name="techs" value="${t.id}" ${(sel||[]).includes(t.id)?"checked":""}><span class="nm">${esc(t.nom)}</span><span class="badge" data-b="${esc(t.badge)}">${esc(badgeTxt(t))}</span><span class="fl">${t.vaccin?T("vac")+" ✓":`<span class="no">${T("vac")} ✗</span>`} · ${t.visa?T("visa_s")+" ✓":`<span class="no">${T("visa_s")} ✗</span>`} · ${t.aprs?"APRS ✓":`<span class="no">APRS ✗</span>`}</span><span class="hint" data-tid="${t.id}"></span></label>`).join("")}</div></details>`}
 function openForm(kind,id,pre){
  const item=id?state[kind].find(x=>x.id===id):null;editing={kind,id:item?.id};
  let body="";const title=T((item?"edit_":"new_")+kind);
@@ -2004,6 +2116,7 @@ function openForm(kind,id,pre){
   <label class="field" for="f-notes"><span class="lbl">${T("f_notes")}</span><textarea id="f-notes" name="notes">${esc(m.notes)}</textarea></label>`}
  else if(kind==="convoyages"){const c=item||{nature:"Simple",zone:"Afrique",spontane:false};
   body=`${dayPicker(c.date||pre||defDateC(),!!c.noday)}
+  <div class="row2 rowper"><div class="field"><span class="lbl">Période</span>${seg("periode",["Journée","Nuit"],c.periode||"Journée",x=>x==="Nuit"?"🌙 Nuit":"☀️ Journée")}</div><label class="field" for="f-heure"><span class="lbl">Heure</span><input type="time" id="f-heure" name="heure" value="${esc(c.heure||"")}"></label></div>
   <div class="field"><span class="lbl">${T("f_techs")}</span><p class="qinfo" id="qinfo" hidden></p>${picker(c.techs)}</div>
   <div class="warns" id="fwarn"></div>
   <div class="field"><span class="lbl">${T("f_nature")}</span>${seg("nature",["Simple","Double",""],c.nature)}</div>
@@ -2027,6 +2140,7 @@ function openForm(kind,id,pre){
  else{const t=item||{badge:"Tech A",vaccin:true,visa:false,aprs:true};
   body=`<label class="field" for="f-nom"><span class="lbl">${T("f_name")}</span><input type="text" id="f-nom" name="nom" required value="${esc(t.nom)}" autocapitalize="characters" style="text-transform:uppercase"></label>
   <div class="field"><span class="lbl">${T("f_badge")}</span>${seg("badge",BADGES,t.badge,x=>x)}</div>
+  <div class="field" id="nivField" ${t.badge==="Tech A"?"":"hidden"}><span class="lbl">Niveau (Cat A)</span>${seg("niv",["",...A_NIV],t.niv||"",x=>x||"—")}</div>
   <div class="field"><span class="lbl">${T("f_vac")}</span>${seg("vaccin",["Oui","Non"],t.vaccin?"Oui":"Non")}</div>
   <div class="field"><span class="lbl">${T("f_visa")}</span>${seg("visa",["Oui","Non"],t.visa?"Oui":"Non")}</div>
   <div class="field"><span class="lbl">${T("aprs")}</span>${seg("aprs",["Oui","Non"],t.aprs?"Oui":"Non")}</div>
@@ -2045,29 +2159,30 @@ function liveForm(){const f=$("#f");if(!f)return;const fd=new FormData(f);
   f.querySelectorAll(".hint").forEach(h=>{const ok=a&&b&&b>=a;if(ok&&leaveRange(techById(h.dataset.tid),a,b)){h.className="hint busy";h.textContent="⚠ "+T("h_leave");return}const r=ok?busyRange(h.dataset.tid,a,b,editing.id):null;h.className="hint"+(r?" busy":"");h.textContent=r?T("h_busy_range"):""})}
  if(editing.kind==="convoyages"){const d=fd.get("date"),n=fd.get("nature");const nd=fd.get("noday")==="1";const dEnd=d&&nd?iso(plus(new Date(d+"T00:00:00Z"),6)):d;const sel=fd.getAll("techs");
   $("#untilBox").hidden=!fd.has("repeat");
-  const w=[...warns({techs:sel},fd.get("zone")),...(d?(nd?sel.map(techById).filter(t=>t&&leaveRange(t,d,dEnd)).map(t=>{const lv=leaveRange(t,d,dEnd);return T("warn_leave",t.nom,fmtShort(lv.debut),fmt(lv.fin))}):conflicts(sel,d,d,editing.id)):[])];$("#fwarn").innerHTML=w.map(x=>`<div>${esc(x)}</div>`).join("");
+  const w=[...warns({techs:sel},fd.get("zone")),...(d?(nd?sel.map(techById).filter(t=>t&&leaveRange(t,d,dEnd)).map(t=>{const lv=leaveRange(t,d,dEnd);return T("warn_leave",t.nom,fmtShort(lv.debut),fmt(lv.fin))}):convWarns(sel,d,fd.get("periode")||"Journée",editing.id)):[])];$("#fwarn").innerHTML=w.map(x=>`<div>${esc(x)}</div>`).join("");
   const qc=quotaCheck(d,sel);const qi=$("#qinfo");
   f.querySelectorAll('input[name="techs"]').forEach(cb=>{const lock=qc&&qc.full&&!cb.checked&&!qc.crewSet.has(cb.value);cb.disabled=!!lock;cb.closest(".pick").classList.toggle("locked",!!lock)});
   if(qc){qi.hidden=false;qi.className="qinfo"+(qc.full?" full":"");qi.textContent=qc.full?T("q_limit",qc.q,qc.w):T("q_count",qc.crewSet.size,qc.q)+" · S"+qc.w}else qi.hidden=true;
   const wk=d?weekOf(d):null;
-  f.querySelectorAll(".hint").forEach(h=>{const tid=h.dataset.tid;if(d&&leaveRange(techById(tid),d,dEnd)){h.className="hint busy";h.textContent="⚠ "+T("h_leave");return}const b=d&&!nd?busyOn(tid,d,editing.id):null;
+  f.querySelectorAll(".hint").forEach(h=>{const tid=h.dataset.tid;if(d&&leaveRange(techById(tid),d,dEnd)){h.className="hint busy";h.textContent="⚠ "+T("h_leave");return}const pw=d&&!nd?cvgPeriodWarns([tid],d,fd.get("periode")||"Journée",editing.id):[];if(pw.length){h.className="hint busy";h.textContent=pw[0].startsWith("🌙")?"🌙 CVG cette nuit":"☀️ CVG cette journée";return}
+   const b=d&&!nd?busyOn(tid,d,editing.id):null;
    if(b){h.className="hint busy";h.textContent=T("h_busy_day");return}
    const l=wk?lastNature(tid,wk.y,wk.w):null;const ok=!l||opposite(l)===n;
    h.className="hint"+(ok?" sugg":"");h.textContent=(l?T("h_last",V(l)):T("h_free"))+(ok?T("h_sugg"):"")})}}
-function closeForm(){camStop();$("#sheet").hidden=true;$("#panel").innerHTML="";editing=null}
+function closeForm(){camStop();$("#sheet").hidden=true;$("#sheet").classList.remove("rosheet");$("#panel").innerHTML="";editing=null;if(fb.needRender){fb.needRender=false;setTimeout(render,0)}}
 function submitForm(e){e.preventDefault();const f=e.target,fd=new FormData(f),err=$("#ferr");const k=editing.kind;let o;
  const fail=m=>{err.textContent=m;err.hidden=false};
  if(k==="missions"){o={type:fd.get("type"),spontanee:fd.has("spontanee"),destination:fd.get("destination").trim(),debut:fd.get("debut"),fin:fd.get("fin"),techs:fd.getAll("techs"),notes:fd.get("notes").trim()};
   if(!o.destination)return fail(T("e_dest"));if(!o.debut||!o.fin)return fail(T("e_dates"));if(o.fin<o.debut)return fail(T("e_order"))}
  else if(k==="depannages"){o={objet:fd.get("objet").trim(),destination:fd.get("destination").trim(),debut:fd.get("debut"),fin:fd.get("fin"),techs:fd.getAll("techs"),notes:fd.get("notes").trim()};
   if(!o.objet)return fail(T("e_objet"));if(!o.destination)return fail(T("e_dest"));if(!o.debut||!o.fin)return fail(T("e_dates"));if(o.fin<o.debut)return fail(T("e_order"))}
- else if(k==="convoyages"){o={date:fd.get("date"),noday:fd.get("noday")==="1",nature:fd.get("nature"),zone:fd.get("zone"),destination:fd.get("destination").trim(),spontane:fd.has("spontane"),repeat:fd.has("repeat"),until:fd.has("repeat")?(fd.get("until")||""):"",techs:fd.getAll("techs"),notes:fd.get("notes").trim()};
+ else if(k==="convoyages"){o={date:fd.get("date"),noday:fd.get("noday")==="1",periode:fd.get("periode")||"Journée",heure:fd.get("heure")||"",nature:fd.get("nature"),zone:fd.get("zone"),destination:fd.get("destination").trim(),spontane:fd.has("spontane"),repeat:fd.has("repeat"),until:fd.has("repeat")?(fd.get("until")||""):"",techs:fd.getAll("techs"),notes:fd.get("notes").trim()};
   if(!o.date)return fail(T("e_cdate"));if(o.until&&o.until<o.date)return fail(T("e_until"));
   const qc=quotaCheck(o.date,o.techs);if(qc&&qc.over)return fail(T("e_quota",qc.q,qc.w))}
  else if(k==="contacts"){o={nom:fd.get("nom").trim(),tel:fd.get("tel").trim(),fonction:fd.get("fonction").trim()};if(!o.nom||!o.tel)return fail(T("e_cname"))}
  else if(k==="events"){o={titre:fd.get("titre").trim(),debut:fd.get("debut"),fin:fd.get("fin")||fd.get("debut"),notes:fd.get("notes").trim()};if(!o.titre)return fail(T("e_evtitle"));if(!o.debut)return fail(T("e_dates"));if(o.fin<o.debut)return fail(T("e_order"))}
  else if(k==="notes"){o={titre:fd.get("titre").trim(),texte:fd.get("texte").trim(),updated:todayStr()};if(!o.titre&&!o.texte)return fail(T("e_note"))}
- else{o={nom:fd.get("nom").trim().toUpperCase(),badge:fd.get("badge"),vaccin:fd.get("vaccin")==="Oui",visa:fd.get("visa")==="Oui",aprs:fd.get("aprs")==="Oui",conges:readLeaves(fd),notes:fd.get("notes").trim()};if(!o.nom)return fail(T("e_name"));if(o.conges===null)return fail(T("e_leave"))}
+ else{o={nom:fd.get("nom").trim().toUpperCase(),badge:fd.get("badge"),niv:fd.get("badge")==="Tech A"?(fd.get("niv")||""):"",vaccin:fd.get("vaccin")==="Oui",visa:fd.get("visa")==="Oui",aprs:fd.get("aprs")==="Oui",conges:readLeaves(fd),notes:fd.get("notes").trim()};if(!o.nom)return fail(T("e_name"));if(o.conges===null)return fail(T("e_leave"))}
  if(editing.id){const i=state[k].findIndex(x=>x.id===editing.id);const prev=state[k][i];state[k][i]={...prev,...o,id:prev.id,exemple:false}}
  else state[k].push({...o,id:uid()});
  const wasNew=!editing.id;const lw=leaveWarn(k,o);closeForm();render();persist();toast(lw||T(wasNew?"t_added":"t_edited"),lw?5000:2200);
@@ -2153,7 +2268,7 @@ function clearExamples(){for(const k of["missions","convoyages","techs"])state[k
 /* ---------- stockage ---------- */
 function upNames(st){(st.techs||[]).forEach(t=>{if(t.nom)t.nom=String(t.nom).toUpperCase()});[...(st.taskSheets||[]).flatMap(x=>(x.rows||[]).flatMap(r=>r.techs||[])),...(st.renforts||[]).flatMap(r=>r.techs||[]),...(st.formations||[]).flatMap(r=>r.techs||[])].forEach(t=>{if(t&&t.nom)t.nom=String(t.nom).toUpperCase()});return st}
 async function persist(){upNames(state);
- if(mode==="local"){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}return}
+ if(mode==="local"){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}fbAfter();return}
  if(mode!=="cloud")return;
  dirty=true;if(writing)return;writing=true;setSync();
  while(dirty){dirty=false;const body=JSON.parse(JSON.stringify(state));
@@ -2181,7 +2296,7 @@ async function boot(){
    state=normalize(s.exists?s.data():null);adoptPrefs();if(!$("#sheet").hidden&&editing)return;render()},
   e=>{clearTimeout(timer);mode="cloud";note="n_broken";render()});
  }else{
-  mode="local";try{state=normalize(JSON.parse(localStorage.getItem(KEY)||"null"))}catch(e){state=normalize(null)}adoptPrefs();render()}
+  mode="local";try{state=normalize(JSON.parse(localStorage.getItem(KEY)||"null"))}catch(e){state=normalize(null)}adoptPrefs();render();fbStart()}
 }
 
 /* ---------- événements ---------- */
@@ -2231,6 +2346,11 @@ document.addEventListener("click",e=>{
  const tvd=e.target.closest("[data-tvdate]");if(tvd){ui.tv.date=tvd.dataset.tvdate;ui.tv.shift="";render();return}
  const tvs=e.target.closest("[data-tvshift]");if(tvs){ui.tv.shift=tvs.dataset.tvshift;render();return}
  const tvw=e.target.closest("[data-tvw]");if(tvw){tvShiftWeek(+tvw.dataset.tvw);return}
+ const gte=e.target.closest("[data-gtech]");if(gte){openTechHistory(gte.dataset.gtech);return}
+ const gim=e.target.closest("[data-gim]");if(gim){openImHistory(gim.dataset.gim);return}
+ if(e.target.closest("#flagTgl")){try{localStorage.setItem(FLK,showFlags()?"0":"1")}catch(_){}render();return}
+ if(e.target.closest("#calColors")){openCalColors();return}
+ if(e.target.closest("#calColReset")){state.calColors={};persist();applyCalColors();openCalColors();render();return}
  if(e.target.closest("#trOpen")){trPending=null;openTransfer();return}
  if(e.target.closest("#trExport")){trExport();return}
  if(e.target.closest("#trCopy")){trCopy();return}
@@ -2347,6 +2467,8 @@ document.addEventListener("change",e=>{if(e.target.dataset&&e.target.dataset.vf&
 document.addEventListener("toggle",e=>{const t=e.target;if(t.dataset&&t.dataset.sec){ui.open=ui.open||{};ui.open[t.dataset.sec]=t.open}},true);
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="ce-pin"){e.preventDefault();ceTry()}});
 document.addEventListener("input",e=>{const t=e.target;
+ if(t.id==="gq"){ui.gq=t.value;$("#gres").innerHTML=gResults();return}
+ if(t.dataset&&t.dataset.calcol){state.calColors={...(state.calColors||{}),[t.dataset.calcol]:t.value};applyCalColors();clearTimeout(window._ccT);window._ccT=setTimeout(persist,400);return}
  if(t.id==="rl-q"){ui.rl.q=t.value;$("#rlList").innerHTML=rlListHtml();return}
  if(t.id==="fm-q"){ui.fm.q=t.value;$("#fmList").innerHTML=fmListHtml();return}
  if(t.classList&&t.classList.contains("tpq")){const q=normName(t.value);t.closest(".picker").querySelectorAll(".pick").forEach(l=>{const cb=l.querySelector("input");l.hidden=!!q&&!cb.checked&&!normName(l.textContent).includes(q)});return}
@@ -2356,7 +2478,7 @@ document.addEventListener("input",e=>{const t=e.target;
   res.innerHTML=m.map(x=>`<button type="button" class="tsresb" data-tspick="${x.id}"><b>${esc(x.nom)}</b> <span class="badge" data-b="${esc(x.badge)}">${esc(x.badge)}</span>${leaveRange(x,date)?" ⚠️ congé":""}</button>`).join("")||`<span class="notes">Aucun technicien trouvé.</span>`;return}
  if(t.id==="tq"){ui.tq=t.value;const pos=t.selectionStart;render();const n=$("#tq");if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}return}if(t.id==="rf-q"){ui.rf.q=t.value;$("#rfList").innerHTML=rfListHtml();return}if(t.id==="rf-hq"){ui.rf.q=t.value;$("#rfHist").innerHTML=rfHistBody();return}if(t.id==="lp-zoom"){lpZoom(t.value);return}if(["cv-val"].includes(t.id)){cvUpdate();return}if(t.id==="mm-q"){ui.mm.esc=t.value.toUpperCase();$("#mmBody").innerHTML=mmBody();return}if(["fc-ini","fc-fin","fc-dens"].includes(t.id)){fcRefresh();return}if(t.id==="imp-txt"){pnImpPreview(t.value);return}if(t.id==="pnsearch"){ui.pn.q=t.value;pnRefresh();return}if(t.dataset&&t.dataset.pnsel){const v=Math.max(0,parseInt(t.value)||0);if(v)ui.pn.sel[t.dataset.pnsel]=v;else delete ui.pn.sel[t.dataset.pnsel];t.closest(".pnitem").classList.toggle("on",!!v);pnUpdate();return}if(t.id==="pnim"){setTimeout(pnUpdate,0);return}});
 document.addEventListener("input",e=>{if(e.target.id==="csearch"){ui.csearch=e.target.value;const l=$("#clist");if(l)l.innerHTML=contactsList()}});
-document.addEventListener("change",e=>{const lt=e.target;if(lt.id==="trFile"&&lt.files&&lt.files[0]){const f=lt.files[0];lt.value="";f.text().then(trParse);return}if(lt.dataset&&lt.dataset.trout){lt.checked?trSel.add(lt.dataset.trout):trSel.delete(lt.dataset.trout);return}if(lt.id==="ts-date"){tsReopen();return}if(lt.id==="fm-add"){const v=lt.value;lt.value="";if(v==="__other"){$("#fmOth").hidden=false;$("#fm-oth").focus();return}if(v){if([...document.querySelectorAll("#fmChips .tschip")].some(c=>c.dataset.id===v)){toast("Déjà ajouté");return}$("#fmChips").insertAdjacentHTML("beforeend",tsChip({id:v,nom:tsTechName(v)},$("#fm-deb").value))}return}
+document.addEventListener("change",e=>{const lt=e.target;if(lt.name==="badge"&&$("#nivField")){$("#nivField").hidden=lt.value!=="Tech A";return}if(lt.id==="trFile"&&lt.files&&lt.files[0]){const f=lt.files[0];lt.value="";f.text().then(trParse);return}if(lt.dataset&&lt.dataset.trout){lt.checked?trSel.add(lt.dataset.trout):trSel.delete(lt.dataset.trout);return}if(lt.id==="ts-date"){tsReopen();return}if(lt.id==="fm-add"){const v=lt.value;lt.value="";if(v==="__other"){$("#fmOth").hidden=false;$("#fm-oth").focus();return}if(v){if([...document.querySelectorAll("#fmChips .tschip")].some(c=>c.dataset.id===v)){toast("Déjà ajouté");return}$("#fmChips").insertAdjacentHTML("beforeend",tsChip({id:v,nom:tsTechName(v)},$("#fm-deb").value))}return}
 if(lt.id==="fm-deb"||lt.id==="fm-fin"){if(lt.id==="fm-deb"&&(!$("#fm-fin").value||$("#fm-fin").value<lt.value))$("#fm-fin").value=lt.value;fmDur();const d=$("#fm-deb").value;$("#fm-add").innerHTML=tsTechOpts(d);const ts=[...document.querySelectorAll("#fmChips .tschip")].map(c=>({id:c.dataset.id,nom:c.dataset.nom}));$("#fmChips").innerHTML=ts.map(t=>tsChip(t,d)).join("");return}if(lt.id==="rf-add"){const v=lt.value;lt.value="";if(v==="__other"){$("#rfOth").hidden=false;$("#rf-oth").focus();return}if(v){if([...document.querySelectorAll("#rfChips .tschip")].some(c=>c.dataset.id===v)){toast("Déjà ajouté");return}$("#rfChips").insertAdjacentHTML("beforeend",tsChip({id:v,nom:tsTechName(v)},$("#rf-date").value))}return}
 if(lt.id==="rf-lieu"){const o=$("#rf-lieu-o");o.hidden=lt.value!=="__other";if(!o.hidden)o.focus();return}
 if(lt.id==="rf-date"){const r=rfRead();$("#rf-add").innerHTML=tsTechOpts(r.date);$("#rfChips").innerHTML=r.techs.map(t=>tsChip(t,r.date)).join("");return}
@@ -2365,6 +2487,133 @@ if(lt.id==="rf-ft"){ui.rf.tech=lt.value;$("#rfHist").innerHTML=rfHistBody();retu
 document.addEventListener("submit",e=>{if(e.target.id==="f")submitForm(e);if(e.target.id==="vf"){e.preventDefault();saveVEdit()}});
 document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.up&&t.value!==t.value.toUpperCase()){const pos=t.selectionStart;t.value=t.value.toUpperCase();try{t.setSelectionRange(pos,pos)}catch(_){}}if(t.dataset&&t.dataset.cnv2&&!t.value.toUpperCase().startsWith("CN-")){t.value="CN-"+t.value.toUpperCase().replace(/CN-?/g,"").replace(/^-+/,"");try{t.setSelectionRange(t.value.length,t.value.length)}catch(_){}}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#sheet").hidden)closeForm()});
+/* ---------- synchronisation Firebase (codes lecture / master) ---------- */
+const FB_CFG={apiKey:"AIzaSyArnBYLJU-eI5BakaUIt3cpL_ayCGhl47Q",authDomain:"hangar-est-3600.firebaseapp.com",projectId:"hangar-est-3600",storageBucket:"hangar-est-3600.firebasestorage.app",messagingSenderId:"912494831045",appId:"1:912494831045:web:1b7397eed59c9036b0d7ac"};
+const FB_MASTER="master@hangar-est.app",FB_CHEF="chef@hangar-est.app";
+const FB_V="10.12.2",FB_SDK=["app","auth","firestore"].map(n=>`https://www.gstatic.com/firebasejs/${FB_V}/firebase-${n}-compat.js`);
+const FB_COLS={pub:["taskSheets","visits"],team:["techs","missions","convoyages","depannages","renforts","formations","releves","events","arcWeeks","tsCats","holEdits","quota","tankCaps","annonces"]};
+const FB_OBJ=["visits","arcWeeks","holEdits","quota","tankCaps"];
+const FB_K={taskSheets:8,convoyages:4,missions:4,releves:4,visits:4,techs:2,depannages:2,renforts:2,formations:2,events:2};
+const FB_KL={techs:"Technicien",missions:"Mission",convoyages:"CVG",depannages:"Dépannage",renforts:"Renfort",formations:"Formation",releves:"Relève",events:"Événement",taskSheets:"Répartition des tâches",visits:"Programme visites",arcWeeks:"Archives",tsCats:"Rubriques",holEdits:"Jours fériés",quota:"Quota CVG",tankCaps:"Capacités réservoirs",annonces:"Message"};
+const FB_RK="hangar-fb-role",FB_NK="hangar-master-name",FB_LK="hangar-master-last",FB_MK="hangar-fb-meta";
+const fbLS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}return null};
+const fb={on:false,off:false,auth:null,db:null,role:fbLS(FB_RK)||null,name:fbLS(FB_NK)||"",known:{},base:{},rem:{},meta:{},empty:{},unsub:{},pushing:false,again:false,err:"",needRender:false,bak:false};
+function fbRole(){return fb.on?fb.role:null}
+function isRO(){return fb.on&&ui.space==="ce"&&fbRole()!=="master"}
+const fbH=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h)};
+const fbDoc=(k,s)=>`${k}_${fbH(s)%(FB_K[k]||1)}`;
+const fbParse=j=>{try{return JSON.parse(j)}catch(e){return undefined}};
+function fbDT(iso){if(!iso)return"";const d=new Date(iso);if(isNaN(d))return"";const p=n=>String(n).padStart(2,"0");return`le ${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} à ${p(d.getHours())}:${p(d.getMinutes())}`}
+function fbItems(k){const v=state[k],m={};if(Array.isArray(v))v.forEach((x,i)=>{let s=(x&&typeof x==="object"&&x.id!=null&&x.id!=="")?String(x.id):"#"+i;if(s in m)s+="#"+i;m[s]={o:i,x}});else if(v&&typeof v==="object")Object.keys(v).forEach((s,i)=>{if(v[s]!==undefined)m[s]={o:i,x:v[s]}});return m}
+function fbAsm(k,B){const e=Object.entries(B).sort((a,b)=>a[1].o-b[1].o);if(FB_OBJ.includes(k)){const o={};e.forEach(([s,v])=>{const x=fbParse(v.j);if(x!==undefined)o[s]=x});if(k==="holEdits"){o.add=o.add||[];o.del=o.del||[]}return o}return e.map(([,v])=>fbParse(v.j)).filter(x=>x!==undefined)}
+function fbRemB(col,k){const B={};for(const[id,d]of Object.entries(fb.rem[col]||{})){const m=/^(.+)_(\d+)$/.exec(id);if(!m||m[1]!==k)continue;const it=(d&&d.items)||{};for(const s in it){const v=it[s];if(v&&typeof v.j==="string")B[s]={j:v.j,o:+v.o||0}}}return B}
+function fbLabel(k,x,s){let d="";if(x&&typeof x==="object"&&!Array.isArray(x)){d=[x.nom,x.destination,x.im&&x.im!=="CN-"?x.im:"",x.titre,x.lieu].filter(Boolean)[0]||"";const dt=x.date||x.debut;if(dt&&/^\d{4}-\d\d-\d\d/.test(dt))d+=(d?" · ":"")+dt.slice(0,10).split("-").reverse().join("/")}else if(x!=null&&typeof x!=="object")d=String(x);if(!d&&FB_OBJ.includes(k)&&s)d=s.replace(/^(\d{4})-W(\d+)$/,"S$2 $1");return(FB_KL[k]||k)+(d?" — "+d:"")}
+function fbLocalSave(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+let fbMT=null;function fbSaveMeta(){clearTimeout(fbMT);fbMT=setTimeout(()=>{try{localStorage.setItem(FB_MK,JSON.stringify({known:fb.known,base:fb.base}))}catch(e){}},400)}
+function fbStTxt(){if(fb.off)return"📴 Hors ligne";if(fb.err)return"⚠️ Erreur de synchronisation";if(typeof navigator!=="undefined"&&navigator.onLine===false)return"📴 Hors ligne";const col=fbRole()?"team":"pub";if(fb.pushing||(fb.meta[col]&&fb.meta[col].pend))return"⏳ Envoi…";if(fb.known[col])return"☁️ Synchronisé";if(fb.empty[col])return"☁️ Rien de partagé pour l'instant";return"⏳ Connexion…"}
+function fbStatus(){const el=document.getElementById("fbst");if(el)el.textContent=fbStTxt()}
+function fbBar(){if(!fb.on)return"";const r=fbRole();return`<div class="fbbar ${r==="master"?"m":"r"}"><span class="fbwho">${r==="master"?`✏️ Master : <b>${esc(fb.name||"—")}</b>`:"👁️ Lecture seule"}</span><span class="fbst" id="fbst">${fbStTxt()}</span><span class="fbbtns"><button type="button" class="btn link" id="fbJournal">🕘 Journal</button>${r==="master"?`<button type="button" class="btn link" id="fbCodes">🔑 Codes</button>`:`<button type="button" class="btn link" id="fbToMaster">🔑 Code master</button>`}<button type="button" class="btn link" id="fbOut">Déconnexion</button></span></div>`}
+function fbLoad(){if(window.firebase&&firebase.firestore&&firebase.auth)return Promise.resolve();return FB_SDK.reduce((p,u)=>p.then(()=>new Promise((ok,ko)=>{const s=document.createElement("script");s.src=u;s.onload=ok;s.onerror=ko;document.head.appendChild(s)})),Promise.resolve())}
+function fbStart(){fb.on=true;try{const m=JSON.parse(fbLS(FB_MK)||"null");if(m){fb.known=m.known||{};fb.base=m.base||{}}}catch(e){}
+ if(ui.space==="ce"&&!fbRole()){ui.space=null;render()}
+ fbLoad().then(()=>{const app=firebase.apps.find(a=>a.name==="[DEFAULT]")||firebase.initializeApp(FB_CFG);fb.auth=app.auth();fb.db=app.firestore();try{const p=fb.db.enablePersistence({synchronizeTabs:true});if(p&&p.catch)p.catch(()=>{})}catch(e){}
+  fb.unsub.pub=fbListen("pub");fb.auth.onAuthStateChanged(u=>fbOnUser(u))}).catch(()=>{fb.off=true;fbStatus()});
+ window.addEventListener("online",fbStatus);window.addEventListener("offline",fbStatus)}
+function fbOnUser(u){const em=u&&u.email?String(u.email).toLowerCase():"";const r=em===FB_MASTER?"master":em===FB_CHEF?"chef":null;fb.role=r;fbLS(FB_RK,r||null);
+ if(r&&!fb.unsub.team)fb.unsub.team=fbListen("team");
+ fbMigrate();
+ if(!r&&fb.unsub.team){fb.unsub.team();fb.unsub.team=null}
+ if(!r&&ui.space==="ce"){ui.space=null;if(!$("#sheet").hidden&&editing&&editing.kind!=="login")closeForm();toast("Session terminée : entre ton code.",3000)}
+ if($("#sheet").hidden)render();else fb.needRender=true}
+function fbListen(col){return fb.db.collection(col).onSnapshot({includeMetadataChanges:true},snap=>{const R=fb.rem[col]||(fb.rem[col]={});snap.docChanges().forEach(ch=>{if(ch.type==="removed")delete R[ch.doc.id];else R[ch.doc.id]=ch.doc.data()});fb.meta[col]={cache:snap.metadata.fromCache,pend:snap.metadata.hasPendingWrites};if(col==="team"||!fbRole())fb.err="";fbApply(col,!snap.metadata.fromCache,snap.empty);fbStatus()},err=>{fb.err=(err&&err.code)||"err";if(fb.unsub[col]){try{fb.unsub[col]()}catch(e){}fb.unsub[col]=null}fbStatus()})}
+function fbApply(col,server,empty){if(empty&&!server)return;const master=fbRole()==="master";
+ if(empty){fb.empty[col]=true;fbMigrate();return}
+ fb.empty[col]=false;let ch=false,need=false;
+ if(!fb.known[col]){if(!server)return;if(!fb.bak){fb.bak=true;try{if(!localStorage.getItem("hangar-avant-sync"))localStorage.setItem("hangar-avant-sync",JSON.stringify(state))}catch(e){}}
+  fb.known[col]=true;for(const k of FB_COLS[col]){const R=fbRemB(col,k);const v=fbAsm(k,R);if(JSON.stringify(v)!==JSON.stringify(state[k])){state[k]=v;ch=true}fb.base[k]=R}}
+ else for(const k of FB_COLS[col]){const R=fbRemB(col,k),L=fb.base[k]||{};let out=R;
+  if(master){out={...R};const cur=fbItems(k);for(const s in cur){const j=JSON.stringify(cur[s].x),lb=L[s];if(!lb||lb.j!==j){out[s]={j,o:cur[s].o};need=true}}for(const s in L)if(!(s in cur)&&(s in out)){delete out[s];need=true}}
+  const v=fbAsm(k,out);if(JSON.stringify(v)!==JSON.stringify(state[k])){state[k]=v;ch=true}fb.base[k]=R}
+ fbSaveMeta();
+ if(ch){fbLocalSave();if($("#sheet").hidden)render();else fb.needRender=true}
+ if(master&&need)fbPush()}
+async function fbPush(quiet){if(!fb.db||fbRole()!=="master")return;if(fb.pushing){fb.again=true;return}fb.pushing=true;fbStatus();
+ try{do{fb.again=false;upNames(state);const now=new Date().toISOString(),by=fb.name||"MASTER";const batch=fb.db.batch();let n=0;const logs=[];
+  for(const col of["pub","team"]){if(!fb.known[col])continue;for(const k of FB_COLS[col]){const cur=fbItems(k),B=fb.base[k]||(fb.base[k]={}),docs={};
+   for(const s in cur){const it=cur[s];let j=JSON.stringify(it.x);const b=B[s];if(b&&b.j===j&&b.o===it.o)continue;
+    if(!b||b.j!==j){if(!quiet&&!FB_OBJ.includes(k)&&it.x&&typeof it.x==="object"&&!Array.isArray(it.x)){it.x.mby=by;it.x.mat=now;j=JSON.stringify(it.x)}logs.push([k,b?"modif":"ajout",it.x,s])}
+    const d=fbDoc(k,s);(docs[d]=docs[d]||{})[s]={j,o:it.o};B[s]={j,o:it.o}}
+   for(const s of Object.keys(B))if(!(s in cur)){const d=fbDoc(k,s);(docs[d]=docs[d]||{})[s]=firebase.firestore.FieldValue.delete();logs.push([k,"suppr",fbParse(B[s].j),s]);delete B[s]}
+   for(const d in docs){batch.set(fb.db.collection(col).doc(d),{items:docs[d]},{merge:true});n++}}}
+  if(n){if(!quiet)logs.slice(0,20).forEach(([k,a,x,s])=>batch.set(fb.db.collection("journal").doc(),{at:now,by,k,a,l:fbLabel(k,x,s)}));fbLocalSave();fbSaveMeta();await batch.commit()}
+ }while(fb.again)}catch(e){fb.err=(e&&e.code)||"err";toast("⚠️ Envoi impossible : "+(String(fb.err).includes("permission")?"accès refusé":"vérifie la connexion"),3500);for(const col of["pub","team"])if(fb.known[col])FB_COLS[col].forEach(k=>fb.base[k]=fbRemB(col,k))}
+ finally{fb.pushing=false;fbStatus()}}
+function fbMigrate(){if(fbRole()!=="master")return;let n=false;for(const col of["pub","team"])if(fb.empty[col]&&!fb.known[col]){fb.known[col]=true;FB_COLS[col].forEach(k=>fb.base[k]={});n=true}if(n){fbSaveMeta();fbPush(true)}}
+function fbGuard(){let ch=false;for(const col of["pub","team"]){if(!fb.known[col]||!fb.rem[col])continue;if(col==="team"&&!fbRole())continue;for(const k of FB_COLS[col]){const v=fbAsm(k,fb.base[k]||{});if(JSON.stringify(v)!==JSON.stringify(state[k])){state[k]=v;ch=true}}}
+ if(ch){fbLocalSave();if(ui.space==="ce"||ui.space==="tech")toast("🔒 Lecture seule : entre le code master pour modifier.",3200);setTimeout(render,0)}}
+function fbAfter(){if(!fb.on||!fb.db)return;if(fbRole()==="master")fbPush();else fbGuard()}
+function enterCe(){closeForm();ui.open={};ui.space="ce";ui.tab="cal";fbLS("hangar-space","ce");render();window.scrollTo(0,0)}
+function openCeLogin(toMaster){editing={kind:"login"};
+ $("#panel").innerHTML=`<h2>🔒 Contremaître et C/E</h2><p class="notes">${toMaster?"Entre le code master pour pouvoir modifier.":"Entre ton code : le code de lecture pour consulter, ou le code master pour modifier."}</p>
+ ${fb.off?`<p class="err">Pas de connexion Internet : la première connexion nécessite Internet.</p>`:""}
+ <label class="field" for="lg-code"><span class="lbl">Code</span><input type="password" id="lg-code" autocomplete="current-password" class="cepin"></label>
+ <p class="err" id="lg-err" hidden></p>
+ <div class="actions"><button type="button" class="btn" id="cancel">${T("cancel")}</button><span class="sp"></span><button type="button" class="btn primary" id="lgGo">Entrer</button></div>`;$("#sheet").hidden=false;setTimeout(()=>{const i=$("#lg-code");if(i)i.focus()},50)}
+async function fbLogin(){const inp=$("#lg-code"),err=$("#lg-err"),b=$("#lgGo");if(!inp)return;const c=inp.value.trim();const say=m=>{err.textContent=m;err.hidden=false};err.hidden=true;
+ if(!c){say("Entre le code.");return}
+ if(!fb.auth){say(fb.off?"Pas de connexion Internet : impossible de vérifier le code.":"Connexion en cours… réessaie dans un instant.");return}
+ b.disabled=true;b.textContent="Vérification…";let role=null,stop="";
+ for(const[r,em]of[["master",FB_MASTER],["chef",FB_CHEF]]){try{await fb.auth.signInWithEmailAndPassword(em,c);role=r;break}catch(e){const cd=String(e&&e.code||"");if(cd.includes("network")){stop="Pas de connexion Internet.";break}if(cd.includes("too-many")){stop="Trop d'essais. Attends quelques minutes puis réessaie.";break}}}
+ b.disabled=false;b.textContent="Entrer";
+ if(stop){say(stop);return}
+ if(!role){say("Code incorrect.");inp.value="";inp.focus();return}
+ fb.role=role;fbLS(FB_RK,role);if(role==="master")openNameStep();else{fb.name="";fbLS(FB_NK,null);enterCe();toast("👁️ Mode lecture",2500)}}
+function openNameStep(){editing={kind:"login"};const last=fbLS(FB_LK)||fb.name||"";
+ $("#panel").innerHTML=`<h2>✏️ Mode master</h2><p class="notes">Écris ton nom. Il sera affiché sur chaque modification : « Modifié par … ».</p>
+ <label class="field" for="lg-name"><span class="lbl">Ton nom</span><input type="text" id="lg-name" maxlength="40" autocomplete="name" value="${esc(last)}"></label>
+ <p class="err" id="lg-err" hidden>Écris ton nom (2 lettres minimum).</p>
+ <div class="actions"><span class="sp"></span><button type="button" class="btn primary" id="lgName">Continuer</button></div>`;$("#sheet").hidden=false;setTimeout(()=>{const i=$("#lg-name");if(i){i.focus();i.select()}},50)}
+function fbSetName(){const i=$("#lg-name");if(!i)return;const v=i.value.trim().replace(/\s+/g," ").toUpperCase();if(v.length<2){$("#lg-err").hidden=false;return}fb.name=v;fbLS(FB_NK,v);fbLS(FB_LK,v);enterCe();toast("✏️ Mode master : "+v,2500)}
+async function fbLogout(){try{if(fb.auth)await fb.auth.signOut()}catch(e){}fb.role=null;fbLS(FB_RK,null);fb.name="";fbLS(FB_NK,null);if(fb.unsub.team){fb.unsub.team();fb.unsub.team=null}closeForm();ui.space=null;fbLS("hangar-space",null);render();window.scrollTo(0,0);toast("Déconnecté")}
+async function openJournal(){editing={kind:"journal"};
+ $("#panel").innerHTML=`<h2>🕘 Journal des modifications</h2><div id="jlist"><p class="notes">Chargement…</p></div><div class="actions"><span class="sp"></span><button type="button" class="btn" id="cancel">${T("close")}</button></div>`;$("#sheet").hidden=false;
+ const A={ajout:"a ajouté",modif:"a modifié",suppr:"a supprimé"};
+ try{if(!fb.db)throw{code:"hors ligne"};const q=await fb.db.collection("journal").orderBy("at","desc").limit(150).get();const L=q.docs.map(d=>d.data());const el=$("#jlist");if(!el)return;
+  el.innerHTML=L.length?`<div class="jlist">${L.map(x=>`<div class="jrow"><div><b>${esc(x.by||"?")}</b> ${A[x.a]||esc(x.a||"")}</div><div class="jl">${esc(x.l||"")}</div><small>${fbDT(x.at)}</small></div>`).join("")}</div>`:`<p class="notes">Aucune modification enregistrée pour le moment.</p>`}
+ catch(e){const el=$("#jlist");if(el)el.innerHTML=`<p class="err">Impossible de charger le journal (${esc(e&&e.code||"hors ligne")}).</p>`}}
+function openCodes(){editing={kind:"codes"};const f=(id,l)=>`<label class="field" for="${id}"><span class="lbl">${l}</span><input type="password" id="${id}" autocomplete="off"></label>`;
+ $("#panel").innerHTML=`<h2>🔑 Changer les codes</h2><p class="notes">6 caractères minimum, et les deux codes doivent être différents. Après un changement, les autres appareils devront entrer le nouveau code.</p>
+ <div class="cdsec"><h3>✏️ Code master</h3>${f("cd-mo","Code master actuel")}${f("cd-mn","Nouveau code master")}${f("cd-mn2","Confirmer le nouveau code")}<button type="button" class="btn primary" id="cdMaster">Changer le code master</button></div>
+ <div class="cdsec"><h3>👁️ Code lecture (chefs d'équipe)</h3>${f("cd-ro","Code lecture actuel")}${f("cd-rn","Nouveau code lecture")}${f("cd-rn2","Confirmer le nouveau code")}<button type="button" class="btn primary" id="cdRead">Changer le code lecture</button></div>
+ <div class="actions"><span class="sp"></span><button type="button" class="btn" id="cancel">${T("close")}</button></div>`;$("#sheet").hidden=false}
+async function fbChange(w){const ids=w==="m"?["cd-mo","cd-mn","cd-mn2"]:["cd-ro","cd-rn","cd-rn2"];const[a,b,c]=ids.map(id=>($("#"+id)||{}).value?.trim()||"");
+ if(!a||!b){toast("Remplis les champs.");return}if(b.length<6){toast("Le nouveau code doit avoir au moins 6 caractères.");return}if(b!==c){toast("Les deux nouveaux codes sont différents.");return}
+ if(!window.firebase||!fb.auth){toast("Pas de connexion Internet.");return}
+ const em=w==="m"?FB_MASTER:FB_CHEF;
+ try{const app2=firebase.apps.find(x=>x.name==="codes")||firebase.initializeApp(FB_CFG,"codes");const a2=app2.auth();try{await a2.setPersistence(firebase.auth.Auth.Persistence.NONE)}catch(_){}
+  const cr=await a2.signInWithEmailAndPassword(em,a);await cr.user.updatePassword(b);await a2.signOut();
+  if(w==="m"){try{await fb.auth.signInWithEmailAndPassword(FB_MASTER,b)}catch(_){}}
+  ids.forEach(id=>{const x=$("#"+id);if(x)x.value=""});toast(w==="m"?"✅ Code master changé":"✅ Code lecture changé",3500)}
+ catch(e){const cd=String(e&&e.code||"");toast(cd.includes("network")?"Pas de connexion Internet.":cd.includes("too-many")?"Trop d'essais : attends quelques minutes.":cd.includes("weak")?"Code trop faible (6 caractères minimum).":"Code actuel incorrect.",3500)}}
+function fbMbyHtml(x){return x&&x.mby?`<p class="mby">✏️ Modifié par <b>${esc(x.mby)}</b>${x.mat?" · "+fbDT(x.mat):""}</p>`:""}
+function fbAfterOpen(x){if($("#sheet").hidden)return;const p=$("#panel");if(!p||p.querySelector(".mby,.ronote"))return;const ro=isRO();const add=(fb.on?fbMbyHtml(x):"")+(ro?`<p class="ronote">🔒 Lecture seule : entre le code master pour modifier.</p>`:"");if(add){const h=p.querySelector("h2");if(h)h.insertAdjacentHTML("afterend",add);else p.insertAdjacentHTML("afterbegin",add)}if(ro)$("#sheet").classList.add("rosheet")}
+const fbWrap=(f,get)=>function(){const r=f.apply(this,arguments);try{fbAfterOpen(get.apply(null,arguments))}catch(_){}return r};
+const fbFind=(k,id)=>id&&Array.isArray(state[k])?state[k].find(x=>x&&x.id===id):null;
+openForm=fbWrap(openForm,(k,id)=>fbFind(k,id));
+openDetail=fbWrap(openDetail,(k,id)=>fbFind(k,id));
+openTaskSheet=fbWrap(openTaskSheet,id=>fbFind("taskSheets",id));
+openReleve=fbWrap(openReleve,id=>fbFind("releves",id));
+openRenfort=fbWrap(openRenfort,id=>fbFind("renforts",id));
+openFormation=fbWrap(openFormation,id=>fbFind("formations",id));
+openVEdit=fbWrap(openVEdit,()=>null);
+openAnnonce=fbWrap(openAnnonce,id=>fbFind("annonces",id));
+document.addEventListener("click",e=>{const sp=e.target.closest('[data-space="ce"]');if(!sp||!fb.on||ui.space==="ce")return;const r=fbRole();
+ if(!r){e.stopPropagation();e.preventDefault();openCeLogin(false);return}
+ if(r==="master"&&!fb.name){e.stopPropagation();e.preventDefault();openNameStep()}},true);
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.id)return;
+ switch(b.id){case"lgGo":fbLogin();break;case"lgName":fbSetName();break;case"fbOut":fbLogout();break;case"fbJournal":openJournal();break;case"fbCodes":openCodes();break;case"fbToMaster":openCeLogin(true);break;case"cdMaster":fbChange("m");break;case"cdRead":fbChange("r");break}});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(e.target.id==="lg-code"){e.preventDefault();fbLogin()}else if(e.target.id==="lg-name"){e.preventDefault();fbSetName()}});
+
 boot();
 
 </script>
