@@ -715,6 +715,16 @@ body.ro [data-addcat],body.ro [data-stgbatch],body.ro .cbtn[data-edit],body.ro [
 .jrow .jl{font-weight:600}.jrow small{color:var(--muted)}
 .cdsec{display:grid;gap:8px;margin:12px 0 16px;padding:10px;border:1px solid var(--line);border-radius:12px}
 .cdsec h3{margin:0;font-size:.95rem}
+.hexit{flex:none;height:40px;padding:0 14px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:var(--on-brand,#fff);margin-inline-start:auto}
+.hexit+.gear{margin-inline-start:0}
+.spaces[hidden],.hexit[hidden]{display:none!important}
+.hrow h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:520px){header.insp .hrow h1{font-size:1.3rem;line-height:40px}header.insp .hexit{padding:0 10px}}
+@media (min-width:1100px){.wrap{max-width:1080px}.list{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.tvlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}}
+.hrow h1{flex:1;min-width:0}
+header{transition:transform .22s ease}header.hid{transform:translateY(-110%)}
+.pwrow{display:flex;gap:6px;align-items:stretch}.pwrow input{flex:1;min-width:0}.pweye{flex:none;width:46px;border-radius:10px;border:1px solid var(--line);background:var(--sunk);font-size:1.1rem;cursor:pointer}
+.stglist{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.stgn{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 10px;border-radius:999px;background:var(--sunk);font-weight:600;font-size:.85rem}.stgn button{border:0;background:transparent;color:var(--muted);cursor:pointer;font:inherit;font-size:.8rem}.stgh{margin:14px 0 2px;font-size:.95rem}
 .csec .tplsec>.sechrow h2.sech{display:none}.csec .tplsec>.sechrow{justify-content:flex-end}
 .tsgrp{margin:6px 0 8px;padding:8px;border-radius:10px;background:var(--sunk)}.tsgrp .tfl small{font-weight:500;text-transform:none;letter-spacing:0}.tsgrp .tschips{margin:4px 0}
 .tschip.dup{border-color:#d97706;background:#fff7ed;color:#9a3412}.tschip.dup small{font-weight:500}
@@ -733,7 +743,7 @@ body.ro [data-addcat],body.ro [data-stgbatch],body.ro .cbtn[data-edit],body.ro [
 <body>
 <header>
   <div class="wrap">
-    <div class="hrow"><h1><span id="h1t">Hangar Est 3600</span><small id="sub"></small></h1><button class="gear" id="settingsBtn" aria-label="Réglages">⚙</button></div>
+    <div class="hrow"><h1><span id="h1t">Hangar Est 3600</span><small id="sub"></small></h1><button class="hexit" id="hexit" data-space="" hidden>↩ Sortir</button><button class="gear" id="settingsBtn" aria-label="Réglages">⚙</button></div>
     <div class="spaces" id="spaces" role="tablist"></div>
     <nav class="tabs" role="tablist" id="tabs"></nav>
   </div>
@@ -918,7 +928,7 @@ function seedTechs(techs,done){done=new Set(done||[]);const have=new Set(techs.m
 function normalize(d){d=d?JSON.parse(JSON.stringify(d)):{};const sDone=Array.isArray(d.seedIds)?d.seedIds:(d.seeded?SEED_V1:[]);if(SEED_TECHS.some(x=>!sDone.includes(x[0])))d.techs=seedTechs(Array.isArray(d.techs)?d.techs:[],sDone);(Array.isArray(d.techs)?d.techs:[]).forEach(t=>{if(/^Stagiaire /.test(t.badge||""))t.badge="Stagiaire"});const _up=upNames({techs:d.techs,taskSheets:d.taskSheets,renforts:d.renforts,formations:d.formations});return{seeded:true,seedIds:SEED_TECHS.map(x=>x[0]),missions:Array.isArray(d.missions)?d.missions:[],convoyages:Array.isArray(d.convoyages)?d.convoyages:[],techs:Array.isArray(d.techs)?d.techs:[],tpl:(d.tpl&&typeof d.tpl==="object")?d.tpl:{},notes:Array.isArray(d.notes)?d.notes:[],mymissions:Array.isArray(d.mymissions)?d.mymissions:[],toolsCfg:(d.toolsCfg&&typeof d.toolsCfg==="object")?d.toolsCfg:{},taskSheets:Array.isArray(d.taskSheets)?d.taskSheets:[],renforts:Array.isArray(d.renforts)?d.renforts:[],annonces:Array.isArray(d.annonces)?d.annonces:[],releves:Array.isArray(d.releves)?d.releves:[],formations:Array.isArray(d.formations)?d.formations:[],arcWeeks:(d.arcWeeks&&typeof d.arcWeeks==="object")?d.arcWeeks:{},cePin:typeof d.cePin==="string"&&d.cePin?d.cePin:"3600",tsCats:Array.isArray(d.tsCats)?d.tsCats:[],badgeCats:Array.isArray(d.badgeCats)?d.badgeCats:[],secOrder:(d.secOrder&&typeof d.secOrder==="object")?d.secOrder:{},calColors:(d.calColors&&typeof d.calColors==="object")?d.calColors:{},msgCfg:(d.msgCfg&&typeof d.msgCfg==="object")?d.msgCfg:{},tankCaps:(d.tankCaps&&typeof d.tankCaps==="object")?d.tankCaps:{},leaveBal:d.leaveBal??"",holEdits:(d.holEdits&&typeof d.holEdits==="object")?d.holEdits:{add:[],del:[]},mycvg:Array.isArray(d.mycvg)?d.mycvg:[],parts:Array.isArray(d.parts)?d.parts:[],contacts:Array.isArray(d.contacts)?d.contacts:[],events:Array.isArray(d.events)?d.events:[],visits:(d.visits&&typeof d.visits==="object")?d.visits:{},depannages:Array.isArray(d.depannages)?d.depannages:[],quota:(d.quota&&typeof d.quota==="object")?d.quota:{},prefs:d.prefs||null}}
 
 /* ---------- réglages : langue, mode, arrière-plan ---------- */
-function applyPrefs(){const h=document.documentElement;LANG="fr";
+function applyPrefs(){const h=document.documentElement;LANG="fr";try{uiPrefsApply()}catch(_){}
  h.lang=LANG;h.dir=LANG==="ar"?"rtl":"ltr";h.dataset.bg=prefs.bg||"grey";
  if(prefs.mode==="day")h.setAttribute("data-theme","light");else if(prefs.mode==="night")h.setAttribute("data-theme","dark");
  else{if(HOST_THEME)h.setAttribute("data-theme",HOST_THEME);else h.removeAttribute("data-theme")}
@@ -929,6 +939,7 @@ function openSettings(){editing={kind:"settings"};
  $("#panel").innerHTML=`<h2>${T("set_title")}</h2><div class="settings">
  ${grp("mode",T("set_mode"),[["auto",T("m_auto")],["day","☀ "+T("m_day")],["night","☾ "+T("m_night")]])}
  <div class="field"><span class="lbl">${T("set_bg")}</span><div class="swatches">${[["grey",T("bg_grey")],["white",T("bg_white")],["red",T("bg_red")]].map(([v,l])=>`<button type="button" class="swatch" data-bgv="${v}" aria-pressed="${prefs.bg===v}"><span class="sw sw-${v}"></span>${l}</button>`).join("")}</div></div>
+ ${uiPrefsHtml()}
  <div class="field"><span class="lbl">🔄 Transfert entre applications</span><p class="notes">Envoie ou reçois le programme, le répertoire, les P/N… d'un autre téléphone, sans effacer tes données.</p><button type="button" class="btn" id="trOpen">🔄 Transférer des données</button></div>
  ${fbOldHtml()}
  <div class="field"><span class="lbl">${T("set_backup")}</span>
@@ -2074,10 +2085,10 @@ function render(){try{applyCalColors()}catch(_){}document.body.classList.toggle(
  {const SP=[["ce","👔✈️","Contremaître et C/E"],["tech","⚙️✈️",T("sp_tech")],["rep","📒",T("sp_rep")]];const cur=SP.find(x=>x[0]===ui.space);
  $("#spaces").innerHTML=cur?`<div class="space cur" aria-current="true"><span>${cur[1]}</span>${cur[2]}</div><button class="space exit" data-space="${cur[0]}">↩ ${T("sp_exit")}</button>`:SP.map(([k,ic,l])=>{const n=k==="tech"?techUnread():0;return`<button class="space" data-space="${k}"><span>${ic}</span>${l}${n?`<i class="nbadge" aria-label="${n} nouveau(x) message(s)">${n}</i>`:""}</button>`}).join("");}
  $("#tabs").hidden=ui.space==="tech";
- $("#spaces").classList.toggle("home",!ui.space);
+ $("#spaces").classList.toggle("home",!ui.space);$("#spaces").hidden=!!ui.space;{const hx=$("#hexit");if(hx){hx.hidden=!ui.space;hx.dataset.space=ui.space||""}const hd=document.querySelector("header");if(hd)hd.classList.toggle("insp",!!ui.space)}
  if(!ui.space){$("#tabs").hidden=true;$("#tabs").innerHTML="";$("#fab").hidden=true;$("#main").innerHTML="";return}
  if(ui.space==="rep"){$("#tabs").hidden=true;$("#tabs").innerHTML="";$("#fab").hidden=mode==="pending";$("#fab").textContent=T("fab_contacts");$("#main").innerHTML=(note?`<div class="note">${esc(T(note))}</div>`:"")+contactsView();return}
- $("#tabs").innerHTML=(ui.space==="tech"?[]:[["techs",state.techs.length],["cal",""],["visits",""],["outils",""],["convoyages",upC],["missions",upM],["depannages",upD],["renfort",rfWeekCount()],["formation",fmWeekCount()]]).map(([k,n])=>`<button class="tab" role="tab" aria-selected="${ui.tab===k}" data-tab="${k}"><span class="ti" aria-hidden="true">${TAB_ICON[k]}${n!==""?`<span class="n">${n}</span>`:""}</span><span class="tl">${T("tl_"+k)}</span></button>`).join("");
+ $("#tabs").innerHTML=(ui.space==="tech"?[]:[["techs",state.techs.filter(t=>!/^Stagiaire/.test(t.badge||"")).length],["cal",""],["visits",""],["outils",""],["convoyages",upC],["missions",upM],["depannages",upD],["renfort",rfWeekCount()],["formation",fmWeekCount()]]).map(([k,n])=>`<button class="tab" role="tab" aria-selected="${ui.tab===k}" data-tab="${k}"><span class="ti" aria-hidden="true">${TAB_ICON[k]}${n!==""?`<span class="n">${n}</span>`:""}</span><span class="tl">${T("tl_"+k)}</span></button>`).join("");
  setSync();
  $("#fab").hidden=mode==="pending"||ui.tab==="cal"||ui.tab==="outils"||ui.tab==="renfort"||ui.tab==="formation";
  $("#fab").textContent=T("fab_"+ui.tab);if(isRO())$("#fab").hidden=true;
@@ -2100,7 +2111,7 @@ function render(){try{applyCalColors()}catch(_){}document.body.classList.toggle(
   const F=filters(k);
   if(k==="techs")html+=`<button type="button" class="btn link flagbtn" id="flagTgl">${showFlags()?"🙈 Masquer vaccin / visa / APRS":"👁️ Afficher vaccin / visa / APRS"}</button>`;
   if(k==="techs")html+=`<input type="search" id="tq" class="csearch" placeholder="🔍 Rechercher un technicien…" value="${esc(ui.tq||"")}" autocomplete="off">`;
-  html+='<div class="filters">'+F.map(([id,lk])=>`<button class="fchip" aria-pressed="${ui.filter[k]===id}" data-filter="${esc(id)}">${lk?T(lk):k==="techs"&&id==="Stagiaire"?`Stagiaires (${state.techs.filter(t=>/^Stagiaire/.test(t.badge||"")).length})`:esc(id)}</button>`).join("")+(k==="techs"?`<button type="button" class="fchip addcat" data-addcat="1">+ Catégorie</button><button type="button" class="fchip addcat" data-stgbatch="1">🎓 + Lot de stagiaires</button>`:"")+"</div>";
+  html+='<div class="filters">'+F.map(([id,lk])=>`<button class="fchip" aria-pressed="${ui.filter[k]===id}" data-filter="${esc(id)}">${lk?T(lk):k==="techs"&&id==="Stagiaire"?`Stagiaires (${state.techs.filter(t=>/^Stagiaire/.test(t.badge||"")).length})`:esc(id)}</button>`).join("")+(k==="techs"?`<button type="button" class="fchip addcat" data-addcat="1">+ Catégorie</button><button type="button" class="fchip addcat" data-stgbatch="1">🎓 Liste des stagiaires</button>`:"")+"</div>";
   const f=(F.find(x=>x[0]===ui.filter[k])||F[0])[2];
   let list=k==="convoyages"?weekItems().filter(x=>f(x.c)):k==="missions"?missionWeek().filter(f):k==="depannages"?depWeek().filter(f):all.filter(f).filter(t=>k!=="techs"||!ui.tq||normName(t.nom+" "+badgeTxt(t)).includes(normName(ui.tq)));
   if(k==="missions"||k==="depannages")list=sortByDate(list,"debut");else if(k==="techs")list=[...list].sort((a,b)=>allBadges().indexOf(a.badge)-allBadges().indexOf(b.badge)||((A_NIV.indexOf(a.niv)+100)%100)-((A_NIV.indexOf(b.niv)+100)%100)||a.nom.localeCompare(b.nom));
@@ -2534,7 +2545,7 @@ function fbLocalSave(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch
 let fbMT=null;function fbSaveMeta(){clearTimeout(fbMT);fbMT=setTimeout(()=>{try{localStorage.setItem(FB_MK,JSON.stringify({known:fb.known,base:fb.base}))}catch(e){}},400)}
 function fbStTxt(){if(fb.off)return"📴 Hors ligne";if(fb.err)return"⚠️ Erreur de synchronisation";if(typeof navigator!=="undefined"&&navigator.onLine===false)return"📴 Hors ligne";const col=fbRole()?"team":"pub";if(fb.pushing||(fb.meta[col]&&fb.meta[col].pend))return"⏳ Envoi…";if(fb.known[col])return"☁️ Synchronisé";if(fb.empty[col])return"☁️ Rien de partagé pour l'instant";return"⏳ Connexion…"}
 function fbStatus(){const el=document.getElementById("fbst");if(el)el.textContent=fbStTxt()}
-function fbBar(){if(!fb.on)return"";const r=fbRole();return`<div class="fbbar ${r==="master"?"m":"r"}"><span class="fbwho">${r==="master"?`✏️ Master : <b>${esc(fb.name||"—")}</b>`:`👔 <b>${esc(fb.name||"Chef d'équipe")}</b>`}</span><span class="fbst" id="fbst">${fbStTxt()}</span><span class="fbbtns"><button type="button" class="btn link" id="fbJournal">🕘 Journal</button>${r==="master"?`<button type="button" class="btn link" id="fbCodes">🔑 Codes</button>`:`<button type="button" class="btn link" id="fbToMaster">🔑 Code master</button>`}<button type="button" class="btn link" id="fbOut">Déconnexion</button></span></div>`}
+function fbBar(){if(!fb.on)return"";const r=fbRole();return`<div class="fbbar ${r==="master"?"m":"r"}"><span class="fbwho">${r==="master"?`✏️ Master : <b>${esc(fb.name||"—")}</b>`:`👔 <b>${esc(fb.name||"Chef d'équipe")}</b>`}</span><span class="fbst" id="fbst">${fbStTxt()}</span><span class="fbbtns"><button type="button" class="btn link" id="fbJournal">🕘 Journal</button>${r==="master"?`<button type="button" class="btn link" id="fbCodes">🔑 Codes</button>`:""}<button type="button" class="btn link" id="fbOut">Déconnexion</button></span></div>`}
 function fbLoad(){if(window.firebase&&firebase.firestore&&firebase.auth)return Promise.resolve();return FB_SDK.reduce((p,u)=>p.then(()=>new Promise((ok,ko)=>{const s=document.createElement("script");s.src=u;s.onload=ok;s.onerror=ko;document.head.appendChild(s)})),Promise.resolve())}
 function fbStart(){fb.on=true;try{const m=JSON.parse(fbLS(FB_MK)||"null");if(m){fb.known=m.known||{};fb.base=m.base||{}}}catch(e){}
  if(ui.space==="ce"&&!fbRole()){ui.space=null;render()}
@@ -2578,7 +2589,7 @@ function enterCe(){closeForm();ui.open={};ui.space="ce";ui.tab="cal";fbLS("hanga
 function openCeLogin(toMaster){editing={kind:"login"};
  $("#panel").innerHTML=`<h2>🔒 Contremaître et C/E</h2><p class="notes">${toMaster?"Entre le code master pour pouvoir modifier.":"Entre ton code : le code de lecture pour consulter, ou le code master pour modifier."}</p>
  ${fb.off?`<p class="err">Pas de connexion Internet : la première connexion nécessite Internet.</p>`:""}
- <label class="field" for="lg-code"><span class="lbl">Code</span><input type="password" id="lg-code" autocomplete="current-password" class="cepin"></label>
+ ${pwField("lg-code","Code","current-password","cepin")}
  <p class="err" id="lg-err" hidden></p>
  <div class="actions"><button type="button" class="btn" id="cancel">${T("cancel")}</button><span class="sp"></span><button type="button" class="btn primary" id="lgGo">Entrer</button></div>`;$("#sheet").hidden=false;setTimeout(()=>{const i=$("#lg-code");if(i)i.focus()},50)}
 async function fbLogin(){const inp=$("#lg-code"),err=$("#lg-err"),b=$("#lgGo");if(!inp)return;const c=inp.value.trim();const say=m=>{err.textContent=m;err.hidden=false};err.hidden=true;
@@ -2603,7 +2614,7 @@ async function openJournal(){editing={kind:"journal"};
  try{if(!fb.db)throw{code:"hors ligne"};const q=await fb.db.collection("journal").orderBy("at","desc").limit(150).get();const L=q.docs.map(d=>d.data());const el=$("#jlist");if(!el)return;
   el.innerHTML=L.length?`<div class="jlist">${L.map(x=>`<div class="jrow"><div><b>${esc(x.by||"?")}</b> ${A[x.a]||esc(x.a||"")}</div><div class="jl">${esc(x.l||"")}</div><small>${fbDT(x.at)}</small></div>`).join("")}</div>`:`<p class="notes">Aucune modification enregistrée pour le moment.</p>`}
  catch(e){const el=$("#jlist");if(el)el.innerHTML=`<p class="err">Impossible de charger le journal (${esc(e&&e.code||"hors ligne")}).</p>`}}
-function openCodes(){editing={kind:"codes"};const f=(id,l)=>`<label class="field" for="${id}"><span class="lbl">${l}</span><input type="password" id="${id}" autocomplete="off"></label>`;
+function openCodes(){editing={kind:"codes"};const f=(id,l)=>pwField(id,l);
  $("#panel").innerHTML=`<h2>🔑 Changer les codes</h2><p class="notes">6 caractères minimum, et les deux codes doivent être différents. Après un changement, les autres appareils devront entrer le nouveau code.</p>
  <div class="cdsec"><h3>✏️ Code master</h3>${f("cd-mo","Code master actuel")}${f("cd-mn","Nouveau code master")}${f("cd-mn2","Confirmer le nouveau code")}<button type="button" class="btn primary" id="cdMaster">Changer le code master</button></div>
  <div class="cdsec"><h3>👁️ Code lecture (chefs d'équipe)</h3>${f("cd-ro","Code lecture actuel")}${f("cd-rn","Nouveau code lecture")}${f("cd-rn2","Confirmer le nouveau code")}<button type="button" class="btn primary" id="cdRead">Changer le code lecture</button></div>
@@ -2726,17 +2737,32 @@ document.addEventListener("change",e=>{if(e.target.closest&&e.target.closest("#t
 
 /* ---------- lot de stagiaires ---------- */
 function openStgBatch(){editing={kind:"stg"};const n=state.techs.filter(t=>/^Stagiaire/.test(t.badge||"")).length;
- $("#panel").innerHTML=`<h2>🎓 Ajouter un lot de stagiaires</h2><p class="notes">Écris un nom par ligne. Ils sont ajoutés dans la catégorie Stagiaire (${n} actuellement).</p>
+ const SL=state.techs.filter(t=>/^Stagiaire/.test(t.badge||"")).sort((a,b)=>a.nom.localeCompare(b.nom));
+ $("#panel").innerHTML=`<h2>🎓 Liste des stagiaires</h2><p class="notes">Les stagiaires ne sont pas comptés parmi les techniciens. Ils apparaissent dans le filtre « Stagiaires » et dans la ligne Stagiaires de la répartition.</p>
+ <div class="stglist">${SL.map(t=>`<span class="stgn">${esc(t.nom)}<button type="button" data-stgdel="${t.id}" aria-label="Retirer ${esc(t.nom)}">✕</button></span>`).join("")||`<p class="notes">Aucun stagiaire pour le moment.</p>`}</div>
+ <h3 class="stgh">Ajouter des stagiaires</h3><p class="notes">Un nom par ligne.</p>
  <label class="field" for="stg-list"><span class="lbl">Noms des stagiaires</span><textarea id="stg-list" class="big" placeholder="NOM Prénom&#10;NOM Prénom&#10;…"></textarea></label>
  <p class="notes" id="stg-info"></p>
  <div class="actions"><button type="button" class="btn" id="cancel">${T("cancel")}</button><span class="sp"></span><button type="button" class="btn primary" id="stgAdd">➕ Ajouter</button></div>`;$("#sheet").hidden=false;setTimeout(()=>{const i=$("#stg-list");if(i)i.focus()},50)}
 function stgParse(){const v=($("#stg-list")||{}).value||"";const have=new Set(state.techs.map(t=>normName(t.nom)));const seen=new Set();const add=[],dup=[];
  v.split(/\n|;/).map(x=>x.trim().replace(/\s+/g," ")).filter(Boolean).forEach(nm=>{const k=normName(nm);if(have.has(k)||seen.has(k)){dup.push(nm);return}seen.add(k);add.push(nm.toUpperCase())});return{add,dup}}
 function stgAdd(){const{add,dup}=stgParse();if(!add.length){toast(dup.length?"Ces noms existent déjà.":"Écris au moins un nom.");return}
- add.forEach(nom=>state.techs.push({id:uid(),nom,badge:"Stagiaire",vaccin:false,visa:false,aprs:false,notes:""}));persist();closeForm();ui.filter.techs="Stagiaire";render();
+ add.forEach(nom=>state.techs.push({id:uid(),nom,badge:"Stagiaire",vaccin:false,visa:false,aprs:false,notes:""}));persist();ui.filter.techs="Stagiaire";render();openStgBatch();
  toast(`🎓 ${add.length} stagiaire${add.length>1?"s":""} ajouté${add.length>1?"s":""}${dup.length?` · ${dup.length} déjà présent${dup.length>1?"s":""}`:""}`,3500)}
-document.addEventListener("click",e=>{if(e.target.closest("[data-stgbatch]")){openStgBatch();return}if(e.target.closest("#stgAdd"))stgAdd()});
+document.addEventListener("click",e=>{if(e.target.closest("[data-stgbatch]")){openStgBatch();return}if(e.target.closest("#stgAdd")){stgAdd();return}const d=e.target.closest("[data-stgdel]");if(d){if(!d.dataset.armed){d.dataset.armed="1";d.textContent="Retirer ?";return}const id=d.dataset.stgdel;state.techs=state.techs.filter(t=>t.id!==id);persist();render();openStgBatch();toast("Stagiaire retiré")}});
 document.addEventListener("input",e=>{if(e.target.id==="stg-list"){const{add,dup}=stgParse();const i=$("#stg-info");if(i)i.textContent=add.length||dup.length?`${add.length} à ajouter${dup.length?` · ${dup.length} déjà présent${dup.length>1?"s":""} (ignoré${dup.length>1?"s":""})`:""}`:""}});
+
+/* ---------- en-tête compact, réglages d'affichage, code visible ---------- */
+const VP_BASE="width=device-width,initial-scale=1,viewport-fit=cover";
+function uiPrefsApply(){const off=prefs&&prefs.zoom===false;let m=document.querySelector('meta[name="viewport"]');if(!m){m=document.createElement("meta");m.name="viewport";document.head.appendChild(m)}
+ m.setAttribute("content",VP_BASE+(off?",maximum-scale=1,user-scalable=no":""));document.documentElement.classList.toggle("nozoom",off);if(!(prefs&&prefs.hideBar)){const h=document.querySelector("header");if(h)h.classList.remove("hid")}}
+let lastY=0;window.addEventListener("scroll",()=>{const y=window.scrollY||0;const h=document.querySelector("header");if(!h)return;if(!(prefs&&prefs.hideBar)||!$("#sheet").hidden){h.classList.remove("hid");lastY=y;return}if(y>lastY+6&&y>90)h.classList.add("hid");else if(y<lastY-6||y<60)h.classList.remove("hid");lastY=y},{passive:true});
+document.addEventListener("gesturestart",e=>{if(prefs&&prefs.zoom===false)e.preventDefault()});
+document.addEventListener("touchmove",e=>{if(prefs&&prefs.zoom===false&&e.scale&&e.scale!==1)e.preventDefault()},{passive:false});
+document.addEventListener("change",e=>{const k=e.target.dataset&&e.target.dataset.uipref;if(!k)return;prefs={...prefs,[k]:!!e.target.checked};state.prefs=prefs;try{localStorage.setItem(PKEY,JSON.stringify(prefs))}catch(_){}uiPrefsApply();persist();toast(k==="zoom"?(e.target.checked?"Zoom avec deux doigts activé":"Zoom avec deux doigts désactivé"):(e.target.checked?"La barre se masque pendant le défilement":"La barre reste toujours visible"))});
+function uiPrefsHtml(){return`<div class="field"><span class="lbl">Affichage</span><label class="check" for="up-bar"><input type="checkbox" id="up-bar" data-uipref="hideBar" ${prefs.hideBar?"checked":""}>Masquer la barre du haut pendant le défilement</label><label class="check" for="up-zoom"><input type="checkbox" id="up-zoom" data-uipref="zoom" ${prefs.zoom!==false?"checked":""}>Pincer avec deux doigts pour zoomer</label></div>`}
+function pwField(id,label,ac,cls){return`<label class="field" for="${id}"><span class="lbl">${label}</span><span class="pwrow"><input type="password" id="${id}" autocomplete="${ac||"off"}" ${cls?`class="${cls}"`:""}><button type="button" class="pweye" data-pweye="${id}" aria-label="Afficher le code" title="Afficher le code">👁️</button></span></label>`}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-pweye]");if(!b)return;e.preventDefault();const i=document.getElementById(b.dataset.pweye);if(!i)return;const show=i.type==="password";i.type=show?"text":"password";b.textContent=show?"🙈":"👁️";b.setAttribute("aria-label",show?"Masquer le code":"Afficher le code");i.focus()});
 
 boot();
 
