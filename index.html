@@ -333,6 +333,7 @@ button.ancard{cursor:pointer}
 .csec>section>.sechrow{justify-content:flex-end}
 #printArea{display:none}
 @media print{body.printing>*:not(#printArea){display:none!important}body.printing #printArea{display:block!important}body.printing{background:#fff!important}}
+@media print{@page{size:A4;margin:0}body.printing #printArea{padding:15mm 15mm 12mm}}
 .pnimp{display:grid;gap:3px;max-height:30vh;overflow:auto;font-size:.88rem;margin:6px 0 10px}
 .pnlistc{display:grid;gap:6px;max-height:42vh;overflow:auto;margin:8px 0}
 .pnitem{display:grid;grid-template-columns:minmax(0,1fr) 64px 36px;gap:6px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg)}
