@@ -731,6 +731,7 @@ header{transition:transform .22s ease}header.hid{transform:translateY(-110%)}
 .tsgrp{margin:6px 0 8px;padding:8px;border-radius:10px;background:var(--sunk)}.tsgrp .tfl small{font-weight:500;text-transform:none;letter-spacing:0}.tsgrp .tschips{margin:4px 0}
 .tschip.dup{border-color:#d97706;background:#fff7ed;color:#9a3412}.tschip.dup small{font-weight:500}
 .tsfree{margin:14px 0;padding:12px;border:1px dashed var(--line);border-radius:12px;background:var(--surface)}.tsfreeh{display:flex;align-items:center;gap:8px;margin-bottom:4px}.tsfreeg{margin-top:8px}.tsfreel{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.fchip.delcat{color:var(--bad);border-color:currentColor}.dclist{display:grid;gap:6px;margin:8px 0 12px}.dcit{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:var(--sunk)}.dcit.dis{opacity:.55}.dcit .bcn{flex:1;color:var(--muted);font-size:.82rem}.dchid{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tvq{margin:0 0 10px}.tvhits{display:grid;gap:8px;margin:0 0 12px}.tvhit{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;background:#ecfdf5;border:1.5px solid #10b981;color:#064e3b}.tvhit span{font-size:.88rem}.tvhit small{display:block;color:#047857;font-size:.78rem;margin-top:2px}.tvhim{font-weight:800;font-size:1.15rem;letter-spacing:.02em;white-space:nowrap}.tvnone{margin:0 0 10px}b.tvme{background:#fef08a;color:#111;border-radius:4px;padding:0 3px}
 .tsfree.stg{border-color:#d9c27a}.tsfreen{font-size:.82rem;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--sunk)}
 .wkpick{margin:0 0 10px}.wksel{width:100%;font:inherit;font-weight:700;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .cal.wk1 .day{min-height:120px}.cal.wk1 .bar{font-size:.8rem;padding-block:3px}
@@ -1932,14 +1933,15 @@ function rowF(f){return`<button class="ritem f" data-fmopen="${f.id}"><span clas
 if(!ui.tv)ui.tv={rep:null,y:null,w:null};
 function tvSheets(){return(state.taskSheets||[]).filter(x=>!x.archived).map(tsFix).filter(o=>tsUsed(o).length).sort((a,b)=>b.date.localeCompare(a.date)||(b.updated||"").localeCompare(a.updated||""))}
 function tvCard(cur){return`<div class="tvrep"><div class="tvhead">${cur.im&&cur.im!=="CN-"?`<div class="tvim">${esc(cur.im)}</div>`:""}<div class="tvmeta"><b>${esc(cur.shift)}</b>${cur.type?" · "+esc(cur.type):""}${cur.visite?" · "+esc(cur.visite):""}</div>${cur.ce?`<div class="tvmeta">Chef d'équipe : <b>${esc(cur.ce)}</b></div>`:""}</div>
- ${tsGroups(cur).map(([c,rs])=>`<div class="tvcat"><div class="tvcath">${esc(c)}</div>${rs.map(r=>`<div class="tvrow"><b>${tsNamesLines(r).map(esc).join("<br>")||"—"}</b>${r.obs?`<span>${esc(r.obs)}</span>`:""}</div>`).join("")}</div>`).join("")}
+ ${tsGroups(cur).map(([c,rs])=>`<div class="tvcat"><div class="tvcath">${esc(c)}</div>${rs.map(r=>`<div class="tvrow"><b class="${(()=>{const q=normName(ui.tv&&ui.tv.q!=null?ui.tv.q:(fbLS("hangar-tv-me")||""));return q.length>=2&&normName(tsNames(r)).includes(q)?"tvme":""})()}">${tsNamesLines(r).map(esc).join("<br>")||"—"}</b>${r.obs?`<span>${esc(r.obs)}</span>`:""}</div>`).join("")}</div>`).join("")}
  ${cur.rem?`<p class="notes">📌 ${esc(cur.rem)}</p>`:""}</div>`}
 function tvRepSection(){const L=tvSheets();if(!L.length)return`<section class="tplsec"><p class="notes">Aucune répartition publiée pour le moment.</p></section>`;
  const t=todayStr();const dates=[...new Set(L.map(o=>o.date))].sort((a,b)=>b.localeCompare(a));
  const date=dates.includes(ui.tv.date)?ui.tv.date:(dates.includes(t)?t:(dates.find(d=>d<=t)||dates[0]));
  const SO=["Journée","Matin","Après-midi","Structure","Nuit"];const ofDay=L.filter(o=>o.date===date).sort((a,b)=>SO.indexOf(a.shift)-SO.indexOf(b.shift)||(a.im||"").localeCompare(b.im||""));
  const shifts=[...new Set(ofDay.map(o=>o.shift))];const sh=shifts.includes(ui.tv.shift)?ui.tv.shift:"";const shown=ofDay.filter(o=>!sh||o.shift===sh);
- return`<section class="tplsec"><div class="filters">${dates.slice(0,7).map(d=>`<button type="button" class="fchip" data-tvdate="${d}" aria-pressed="${d===date}">${d===t?"Aujourd'hui":ccDay(d).slice(0,5)}</button>`).join("")}</div>
+ const myq=ui.tv.q!=null?ui.tv.q:(fbLS(TVQK)||"");
+ return`<section class="tplsec"><input type="search" id="tv-q" class="csearch tvq" placeholder="🔍 Cherche ton nom pour voir ta tâche…" value="${esc(myq)}" autocomplete="off"><div id="tvHits" data-date="${date}">${tvFindHtml(date)}</div><div class="filters">${dates.slice(0,7).map(d=>`<button type="button" class="fchip" data-tvdate="${d}" aria-pressed="${d===date}">${d===t?"Aujourd'hui":ccDay(d).slice(0,5)}</button>`).join("")}</div>
  <p class="tvday-title"><b>${dayName(date)}</b> · ${ofDay.length} avion${ofDay.length>1?"s":""}</p>
  ${shifts.length>1?`<div class="filters"><button type="button" class="fchip" data-tvshift="" aria-pressed="${!sh}">Toutes les vacations</button>${shifts.map(s=>`<button type="button" class="fchip" data-tvshift="${esc(s)}" aria-pressed="${s===sh}">${esc(s)}</button>`).join("")}</div>`:""}
  <div class="tvlist">${shown.map(tvCard).join("")}</div></section>`}
@@ -2813,6 +2815,16 @@ async function dcGo(){const err=$("#dc-err");const say=m=>{err.textContent=m;err
  if(ui.filter.techs===c)ui.filter.techs="all";ui.dc.sel="";persist();render();closeForm();toast(`Catégorie « ${c} » supprimée`)}
 document.addEventListener("click",e=>{if(e.target.closest("[data-delcat]")){openDelCat();return}if(e.target.closest("#dcGo")){dcGo();return}const rs=e.target.closest("[data-dcrest]");if(rs){state.hiddenBadges=(state.hiddenBadges||[]).filter(x=>x!==rs.dataset.dcrest);persist();render();openDelCat();toast("Catégorie rétablie")}});
 document.addEventListener("change",e=>{if(e.target.name==="dcsel"){ui.dc.armed=false;const b=$("#dcGo");if(b)b.textContent="🗑️ Supprimer"}});
+
+/* ---------- technicien : chercher son nom dans la répartition ---------- */
+const TVQK="hangar-tv-me";
+function tvFind(date,q){const nq=normName(q||"");if(nq.length<2)return null;const out=[];
+ tvSheets().filter(o=>o.date===date).forEach(o=>tsUsed(o).forEach(r=>{(r.techs||[]).forEach(t=>{const nm=t.id?tsTechName(t.id,t.nom):t.nom;if(nm&&normName(nm).includes(nq))out.push({o,r,nm})})}));return out}
+function tvFindHtml(date){const q=(ui.tv.q!=null?ui.tv.q:(fbLS(TVQK)||""));const res=tvFind(date,q);if(!res)return"";
+ if(!res.length)return`<p class="notes tvnone">Aucune tâche trouvée pour « ${esc(q)} » ce jour-là.</p>`;
+ return`<div class="tvhits">${res.map(({o,r,nm})=>`<div class="tvhit"><div class="tvhim">${o.im&&o.im!=="CN-"?esc(o.im):"Avion"}</div><div><b>${esc(nm)}</b> · ${esc(r.cat)}<br><span>${esc(o.shift)}${o.visite?" · "+esc(o.visite):""}${r.obs?" — "+esc(r.obs):""}</span>${(()=>{const others=tsNamesLines(r).join(" · ");return others?`<small>Dans la tâche : ${esc(others)}</small>`:""})()}</div></div>`).join("")}</div>`}
+document.addEventListener("input",e=>{if(e.target.id!=="tv-q")return;ui.tv.q=e.target.value;fbLS(TVQK,e.target.value.trim()||null);const box=document.getElementById("tvHits");if(box)box.innerHTML=tvFindHtml(box.dataset.date);
+ const nq=normName(e.target.value);document.querySelectorAll(".tvrep .tvrow b").forEach(b=>b.classList.toggle("tvme",nq.length>=2&&normName(b.textContent).includes(nq)))});
 
 boot();
 
