@@ -732,6 +732,8 @@ header{transition:transform .22s ease}header.hid{transform:translateY(-110%)}
 .tschip.dup{border-color:#d97706;background:#fff7ed;color:#9a3412}.tschip.dup small{font-weight:500}
 .tsfree{margin:14px 0;padding:12px;border:1px dashed var(--line);border-radius:12px;background:var(--surface)}.tsfreeh{display:flex;align-items:center;gap:8px;margin-bottom:4px}.tsfreeg{margin-top:8px}.tsfreel{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.fchip.delcat{color:var(--bad);border-color:currentColor}.dclist{display:grid;gap:6px;margin:8px 0 12px}.dcit{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:var(--sunk)}.dcit.dis{opacity:.55}.dcit .bcn{flex:1;color:var(--muted);font-size:.82rem}.dchid{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .tvq{margin:0 0 10px}.tvhits{display:grid;gap:8px;margin:0 0 12px}.tvhit{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;background:#ecfdf5;border:1.5px solid #10b981;color:#064e3b}.tvhit span{font-size:.88rem}.tvhit small{display:block;color:#047857;font-size:.78rem;margin-top:2px}.tvhim{font-weight:800;font-size:1.15rem;letter-spacing:.02em;white-space:nowrap}.tvnone{margin:0 0 10px}b.tvme{background:#fef08a;color:#111;border-radius:4px;padding:0 3px}
+.devgate{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 18px;display:grid;gap:10px;text-align:center}.devgate.bad{border-color:var(--bad)}.devgate .dgic{font-size:2.4rem}.devgate h2{margin:0}.devgate p{margin:0;color:var(--muted)}.devgate .field{text-align:left}.dgid{font-size:.9rem}
+.devh{margin:14px 0 6px;font-size:.95rem;display:flex;align-items:center;gap:6px}.devrow{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px;border-radius:12px;background:var(--sunk);margin-bottom:6px;flex-wrap:wrap}.devi{display:grid;gap:2px;min-width:0}.devi span{font-size:.84rem;color:var(--muted)}.devi small{font-size:.76rem;color:var(--muted)}.devb{display:flex;gap:6px;flex-wrap:wrap}.devb .btn{padding:6px 10px;font-size:.85rem}
 .tsfree.stg{border-color:#d9c27a}.tsfreen{font-size:.82rem;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--sunk)}
 .wkpick{margin:0 0 10px}.wksel{width:100%;font:inherit;font-weight:700;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .cal.wk1 .day{min-height:120px}.cal.wk1 .bar{font-size:.8rem;padding-block:3px}
@@ -2106,6 +2108,7 @@ function render(){try{applyCalColors()}catch(_){}document.body.classList.toggle(
  if(k==="outils"){html+=toolsSection();$("#main").innerHTML=html;return}
  if(k==="renfort"){html+=rfTabView();$("#main").innerHTML=html;return}
  if(k==="formation"){html+=fmTabView();$("#main").innerHTML=html;return}
+ if(ui.space==="tech"){const g=devGate();if(g){$("#fab").hidden=true;$("#main").innerHTML=html+devGateHtml(g);return}}
  if(k==="notes"||k==="visits"){if(!ui.open)ui.open={};const cs=(key,title,inner)=>`<details class="csec" data-sec="${key}" ${ui.open[key]?"open":""}><summary>${k==="visits"?`<span class="dragh" title="Glisser pour déplacer">⠿</span>`:""}${title}</summary>${inner}</details>`;
  html+=(k==="visits"?orderSecs("visits",[["an",()=>cs("an","📣 Messages à l'équipe",anCeSection())],["rl",()=>cs("rl","🔄 Relève — consignes",rlSection())],["tpl",()=>cs("tpl","💬 "+T("tp_title"),tplSection())],["vis",()=>cs("vis","📋 "+T("vs_title"),visitsSection())],["ts",()=>cs("ts","🗂️ Répartition des tâches",tasksSection())],["arc",()=>cs("arc","🗄️ Archives par semaine",arcSection())]]):cs("tvmsg",`📣 Messages${techUnread()?` <span class="nbadge inl">${techUnread()}</span>`:""}`,tmSection())+cs("tvrep","📋 Répartition de la vacation",tvRepSection())+cs("tvprog","🗓️ Programme de la semaine",tvProgSection())+cs("tvtpl","💬 "+T("tp_title"),tplSection())+cs("tvtools","🛠️ Outils",toolsSection()));const notesH=state.notes.length?'<div class="list">'+[...state.notes].sort((a,b)=>(b.updated||"").localeCompare(a.updated||"")).map(noteCard).join("")+"</div>":emptyState("notes");html+=k==="visits"?`<h2 class="sech">📝 ${T("my_notes")}</h2>`+notesH:cs("tvnotes",`📝 ${T("my_notes")}${state.notes.length?` <span class="chip">${state.notes.length}</span>`:""}`,notesH);$("#main").innerHTML=html;return}
  const all=state[k];
@@ -2550,7 +2553,7 @@ function fbLocalSave(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch
 let fbMT=null;function fbSaveMeta(){clearTimeout(fbMT);fbMT=setTimeout(()=>{try{localStorage.setItem(FB_MK,JSON.stringify({known:fb.known,base:fb.base}))}catch(e){}},400)}
 function fbStTxt(){if(fb.off)return"📴 Hors ligne";if(fb.err)return"⚠️ Erreur de synchronisation";if(typeof navigator!=="undefined"&&navigator.onLine===false)return"📴 Hors ligne";const col=fbRole()?"team":"pub";if(fb.pushing||(fb.meta[col]&&fb.meta[col].pend))return"⏳ Envoi…";if(fb.known[col])return"☁️ Synchronisé";if(fb.empty[col])return"☁️ Rien de partagé pour l'instant";return"⏳ Connexion…"}
 function fbStatus(){const el=document.getElementById("fbst");if(el)el.textContent=fbStTxt()}
-function fbBar(){if(!fb.on)return"";const r=fbRole();return`<div class="fbbar ${r==="master"?"m":"r"}"><span class="fbwho">${r==="master"?`✏️ Master : <b>${esc(fb.name||"—")}</b>`:`👔 <b>${esc(fb.name||"Chef d'équipe")}</b>`}</span><span class="fbst" id="fbst">${fbStTxt()}</span><span class="fbbtns"><button type="button" class="btn link" id="fbJournal">🕘 Journal</button>${r==="master"?`<button type="button" class="btn link" id="fbCodes">🔑 Codes</button>`:""}<button type="button" class="btn link" id="fbOut">Déconnexion</button></span></div>`}
+function fbBar(){if(!fb.on)return"";const r=fbRole();return`<div class="fbbar ${r==="master"?"m":"r"}"><span class="fbwho">${r==="master"?`✏️ Master : <b>${esc(fb.name||"—")}</b>`:`👔 <b>${esc(fb.name||"Chef d'équipe")}</b>`}</span><span class="fbst" id="fbst">${fbStTxt()}</span><span class="fbbtns"><button type="button" class="btn link" id="fbJournal">🕘 Journal</button>${r==="master"?`<button type="button" class="btn link" id="fbDevs">📱 Appareils${fb.devPend?` <span class="nbadge inl">${fb.devPend}</span>`:""}</button><button type="button" class="btn link" id="fbCodes">🔑 Codes</button>`:""}<button type="button" class="btn link" id="fbOut">Déconnexion</button></span></div>`}
 function fbLoad(){if(window.firebase&&firebase.firestore&&firebase.auth)return Promise.resolve();return FB_SDK.reduce((p,u)=>p.then(()=>new Promise((ok,ko)=>{const s=document.createElement("script");s.src=u;s.onload=ok;s.onerror=ko;document.head.appendChild(s)})),Promise.resolve())}
 function fbStart(){fb.on=true;try{const m=JSON.parse(fbLS(FB_MK)||"null");if(m){fb.known=m.known||{};fb.base=m.base||{}}}catch(e){}
  if(ui.space==="ce"&&!fbRole()){ui.space=null;render()}
@@ -2559,6 +2562,10 @@ function fbStart(){fb.on=true;try{const m=JSON.parse(fbLS(FB_MK)||"null");if(m){
  window.addEventListener("online",fbStatus);window.addEventListener("offline",fbStatus)}
 function fbOnUser(u){const em=u&&u.email?String(u.email).toLowerCase():"";const r=em===FB_MASTER?"master":em===FB_CHEF?"chef":null;fb.role=r;fbLS(FB_RK,r||null);
  if(r&&!fb.unsub.team)fb.unsub.team=fbListen("team");
+ if(!u){devStopSelf();if(!fb.auth.signInAnonymously)fb.anonOff=true;if(!fb.anonTried&&fb.auth.signInAnonymously){fb.anonTried=true;fb.auth.signInAnonymously().catch(e=>{const c=String(e&&e.code||"");if(/operation-not-allowed|admin-restricted/.test(c))fb.anonOff=true;fb.devLoaded=true;render()})}}
+ else if(u.isAnonymous){fb.uid=u.uid;devListenSelf();devStopChef()}else{fb.uid=null;devStopSelf();devRegisterChef()}
+ if(r==="master")devListenAll();else devStopAll();
+ if(!fb.unsub.pub)fb.unsub.pub=fbListen("pub");
  fbMigrate();fbMsgListen();
  if(!r&&fb.unsub.team){fb.unsub.team();fb.unsub.team=null}
  if(!r&&ui.space==="ce"){ui.space=null;if(!$("#sheet").hidden&&editing&&editing.kind!=="login")closeForm();toast("Session terminée : entre ton code.",3000)}
@@ -2611,8 +2618,8 @@ function openNameStep(){editing={kind:"login"};const m=fbRole()==="master";const
  <label class="field" for="lg-name"><span class="lbl">Ton nom</span><input type="text" id="lg-name" maxlength="40" autocomplete="name" value="${esc(last)}"></label>
  <p class="err" id="lg-err" hidden>Écris ton nom (2 lettres minimum).</p>
  <div class="actions"><span class="sp"></span><button type="button" class="btn primary" id="lgName">Continuer</button></div>`;$("#sheet").hidden=false;setTimeout(()=>{const i=$("#lg-name");if(i){i.focus();i.select()}},50)}
-function fbSetName(){const i=$("#lg-name");if(!i)return;const v=i.value.trim().replace(/\s+/g," ").toUpperCase();if(v.length<2){$("#lg-err").hidden=false;return}fb.name=v;fbLS(FB_NK,v);fbLS(FB_LK,v);enterCe();toast(fbRole()==="master"?"✏️ Mode master : "+v:"👔 Bienvenue "+v,2500)}
-async function fbLogout(){try{if(fb.auth)await fb.auth.signOut()}catch(e){}fb.role=null;fbLS(FB_RK,null);fb.name="";fbLS(FB_NK,null);if(fb.unsub.team){fb.unsub.team();fb.unsub.team=null}closeForm();ui.space=null;fbLS("hangar-space",null);render();window.scrollTo(0,0);toast("Déconnecté")}
+function fbSetName(){const i=$("#lg-name");if(!i)return;const v=i.value.trim().replace(/\s+/g," ").toUpperCase();if(v.length<2){$("#lg-err").hidden=false;return}fb.name=v;fbLS(FB_NK,v);fbLS(FB_LK,v);devRegisterChef();enterCe();toast(fbRole()==="master"?"✏️ Mode master : "+v:"👔 Bienvenue "+v,2500)}
+async function fbLogout(){devStopChef();fb.anonTried=false;try{if(fb.auth)await fb.auth.signOut()}catch(e){}fb.role=null;fbLS(FB_RK,null);fb.name="";fbLS(FB_NK,null);if(fb.unsub.team){fb.unsub.team();fb.unsub.team=null}closeForm();ui.space=null;fbLS("hangar-space",null);render();window.scrollTo(0,0);toast("Déconnecté")}
 async function openJournal(){editing={kind:"journal"};
  $("#panel").innerHTML=`<h2>🕘 Journal des modifications</h2><div id="jlist"><p class="notes">Chargement…</p></div><div class="actions"><span class="sp"></span><button type="button" class="btn" id="cancel">${T("close")}</button></div>`;$("#sheet").hidden=false;
  const A={ajout:"a ajouté",modif:"a modifié",suppr:"a supprimé"};
@@ -2680,7 +2687,7 @@ function anSrc(){return fbMsgOn()&&fb.msgsReady?fb.msgs.filter(m=>m.kind==="an")
 function rlSrc(){return fbMsgOn()&&fb.msgsReady?fb.msgs.filter(m=>m.kind==="rl"):(state.releves||[])}
 function fbMsgListen(){if(!fb.db)return;const r=fbRole()?"chef":"";if(fb.msgRole===r&&fb.unsub.msgs)return;fb.msgRole=r;if(fb.unsub.msgs){try{fb.unsub.msgs()}catch(e){}fb.unsub.msgs=null}
  const q=r?fb.db.collection("msgs"):fb.db.collection("msgs").where("tech","==",true);
- fb.unsub.msgs=q.onSnapshot({includeMetadataChanges:false},snap=>{fb.msgs=snap.docs.map(d=>d.data()).filter(x=>x&&x.id);fb.msgsReady=true;fbMsgMigrate();anNotify();if($("#sheet").hidden)render();else fb.needRender=true},()=>{})}
+ fb.unsub.msgs=q.onSnapshot({includeMetadataChanges:false},snap=>{fb.msgs=snap.docs.map(d=>d.data()).filter(x=>x&&x.id);fb.msgsReady=true;fbMsgMigrate();anNotify();if($("#sheet").hidden)render();else fb.needRender=true},()=>{if(fb.unsub.msgs){try{fb.unsub.msgs()}catch(e){}}fb.unsub.msgs=null;fb.msgRole=undefined})}
 function fbMsgMigrate(){if(fbRole()!=="master"||fbLS("hangar-msg-mig"))return;const have=new Set(fb.msgs.map(m=>m.id));
  (state.annonces||[]).forEach(a=>{if(!have.has(a.id))msgPut("an",{...a,tech:true})});(state.releves||[]).forEach(r=>{if(!have.has(r.id))msgPut("rl",{...r,tech:false})});fbLS("hangar-msg-mig","1")}
 function msgPut(kind,o){const d=JSON.parse(JSON.stringify({...o,kind,tech:kind==="an"?true:!!o.tech,by:fb.name||o.by||"",mat:new Date().toISOString()}));
@@ -2825,6 +2832,55 @@ function tvFindHtml(date){const q=(ui.tv.q!=null?ui.tv.q:(fbLS(TVQK)||""));const
  return`<div class="tvhits">${res.map(({o,r,nm})=>`<div class="tvhit"><div class="tvhim">${o.im&&o.im!=="CN-"?esc(o.im):"Avion"}</div><div><b>${esc(nm)}</b> · ${esc(r.cat)}<br><span>${esc(o.shift)}${o.visite?" · "+esc(o.visite):""}${r.obs?" — "+esc(r.obs):""}</span>${(()=>{const others=tsNamesLines(r).join(" · ");return others?`<small>Dans la tâche : ${esc(others)}</small>`:""})()}</div></div>`).join("")}</div>`}
 document.addEventListener("input",e=>{if(e.target.id!=="tv-q")return;ui.tv.q=e.target.value;fbLS(TVQK,e.target.value.trim()||null);const box=document.getElementById("tvHits");if(box)box.innerHTML=tvFindHtml(box.dataset.date);
  const nq=normName(e.target.value);document.querySelectorAll(".tvrep .tvrow b").forEach(b=>b.classList.toggle("tvme",nq.length>=2&&normName(b.textContent).includes(nq)))});
+
+/* ---------- appareils : identification et validation par le master ---------- */
+const DEV_K="hangar-dev-id",DEVN_K="hangar-dev-name",DEVOK_K="hangar-dev-ok";
+Object.assign(fb,{dev:null,devLoaded:false,anonOff:false,anonTried:false,uid:null,devs:[],devPend:null,_touched:false});
+function devId(){let v=fbLS(DEV_K);if(!v){v=String(crypto.randomUUID?crypto.randomUUID():uid()).replace(/-/g,"").slice(0,16);fbLS(DEV_K,v)}return v}
+function devUA(){const u=navigator.userAgent||"";return/iPad/.test(u)?"iPad":/iPhone/.test(u)?"iPhone":/Android/.test(u)?(/Mobile/.test(u)?"Téléphone Android":"Tablette Android"):/Windows/.test(u)?"Ordinateur Windows":/Macintosh|Mac OS/.test(u)?"Mac":/Linux/.test(u)?"Ordinateur Linux":"Appareil"}
+const devNow=()=>new Date().toISOString();
+function devGate(){if(!fb.on||fbRole()||fb.anonOff)return false;if(fb.dev&&fb.dev.blocked)return"blocked";if(fb.dev&&fb.dev.ok)return false;
+ if(!fb.db||fb.off)return fbLS(DEVOK_K)==="1"?false:"offline";if(!fb.uid||!fb.devLoaded)return"wait";return fb.dev?"pending":"name"}
+function devGateHtml(g){const nm=fbLS(DEVN_K)||"";
+ if(g==="name")return`<section class="devgate"><div class="dgic">📱</div><h2>Nouvel appareil</h2><p>Pour voir la répartition et le programme, cet appareil doit être accepté par le master.</p><label class="field" for="dev-name"><span class="lbl">Ton nom</span><input type="text" id="dev-name" maxlength="40" value="${esc(nm)}" placeholder="Ex. NOM Prénom" autocomplete="name"></label><button type="button" class="btn primary" id="devAsk">📨 Envoyer la demande</button></section>`;
+ if(g==="pending")return`<section class="devgate"><div class="dgic">⏳</div><h2>En attente de validation</h2><p>Ta demande a été envoyée au master. Cette page s'ouvrira toute seule dès qu'il l'aura acceptée.</p><p class="dgid"><b>${esc((fb.dev&&fb.dev.name)||nm)}</b> · ${esc(devUA())}</p></section>`;
+ if(g==="blocked")return`<section class="devgate bad"><div class="dgic">⛔</div><h2>Appareil bloqué</h2><p>Cet appareil a été bloqué par le master. Contacte ton responsable.</p></section>`;
+ if(g==="offline")return`<section class="devgate"><div class="dgic">📴</div><h2>Connexion nécessaire</h2><p>La première validation de cet appareil demande Internet.</p></section>`;
+ return`<section class="devgate"><div class="dgic">⏳</div><p>Connexion…</p></section>`}
+function devCreate(name){if(!fb.db||!fb.uid)return;fbLS(DEVN_K,name);const t=devNow();return fb.db.collection("devices").doc(fb.uid).set({id:fb.uid,name,ua:devUA(),role:"Technicien",first:t,last:t,ok:false,blocked:false,dev:devId()}).catch(()=>toast("⚠️ Demande impossible : vérifie la connexion.",3500))}
+function devListenSelf(){if(!fb.db||!fb.uid)return;if(fb.unsub.dev&&fb.unsub.devFor===fb.uid)return;if(fb.unsub.dev){try{fb.unsub.dev()}catch(e){}}fb.devLoaded=false;fb.dev=null;fb._touched=false;
+ const ref=fb.db.collection("devices").doc(fb.uid);fb.unsub.devFor=fb.uid;if(typeof ref.onSnapshot!=="function"){fb.anonOff=true;return}
+ fb.unsub.dev=ref.onSnapshot(s=>{const was=!!(fb.dev&&fb.dev.ok);fb.devLoaded=true;fb.dev=s.exists?s.data():null;
+  if(!fb.dev&&fbLS(DEVN_K)){devCreate(fbLS(DEVN_K))}else if(fb.dev&&!fb._touched){fb._touched=true;ref.set({last:devNow(),ua:devUA()},{merge:true}).catch(()=>{})}
+  if(fb.dev&&fb.dev.ok&&!fb.dev.blocked){fbLS(DEVOK_K,"1");if(!fb.unsub.pub)fb.unsub.pub=fbListen("pub");if(!fb.unsub.msgs){fb.msgRole=undefined;fbMsgListen()}if(!was&&ui.space==="tech")toast("✅ Appareil accepté",2500)}else fbLS(DEVOK_K,null);
+  if(ui.space==="tech"&&$("#sheet").hidden)render()},()=>{fb.devLoaded=true;if(ui.space==="tech")render()})}
+function devStopSelf(){if(fb.unsub.dev){try{fb.unsub.dev()}catch(e){}fb.unsub.dev=null;fb.unsub.devFor=null}}
+async function devRegisterChef(){if(!fb.db||!fbRole()||!fb.name)return;const id="d_"+devId();const ref=fb.db.collection("devices").doc(id);const base={id,name:fb.name,ua:devUA(),role:fbRole()==="master"?"Master":"Chef d'équipe",last:devNow(),dev:devId()};
+ if(typeof ref.get!=="function"||typeof ref.onSnapshot!=="function")return;try{const s=await ref.get();if(s.exists)await ref.set(base,{merge:true});else await ref.set({...base,first:devNow(),ok:true,blocked:false})}catch(e){}
+ if(fb.unsub.chefDev)return;fb.unsub.chefDev=ref.onSnapshot(s=>{const d=s.exists?s.data():null;if(d&&d.blocked&&fbRole()){fbLogout().then(()=>toast("⛔ Cet appareil a été bloqué par le master.",4000))}},()=>{})}
+function devStopChef(){if(fb.unsub.chefDev){try{fb.unsub.chefDev()}catch(e){}fb.unsub.chefDev=null}}
+function devListenAll(){if(!fb.db||fb.unsub.devs)return;fb.unsub.devs=fb.db.collection("devices").onSnapshot(s=>{fb.devs=s.docs.map(d=>({...d.data(),_id:d.id}));const pend=fb.devs.filter(d=>!d.ok&&!d.blocked).length;
+  if(fb.devPend!=null&&pend>fb.devPend){const n=fb.devs.filter(d=>!d.ok&&!d.blocked).sort((a,b)=>(b.first||"").localeCompare(a.first||""))[0];toast(`📱 Nouvel appareil en attente : ${n?n.name:""}`,4000)}fb.devPend=pend;
+  const bar=document.querySelector(".fbbar");if(bar&&ui.space==="ce")bar.outerHTML=fbBar();if(editing&&editing.kind==="devs")openDevs()},()=>{})}
+function devStopAll(){if(fb.unsub.devs){try{fb.unsub.devs()}catch(e){}fb.unsub.devs=null}fb.devs=[];fb.devPend=null}
+function devWhen(iso){if(!iso)return"—";const d=new Date(iso);if(isNaN(d))return"—";const p=n=>String(n).padStart(2,"0");return`${p(d.getDate())}/${p(d.getMonth()+1)} ${p(d.getHours())}:${p(d.getMinutes())}`}
+function openDevs(){editing={kind:"devs"};const D=[...fb.devs].sort((a,b)=>(b.last||"").localeCompare(a.last||""));const me="d_"+devId();
+ const pend=D.filter(d=>!d.ok&&!d.blocked),ok=D.filter(d=>d.ok&&!d.blocked&&!String(d._id).startsWith("d_")),ch=D.filter(d=>d.ok&&!d.blocked&&String(d._id).startsWith("d_")),bl=D.filter(d=>d.blocked);
+ const row=(d,btns)=>`<div class="devrow"><div class="devi"><b>${esc(d.name||"Sans nom")}</b>${d._id===me?` <span class="chip acc">cet appareil</span>`:""}<span>${esc(d.role||"")} · ${esc(d.ua||"")}</span><small>Dernière ouverture : ${devWhen(d.last)}</small></div><div class="devb">${btns}</div></div>`;
+ const b=(id,act,l,cls)=>`<button type="button" class="btn ${cls||""}" data-devact="${act}" data-devid="${esc(id)}">${l}</button>`;
+ const grp=(t,L,f)=>`<h3 class="devh">${t} <span class="chip">${L.length}</span></h3>${L.map(f).join("")||`<p class="notes">Aucun.</p>`}`;
+ $("#panel").innerHTML=`<h2>📱 Appareils</h2><p class="notes"><b>${D.length}</b> appareil${D.length>1?"s":""} : ${ok.length} technicien${ok.length>1?"s":""} accepté${ok.length>1?"s":""}, ${pend.length} en attente, ${ch.length} chef${ch.length>1?"s":""}/master, ${bl.length} bloqué${bl.length>1?"s":""}.</p>
+ ${grp("⏳ En attente",pend,d=>row(d,b(d._id,"ok","✅ Accepter","primary")+b(d._id,"block","⛔ Bloquer","danger")))}
+ ${grp("✅ Techniciens acceptés",ok,d=>row(d,b(d._id,"block","⛔ Bloquer","danger")))}
+ ${grp("👔 Chefs et master",ch,d=>row(d,d._id===me?"":b(d._id,"block","⛔ Bloquer","danger")))}
+ ${bl.length?grp("⛔ Bloqués",bl,d=>row(d,b(d._id,"unblock","↩ Débloquer")+b(d._id,"del","🗑️ Supprimer","danger"))):""}
+ <div class="actions"><span class="sp"></span><button type="button" class="btn" id="cancel">${T("close")}</button></div>`;$("#sheet").hidden=false}
+async function devAct(act,id){if(fbRole()!=="master"||!fb.db)return;const ref=fb.db.collection("devices").doc(id);
+ try{if(act==="ok"||act==="unblock")await ref.set({ok:true,blocked:false},{merge:true});else if(act==="block")await ref.set({ok:false,blocked:true},{merge:true});else if(act==="del")await ref.delete();
+  toast(act==="ok"?"✅ Appareil accepté":act==="block"?"⛔ Appareil bloqué":act==="unblock"?"Appareil débloqué":"Appareil supprimé")}catch(e){toast("⚠️ Action impossible : vérifie la connexion.",3000)}}
+document.addEventListener("click",e=>{if(e.target.closest("#fbDevs")){openDevs();return}const a=e.target.closest("[data-devact]");if(a){if(a.dataset.devact==="del"&&!a.dataset.armed){a.dataset.armed="1";a.textContent="Confirmer ?";return}devAct(a.dataset.devact,a.dataset.devid);return}
+ if(e.target.closest("#devAsk")){const i=$("#dev-name");const v=(i?i.value:"").trim().replace(/\s+/g," ").toUpperCase();if(v.length<2){toast("Écris ton nom (2 lettres minimum).");if(i)i.focus();return}devCreate(v);toast("📨 Demande envoyée au master",2500)}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="dev-name"){e.preventDefault();const b=$("#devAsk");if(b)b.click()}});
 
 boot();
 
