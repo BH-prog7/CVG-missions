@@ -735,6 +735,7 @@ header{transition:transform .22s ease}header.hid{transform:translateY(-110%)}
 .devgate{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 18px;display:grid;gap:10px;text-align:center}.devgate.bad{border-color:var(--bad)}.devgate .dgic{font-size:2.4rem}.devgate h2{margin:0}.devgate p{margin:0;color:var(--muted)}.devgate .field{text-align:left}.dgid{font-size:.9rem}
 .devh{margin:14px 0 6px;font-size:.95rem;display:flex;align-items:center;gap:6px}.devrow{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px;border-radius:12px;background:var(--sunk);margin-bottom:6px;flex-wrap:wrap}.devi{display:grid;gap:2px;min-width:0}.devi span{font-size:.84rem;color:var(--muted)}.devi small{font-size:.76rem;color:var(--muted)}.devb{display:flex;gap:6px;flex-wrap:wrap}.devb .btn{padding:6px 10px;font-size:.85rem}
 .sgsum{display:grid;gap:3px;font-size:.86rem;padding:8px 10px;border-radius:10px;background:var(--sunk);margin-bottom:8px}.sgsum .muted{color:var(--muted)}.sgtabs{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}.sgtabs .vbtn{flex:0 0 auto;padding:6px 12px}.sgadd{border-style:dashed!important}.sgbox{border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px}.sgmem{display:grid;gap:2px;max-height:40vh;overflow:auto}
+.tsresb.grp{background:#fffbeb;border-color:#d9c27a}.tsresb.grp small{color:var(--muted);font-weight:500}
 .tsfree.stg{border-color:#d9c27a}.tsfreen{font-size:.82rem;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--sunk)}
 .wkpick{margin:0 0 10px}.wksel{width:100%;font:inherit;font-weight:700;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .cal.wk1 .day{min-height:120px}.cal.wk1 .bar{font-size:.8rem;padding-block:3px}
@@ -1153,7 +1154,7 @@ function openDetail(kind,id,dd){const it=state[kind].find(x=>x.id===id);if(!it)r
  if(kind==="missions"||kind==="depannages"){const dep=kind==="depannages";const s=mStatus(it);const n=nbDays(it.debut,it.fin);title=esc(dep?(it.objet||T("dep_one")):(it.destination||T("dest_tbd")));
   chips=dep?`<span class="chip dep">${T("dep_one")}</span><span class="status ${s[1]}">${s[0]}</span>`:`<span class="chip ${it.type==="Externe"?"acc":""}">${V(it.type)}</span>${it.spontanee?`<span class="chip">${T("spont_f")}</span>`:""}<span class="status ${s[1]}">${s[0]}</span>`;
   const wa=weekOf(it.debut).w,wb=weekOf(it.fin||it.debut).w;
-  body=(dep?row(T("f_objet"),esc(it.objet))+row(T("f_dest"),esc(it.destination)):"")+row(dep?T("d_period"):T("d_dates"),`${fmt(it.debut)} → ${fmt(it.fin)}`)+row(T("d_dur"),n?T("days",n):"—")+row(T("d_week"),wa===wb?`S${wa}`:`S${wa} – S${wb}`);
+  body=(dep?row(T("f_objet"),esc(it.objet))+row(T("f_dest"),esc(it.destination)):"")+row(dep?T("d_period"):T("d_dates"),`${fmt(it.debut)} → ${fmt(it.fin)}`)+(dep&&depHours(it)?row("Heures",esc(depHours(it))):"")+row(T("d_dur"),n?T("days",n):"—")+row(T("d_week"),wa===wb?`S${wa}`:`S${wa} – S${wb}`);
   w=isPast(s)?[]:conflicts(it.techs,it.debut,it.fin,it.id)}
  else{const d=dd||it.date;const s=cStatus(it,d);title=esc(it.destination||V(it.zone));
   chips=`<span class="chip ${it.nature==="Double"?"acc":""}">${V(it.nature)}</span><span class="chip">${V(it.zone)}</span>${it.spontane?`<span class="chip">${T("spont")}</span>`:""}<span class="status ${s[1]}">${s[0]}</span>`;
@@ -1174,7 +1175,7 @@ function rowD(m){return`<button class="ritem d" data-detail="depannages:${m.id}:
 function depCard(m){const s=mStatus(m);const d=nbDays(m.debut,m.fin);const n=(m.techs||[]).filter(techById).length;
 return`<button class="card ${isPast(s)?"past":""}" data-detail="depannages:${m.id}:">
 <div class="top"><span class="chip dep">${T("dep_one")}</span><span class="chip">${T("n_techs",n)}</span><span class="status ${s[1]}">${s[0]}</span></div>
-<div class="dest">${esc(m.objet||T("dep_one"))}</div>
+<div class="dest">${esc(m.objet||T("dep_one"))}</div>${depHours(m)?`<div class="when">🕒 ${esc(depHours(m))}</div>`:""}
 <div class="when">📍 <b>${esc(m.destination||T("dest_tbd"))}</b></div>
 <div class="when"><b>${fmtShort(m.debut)}</b> → <b>${fmt(m.fin)}</b>${d?` · ${T("days",d)}`:""}</div>
 ${crew(m.techs)}${warnBlock(isPast(s)?[]:conflicts(m.techs,m.debut,m.fin,m.id))}${m.notes?`<div class="notes">${esc(m.notes)}</div>`:""}</button>`}
@@ -1905,11 +1906,11 @@ const fmDays=f=>nbDays(f.debut,f.fin||f.debut);
 function fmOn(d){return(state.formations||[]).filter(f=>f.debut&&f.debut<=d&&(f.fin||f.debut)>=d)}
 function fmWeekCount(){const wk=weekOf(todayStr());const ws=weekStart(wk.y,wk.w);const a=iso(ws),b=iso(plus(ws,6));return(state.formations||[]).filter(f=>f.debut<=b&&(f.fin||f.debut)>=a).length}
 function fmMatch(f,q){if(!q)return true;q=normName(q);return normName([f.nom,f.lieu||"",f.obs||"",ccDay(f.debut),ccDay(f.fin||f.debut),...(f.techs||[]).map(rfName)].join(" ")).includes(q)}
-function fmCard(f){const n=fmDays(f);return`<button type="button" class="tscard rfcard fmcard" data-fmopen="${f.id}"><b>🎓 ${esc(f.nom)}</b><span>${ccDay(f.debut)}${f.fin&&f.fin!==f.debut?" → "+ccDay(f.fin):""} · ${n} jour${n>1?"s":""}${f.lieu?" · "+esc(f.lieu):""}</span><strong>${(f.techs||[]).map(rfName).map(esc).join(", ")||"—"}</strong>${f.obs?`<span>${esc(f.obs)}</span>`:""}</button>`}
+function fmCard(f){const n=fmDays(f);return`<button type="button" class="tscard rfcard fmcard" data-fmopen="${f.id}"><b>🎓 ${esc(f.nom)}</b><span>${ccDay(f.debut)}${f.fin&&f.fin!==f.debut?" → "+ccDay(f.fin):""} · ${n} jour${n>1?"s":""}${fmHours(f)?" · 🕒 "+esc(fmHours(f)):""}${f.lieu?" · "+esc(f.lieu):""}</span><strong>${(f.techs||[]).map(rfName).map(esc).join(", ")||"—"}</strong>${f.obs?`<span>${esc(f.obs)}</span>`:""}</button>`}
 function fmList(){return[...(state.formations||[])].filter(f=>fmMatch(f,ui.fm.q)).sort((a,b)=>b.debut.localeCompare(a.debut))}
 function fmListHtml(){return fmList().map(fmCard).join("")||`<p class="notes">${ui.fm.q?"Aucune formation trouvée.":"Aucune formation enregistrée. Touche « + Nouvelle formation »."}</p>`}
 function fmText(){const L=fmList();const l=["Formations"+(ui.fm.q?` (recherche : ${ui.fm.q})`:""),""];if(!L.length)l.push("Aucune formation.");
- [...L].reverse().forEach(f=>{const n=fmDays(f);l.push(`*${f.nom}*`,`${ccDay(f.debut)}${f.fin&&f.fin!==f.debut?" → "+ccDay(f.fin):""} (${n} jour${n>1?"s":""})${f.lieu?" — "+f.lieu:""}`,`Techniciens : ${(f.techs||[]).map(rfName).join(", ")||"à définir"}`);if(f.obs)l.push(`Observation : ${f.obs}`);l.push("")});return l.join("\n").trim()}
+ [...L].reverse().forEach(f=>{const n=fmDays(f);l.push(`*${f.nom}*`,`${ccDay(f.debut)}${f.fin&&f.fin!==f.debut?" → "+ccDay(f.fin):""} (${n} jour${n>1?"s":""})${fmHours(f)?", "+fmHours(f):""}${f.lieu?" — "+f.lieu:""}`,`Techniciens : ${(f.techs||[]).map(rfName).join(", ")||"à définir"}`);if(f.obs)l.push(`Observation : ${f.obs}`);l.push("")});return l.join("\n").trim()}
 function fmTabView(){return`<section class="tplsec"><div class="tsbar"><button type="button" class="btn primary" data-fmnew="">+ Nouvelle formation</button><button type="button" class="btn" id="fmShare">📤 Partager la liste</button></div>
  <input type="search" id="fm-q" class="csearch" placeholder="🔍 Rechercher une formation, un nom, une date…" value="${esc(ui.fm.q||"")}">
  <div class="tslist" id="fmList">${fmListHtml()}</div></section>`}
@@ -1917,6 +1918,7 @@ function openFormation(id,day){editing={kind:"fm"};const f=(state.formations||[]
  $("#panel").innerHTML=`<h2>🎓 Formation</h2>
  <label class="field" for="fm-nom"><span class="lbl">Nom de la formation</span><input type="text" id="fm-nom" value="${esc(f.nom)}" placeholder="Ex. Human Factors, B787 Type rating…"></label>
  <div class="tplfields"><label class="field" for="fm-deb"><span class="tfl">Début</span><input type="date" id="fm-deb" value="${esc(f.debut)}"></label><label class="field" for="fm-fin"><span class="tfl">Fin</span><input type="date" id="fm-fin" value="${esc(f.fin||f.debut)}"></label>
+ <label class="field" for="fm-hd"><span class="tfl">Heure de début</span><input type="time" id="fm-hd" value="${esc(f.hd||"")}"></label><label class="field" for="fm-hf"><span class="tfl">Heure de fin</span><input type="time" id="fm-hf" value="${esc(f.hf||"")}"></label>
  <label class="field wide" for="fm-lieu"><span class="tfl">Lieu (facultatif)</span><input type="text" id="fm-lieu" value="${esc(f.lieu||"")}" placeholder="Ex. Centre de formation"></label></div>
  <p class="notes" id="fmDur"></p>
  <div class="rfpick"><span class="tfl">Techniciens en formation</span><div class="tschips" id="fmChips">${(f.techs||[]).map(t=>tsChip(t,f.debut)).join("")}</div>
@@ -1926,7 +1928,7 @@ function openFormation(id,day){editing={kind:"fm"};const f=(state.formations||[]
  <label class="field" for="fm-obs"><span class="lbl">Observation (facultatif)</span><input type="text" id="fm-obs" value="${esc(f.obs||"")}"></label>
  <div class="actions">${saved?`<button type="button" class="btn link danger" id="fmDel">🗑️ Supprimer</button>`:""}<span class="sp"></span><button type="button" class="btn" id="cancel">${T("cancel")}</button><button type="button" class="btn primary" id="fmSave">💾 Enregistrer</button></div>`;$("#sheet").hidden=false;fmDur()}
 function fmDur(){const a=$("#fm-deb").value,b=$("#fm-fin").value||a;const el=$("#fmDur");if(!a){el.textContent="";return}if(b<a){el.textContent="⚠️ La date de fin est avant le début.";return}const n=nbDays(a,b);el.textContent=`Durée : ${n} jour${n>1?"s":""}`}
-function fmRead(){const a=$("#fm-deb").value;return{id:ui.fm.id,nom:$("#fm-nom").value.trim(),debut:a,fin:$("#fm-fin").value||a,lieu:$("#fm-lieu").value.trim(),techs:[...document.querySelectorAll("#fmChips .tschip")].map(c=>({id:c.dataset.id,nom:c.dataset.nom})),obs:$("#fm-obs").value.trim()}}
+function fmRead(){const a=$("#fm-deb").value;return{id:ui.fm.id,nom:$("#fm-nom").value.trim(),debut:a,fin:$("#fm-fin").value||a,lieu:$("#fm-lieu").value.trim(),hd:($("#fm-hd")||{}).value||"",hf:($("#fm-hf")||{}).value||"",techs:[...document.querySelectorAll("#fmChips .tschip")].map(c=>({id:c.dataset.id,nom:c.dataset.nom})),obs:$("#fm-obs").value.trim()}}
 function fmSave(){const f=fmRead();if(!f.nom){toast("Indique le nom de la formation.");$("#fm-nom").focus();return}if(!f.debut){toast("Indique la date de début.");return}if(f.fin<f.debut){toast(T("e_order"));return}
  state.formations=state.formations||[];const i=state.formations.findIndex(x=>x.id===f.id);if(i<0)state.formations.push(f);else state.formations[i]=f;persist();render();closeForm();toast("Formation enregistrée")}
 function openFmShare(){editing={kind:"fmshare"};const txt=fmText();shareCur={text:txt};
@@ -2059,9 +2061,9 @@ function gTechEvents(id){const t=techById(id);const E=[];
  (t&&t.conges||[]).forEach(c=>E.push({k:"Congé",ic:"🌴",d:c.debut,txt:`${gDate(c.debut)} → ${gDate(c.fin||c.debut)}${c.nature?" · "+c.nature:""}`}));
  state.convoyages.filter(c=>(c.techs||[]).includes(id)).forEach(c=>E.push({k:"CVG",ic:"✈️",d:c.date,txt:`${c.noday?"Jour à définir":gDate(c.date)}${c.repeat?" (chaque semaine)":""} · ${[c.nature,c.zone,c.destination].filter(Boolean).join(" · ")} · ${(c.periode||"Journée")}${c.heure?" "+c.heure:""}`}));
  state.missions.filter(m=>(m.techs||[]).includes(id)).forEach(m=>E.push({k:"Mission",ic:"🧳",d:m.debut,txt:`${gDate(m.debut)} → ${gDate(m.fin||m.debut)} · ${m.destination||""} (${m.type||""})`}));
- state.depannages.filter(m=>(m.techs||[]).includes(id)).forEach(m=>E.push({k:"Dépannage",ic:"🔧",d:m.debut,txt:`${gDate(m.debut)} → ${gDate(m.fin||m.debut)} · ${[m.objet,m.destination].filter(Boolean).join(" · ")}`}));
+ state.depannages.filter(m=>(m.techs||[]).includes(id)).forEach(m=>E.push({k:"Dépannage",ic:"🔧",d:m.debut,txt:`${gDate(m.debut)} → ${gDate(m.fin||m.debut)}${depHours(m)?" · "+depHours(m):""} · ${[m.objet,m.destination].filter(Boolean).join(" · ")}`}));
  (state.renforts||[]).filter(r=>(r.techs||[]).some(x=>x.id===id)).forEach(r=>E.push({k:"Renfort",ic:"💪",d:r.date,txt:`${gDate(r.date)} · ${r.lieu}${rfHours(r)?" · "+rfHours(r):""}${r.obs?" · "+r.obs:""}`}));
- (state.formations||[]).filter(f=>(f.techs||[]).some(x=>x.id===id)).forEach(f=>E.push({k:"Formation",ic:"🎓",d:f.debut,txt:`${gDate(f.debut)} → ${gDate(f.fin||f.debut)} · ${f.nom}`}));
+ (state.formations||[]).filter(f=>(f.techs||[]).some(x=>x.id===id)).forEach(f=>E.push({k:"Formation",ic:"🎓",d:f.debut,txt:`${gDate(f.debut)} → ${gDate(f.fin||f.debut)}${fmHours(f)?" · "+fmHours(f):""} · ${f.nom}`}));
  (state.taskSheets||[]).map(tsFix).forEach(o=>o.rows.filter(r=>r.techs.some(x=>x.id===id)).forEach(r=>E.push({k:"Répartition",ic:"🗂️",d:o.date,txt:`${gDate(o.date)} · ${o.shift}${o.im&&o.im!=="CN-"?" · "+o.im:""} · ${r.cat}${r.obs?" — "+r.obs:""}`})));
  return E.sort((a,b)=>(b.d||"").localeCompare(a.d||""))}
 function gImEvents(im){const k=imNorm(im);const E=[];
@@ -2156,6 +2158,7 @@ function openForm(kind,id,pre){
   body=`<label class="field" for="f-objet"><span class="lbl">${T("f_objet")}</span><input type="text" id="f-objet" name="objet" required value="${esc(m.objet)}" placeholder="${T("f_objet_ph")}"></label>
   <label class="field" for="f-dest"><span class="lbl">${T("f_dest")}</span><input type="text" id="f-dest" name="destination" required value="${esc(m.destination)}" placeholder="${T("f_dest_ph")}"></label>
   <div class="field"><span class="lbl">${T("d_period")}</span><div class="row2"><label class="field" for="f-debut"><span class="lbl">${T("f_start")}</span><input type="date" id="f-debut" name="debut" required value="${esc(m.debut||pre||defDate())}"></label><label class="field" for="f-fin"><span class="lbl">${T("f_end")}</span><input type="date" id="f-fin" name="fin" required value="${esc(m.fin||m.debut||pre||defDate())}"></label></div></div>
+  <div class="row2"><label class="field" for="f-ha"><span class="lbl">Heure aller</span><input type="time" id="f-ha" name="ha" value="${esc(m.ha||"")}"></label><label class="field" for="f-hr"><span class="lbl">Heure de retour</span><input type="time" id="f-hr" name="hr" value="${esc(m.hr||"")}"></label></div>
   <p class="dur" id="dur"></p>
   <div class="field"><span class="lbl">${T("f_techs")}</span>${picker(m.techs)}</div>
   <label class="field" for="f-notes"><span class="lbl">${T("f_notes")}</span><textarea id="f-notes" name="notes">${esc(m.notes)}</textarea></label>`}
@@ -2219,7 +2222,7 @@ function submitForm(e){e.preventDefault();const f=e.target,fd=new FormData(f),er
  const fail=m=>{err.textContent=m;err.hidden=false};
  if(k==="missions"){o={type:fd.get("type"),spontanee:fd.has("spontanee"),destination:fd.get("destination").trim(),debut:fd.get("debut"),fin:fd.get("fin"),techs:fd.getAll("techs"),notes:fd.get("notes").trim()};
   if(!o.destination)return fail(T("e_dest"));if(!o.debut||!o.fin)return fail(T("e_dates"));if(o.fin<o.debut)return fail(T("e_order"))}
- else if(k==="depannages"){o={objet:fd.get("objet").trim(),destination:fd.get("destination").trim(),debut:fd.get("debut"),fin:fd.get("fin"),techs:fd.getAll("techs"),notes:fd.get("notes").trim()};
+ else if(k==="depannages"){o={objet:fd.get("objet").trim(),destination:fd.get("destination").trim(),debut:fd.get("debut"),fin:fd.get("fin"),ha:fd.get("ha")||"",hr:fd.get("hr")||"",techs:fd.getAll("techs"),notes:fd.get("notes").trim()};
   if(!o.objet)return fail(T("e_objet"));if(!o.destination)return fail(T("e_dest"));if(!o.debut||!o.fin)return fail(T("e_dates"));if(o.fin<o.debut)return fail(T("e_order"))}
  else if(k==="convoyages"){o={date:fd.get("date"),noday:fd.get("noday")==="1",periode:fd.get("periode")||"Journée",heure:fd.get("heure")||"",nature:fd.get("nature"),zone:fd.get("zone"),destination:fd.get("destination").trim(),spontane:fd.has("spontane"),repeat:fd.has("repeat"),until:fd.has("repeat")?(fd.get("until")||""):"",techs:fd.getAll("techs"),notes:fd.get("notes").trim()};
   if(!o.date)return fail(T("e_cdate"));if(o.until&&o.until<o.date)return fail(T("e_until"));
@@ -2246,7 +2249,7 @@ function shareData(kind,l){const t=(k,...a)=>TL(l,k,...a),v=x=>t("v_"+x);const{y
   return{title,range,cols:t("sh_cols_c"),rows,text:[title,range,...lines].join("\n"),file:`${t("file_c")}-S${w}-${y}`,none:t("pdf_none")}}
  if(kind==="depannages"){const title=t("sh_title_d",w);
   sortByDate(depWeek(),"debut").forEach(m=>{const ts=(m.techs||[]).map(techById).filter(Boolean);const dates=`${fmtShortL(l,m.debut)} - ${fmtShortL(l,m.fin||m.debut)}`;
-   lines.push("",`${m.objet} - ${m.destination} : ${dates}`);
+   lines.push("",`${m.objet} - ${m.destination} : ${dates}${depHours(m)?" ("+depHours(m)+")":""}`);
    (ts.length?ts:[{nom:t("toAssign")}]).forEach(x=>{lines.push(`- ${x.nom}`);rows.push([dates,x.nom,m.objet,m.destination])})});
   return{title,range,cols:t("sh_cols_d"),rows,text:[title,range,...lines].join("\n"),file:`${t("file_d")}-S${w}-${y}`,none:t("pdf_none")}}
  const title=t("sh_title_m",w);
@@ -2520,7 +2523,8 @@ document.addEventListener("input",e=>{const t=e.target;
  if(t.classList&&t.classList.contains("tsq")){const box=t.closest(".tsrow,.rfpick");const res=box.querySelector(".tsres");const q=normName(t.value);if(!q){res.innerHTML="";return}
   const have=new Set([...box.querySelectorAll(".tschip")].map(c=>c.dataset.id));const date=($("#ts-date")||$("#rf-date")||$("#fm-deb")||{}).value||todayStr();
   const AL=box.classList.contains("tsrow")?tsAllowed(box.dataset.cat):null;const m=state.techs.filter(x=>!have.has(x.id)&&(!AL||AL.includes(tsG(x.badge)))&&normName(x.nom+" "+x.badge).includes(q)).sort((a,b)=>a.nom.localeCompare(b.nom)).slice(0,10);
-  res.innerHTML=m.map(x=>`<button type="button" class="tsresb" data-tspick="${x.id}"><b>${esc(x.nom)}</b> <span class="badge" data-b="${esc(x.badge)}">${esc(x.badge)}</span>${leaveRange(x,date)?" ⚠️ congé":""}</button>`).join("")||`<span class="notes">Aucun technicien trouvé.</span>`;return}
+  const GR=box.classList.contains("tsrow")&&typeof sgList==="function"?sgList().filter(g=>{const mem=sgMembers(g);return mem.length&&(normName("groupe "+g.nom)===q||normName(g.nom)===q||mem.some(id=>normName(tsTechName(id)).includes(q)))}):[];
+  res.innerHTML=GR.map(g=>`<button type="button" class="tsresb grp" data-tsgrp="${g.id}">👥 <b>Groupe ${esc(g.nom)}</b> <span class="chip">${sgMembers(g).length}</span> <small>${esc(sgMembers(g).map(id=>tsTechName(id)).join(", "))}</small></button>`).join("")+m.map(x=>`<button type="button" class="tsresb" data-tspick="${x.id}"><b>${esc(x.nom)}</b> <span class="badge" data-b="${esc(x.badge)}">${esc(x.badge)}</span>${(()=>{const g=typeof sgOf==="function"&&/^Stagiaire/.test(x.badge||"")?sgOf(x.id):null;return g?` <span class="chip">Groupe ${esc(g.nom)}</span>`:""})()}${leaveRange(x,date)?" ⚠️ congé":""}</button>`).join("")||`<span class="notes">Aucun technicien trouvé.</span>`;return}
  if(t.id==="tq"){ui.tq=t.value;const pos=t.selectionStart;render();const n=$("#tq");if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}return}if(t.id==="rf-q"){ui.rf.q=t.value;$("#rfList").innerHTML=rfListHtml();return}if(t.id==="rf-hq"){ui.rf.q=t.value;$("#rfHist").innerHTML=rfHistBody();return}if(t.id==="lp-zoom"){lpZoom(t.value);return}if(["cv-val"].includes(t.id)){cvUpdate();return}if(t.id==="mm-q"){ui.mm.esc=t.value.toUpperCase();$("#mmBody").innerHTML=mmBody();return}if(["fc-ini","fc-fin","fc-dens"].includes(t.id)){fcRefresh();return}if(t.id==="imp-txt"){pnImpPreview(t.value);return}if(t.id==="pnsearch"){ui.pn.q=t.value;pnRefresh();return}if(t.dataset&&t.dataset.pnsel){const v=Math.max(0,parseInt(t.value)||0);if(v)ui.pn.sel[t.dataset.pnsel]=v;else delete ui.pn.sel[t.dataset.pnsel];t.closest(".pnitem").classList.toggle("on",!!v);pnUpdate();return}if(t.id==="pnim"){setTimeout(pnUpdate,0);return}});
 document.addEventListener("input",e=>{if(e.target.id==="csearch"){ui.csearch=e.target.value;const l=$("#clist");if(l)l.innerHTML=contactsList()}});
 document.addEventListener("change",e=>{const lt=e.target;if(lt.name==="badge"&&$("#nivField")){$("#nivField").hidden=lt.value!=="Tech A";return}if(lt.id==="trFile"&&lt.files&&lt.files[0]){const f=lt.files[0];lt.value="";f.text().then(trParse);return}if(lt.dataset&&lt.dataset.trout){lt.checked?trSel.add(lt.dataset.trout):trSel.delete(lt.dataset.trout);return}if(lt.id==="ts-date"){tsReopen();return}if(lt.id==="fm-add"){const v=lt.value;lt.value="";if(v==="__other"){$("#fmOth").hidden=false;$("#fm-oth").focus();return}if(v){if([...document.querySelectorAll("#fmChips .tschip")].some(c=>c.dataset.id===v)){toast("Déjà ajouté");return}$("#fmChips").insertAdjacentHTML("beforeend",tsChip({id:v,nom:tsTechName(v)},$("#fm-deb").value))}return}
@@ -2910,6 +2914,13 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{const t=e.target;
  if(t.id==="sg-chef"){sgSave((state.stgGroups||[]).map(g=>g.id===ui.sg.sel?{...g,chef:t.value}:g));sgRefresh();return}
  const m=t.dataset&&t.dataset.sgmem;if(m){const gs=(state.stgGroups||[]).map(g=>{let mem=(g.membres||[]).filter(x=>x!==m);if(g.id===ui.sg.sel&&t.checked)mem=[...mem,m];return{...g,membres:mem}});sgSave(gs);sgRefresh()}});
+
+/* ---------- heures dépannage / formation ---------- */
+function hhTxt(a,b,la,lb){return a&&b?`${a} → ${b}`:a?`${la} ${a}`:b?`${lb} ${b}`:""}
+function depHours(m){return hhTxt(m.ha,m.hr,"Aller","Retour")}
+function fmHours(f){return hhTxt(f.hd,f.hf,"Début","Fin")}
+
+document.addEventListener("click",e=>{const g=e.target.closest("[data-tsgrp]");if(!g)return;const row=g.closest(".tsrow");const G=sgList().find(x=>x.id===g.dataset.tsgrp);if(!row||!G)return;const have=new Set([...row.querySelectorAll(".tschip")].map(c=>c.dataset.id));const d=$("#ts-date").value;let k=0;sgMembers(G).forEach(id=>{if(have.has(id))return;tsChipBox(row,id).insertAdjacentHTML("beforeend",tsChip({id,nom:tsTechName(id)},d));k++});const q=row.querySelector(".tsq");if(q)q.value="";row.querySelector(".tsres").innerHTML="";setTimeout(tsFreeRefresh,0);toast(`👥 Groupe ${G.nom} : ${k} stagiaire${k>1?"s":""} ajouté${k>1?"s":""}`,2500)});
 
 boot();
 
